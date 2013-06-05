@@ -1,0 +1,97 @@
+/*
+Cores FEJESP:
+vermelho = rgb(215, 47, 46)
+preto = rgb(30, 26, 27)
+cinza = rgb(143, 141, 141)
+
+*/
+
+/* Layout básico */
+
+* {
+	-moz-box-sizing:border-box;
+	box-sizing:border-box;
+}
+
+@font-face {
+	font-family:MyriadPro;
+	src:local(MyriadPro-Regular), url(MyriadPro-Regular.otf);
+	font-weight:normal;
+}
+
+@font-face {
+	font-family:MyriadPro;
+	src:local(MyriadPro-Bold), url(MyriadPro-Bold.otf);
+	font-weight:bold;
+}
+
+body {
+	margin:0;
+	background-color:#EEE;
+	font-family:MyriadPro, sans-serif;
+	font-size:16px;
+}
+
+.container {
+	width:920px;
+	margin:auto;
+	position:relative;
+}
+
+header {
+	padding:15px;
+	background-color:#DDD;
+}
+
+header h1 {
+	width:100%;
+	text-align:center;
+	position:absolute;
+	left:0;
+	top:-20px;
+}
+
+h2, .vermelho {
+	color:rgb(215, 47, 46);
+}
+
+.preto {
+	color:rgb(30, 26, 27);
+}
+
+.cinzaEscuro {
+	color:rgb(71, 70, 71);
+}
+
+div.conteudo {
+	padding:15px;
+	border-radius:15px;
+	background-color:#FFF;
+	margin:20px auto;
+}
+
+div.conteudo:after {
+	content:"";
+	clear:both;
+	display:block;
+	height:0;
+	width:0;
+	overflow:hidden;
+}
+
+footer {
+	font-size:smaller;
+}
+
+/* Página inicial */
+.conteudoEsquerdo {
+	width:50%;
+	float:left;
+	padding:5px;
+}
+
+.conteudoDireito {
+	width:50%;
+	float:right;
+	padding:5px;
+}
