@@ -1,0 +1,17 @@
+/* Página inicial */
+
+.conteudoEsquerdo {
+	width:50%;
+	float:left;
+	padding:5px;
+}
+
+.conteudoDireito {
+	width:50%;
+	float:right;
+	padding:5px;
+}
+
+.menu {
+	display:none;
+}

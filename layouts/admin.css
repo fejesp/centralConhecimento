@@ -1,0 +1,50 @@
+/* Página de administração */
+.usuarios td, .usuarios th {
+	border-bottom:thin #888 solid;
+	border-right:thin #888 solid;
+	text-align:center;
+	padding:5px;
+}
+
+.inativo {
+	color:#777;
+	background-color:#EEE;
+}
+
+.espacoTotal {
+	background-color:#888;
+	font-size:0;
+}
+
+.espacoUsadoAdmin, .espacoUsado {
+	font-size:medium;
+	display:inline-block;
+	text-align:center;
+	padding:3px;
+	overflow:hidden;
+	border-right:thin black solid;
+}
+
+.espacoUsadoAdmin {
+	color:white;
+	background-color:#222;
+}
+
+.espacoUsado {
+	background-color:#D33;
+}
+
+.legendaUsoAdmin {
+	color:#222;
+	background-color:#222;
+}
+
+.legendaUso {
+	color:#D33;
+	background-color:#D33;
+}
+
+.legendaLivre {
+	color:#888;
+	background-color:#888;
+}

@@ -1,13 +1,14 @@
 /*
 Cores FEJESP:
-vermelho = rgb(215, 47, 46)
-preto = rgb(30, 26, 27)
-cinza = rgb(143, 141, 141)
+vermelho = rgb(215, 47, 46) / #D33
+preto = rgb(30, 26, 27) / #222
+cinza = rgb(143, 141, 141) / #888
+vermelhoClaro = rgb(235, 151, 151) / #E99
+cinzaClaro = rgb(199, 198, 198) / #CCC
 
 */
 
 /* Layout básico */
-
 * {
 	-moz-box-sizing:border-box;
 	box-sizing:border-box;
@@ -79,19 +80,86 @@ div.conteudo:after {
 	overflow:hidden;
 }
 
+.subConteudo {
+	border:thin #CCC dashed;
+	padding:15px;
+}
+
 footer {
 	font-size:smaller;
+	text-align:right;
 }
 
-/* Página inicial */
-.conteudoEsquerdo {
-	width:50%;
+.menu {
+	position:absolute;
+	top:0;
+	right:0;
+	width:500px;
+	border-top-right-radius:15px;
+	border-bottom-left-radius:15px;
+	padding:5px 20px;
+	box-shadow:-2px 2px 4px rgba(0,0,0,.5);
+}
+
+.caminho-divisao {
+	display:inline-block;
+	width:16px;
+	height:1em;
+	background-image:url(imgs/seta-direita.png);
+	background-repeat:no-repeat;
+	background-position:center center;
+}
+
+.caminho {
+	width:75%;
 	float:left;
+}
+
+.acoes {
+	float:right;
+}
+
+.clear {
+	clear:both;
+	height:20px;
+}
+
+.botao {
+	display:inline-block;
+	border-bottom:thin gray solid;
+	border-right:thin gray solid;
+	border-radius:7px;
+	cursor:pointer;
 	padding:5px;
 }
 
-.conteudoDireito {
-	width:50%;
-	float:right;
-	padding:5px;
+.botao:hover {
+	background-color:#E99;
+}
+
+/* Listagem */
+.listagem {
+	padding:10px;
+}
+
+.item:first-child {
+	border-top:thin #888 solid;
+}
+
+.item {
+	border-bottom:thin #888 solid;
+	padding:10px;
+	cursor:pointer;
+}
+
+.item:hover {
+	background-color:#CCC;
+}
+
+.item-nome {
+	font-weight:bold;
+}
+
+.item-descricao {
+	font-size:smaller;
 }
