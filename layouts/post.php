@@ -6,8 +6,8 @@
 </div>
 
 <div class="acoes">
-	<span class="botao"><img src="imgs/remover.png"> Remover</span>
-	<span class="botao"><img src="imgs/editar.png"> Editar</span>
+	<span class="botao"><img src="/imgs/remover.png"> Remover</span>
+	<span class="botao"><img src="/imgs/editar.png"> Editar</span>
 </div>
 
 <div class="clear"></div>
@@ -16,11 +16,11 @@
 <h2>Anexos</h2>
 <div class="listagem">
 	<div class="item">
-		<img src="imgs/anexo.png">
+		<img src="/imgs/anexo.png">
 		<span class="item-nome">[Item 1]</span>
 	</div>
 	<div class="item">
-		<img src="imgs/anexo.png">
+		<img src="/imgs/anexo.png">
 		<span class="item-nome">[Item 2]</span>
 	</div>
 </div>

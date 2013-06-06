@@ -5,9 +5,9 @@
 </div>
 
 <div class="acoes">
-	<span class="botao"><img src="imgs/remover.png"> Remover</span>
-	<span class="botao"><img src="imgs/editar.png"> Editar</span>
-	<span class="botao"><img src="imgs/desativar.png"> Desativar</span>
+	<span class="botao"><img src="/imgs/remover.png"> Remover</span>
+	<span class="botao"><img src="/imgs/editar.png"> Editar</span>
+	<span class="botao"><img src="/imgs/desativar.png"> Desativar</span>
 </div>
 
 <div class="clear"></div>
@@ -17,5 +17,5 @@
 	<p>Texto grande:<br><textarea></textarea></p>
 	<p>Multi-escolha:<br><input type="radio"> A<br><input type="radio"> B<br><input type="radio"> C</p>
 	<p>Checks:<br><input type="checkbox"> A<br><input type="checkbox"> B<br><input type="checkbox"> C</p>
-	<p><span class="botao"><img src="imgs/enviar.png"> Enviar</span></p>
+	<p><span class="botao"><img src="/imgs/enviar.png"> Enviar</span></p>
 </form>

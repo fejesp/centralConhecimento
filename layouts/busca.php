@@ -30,28 +30,28 @@
 	<input type="checkbox"> anexos
 </p></div>
 
-<div class="clear"><span class="botao"><img src="imgs/enviar.png"> Enviar</span></div>
+<div class="clear"><span class="botao"><img src="/imgs/enviar.png"> Enviar</span></div>
 
 <h2>Resultados</h2>
 <div class="listagem">
 	<div class="item">
-		<img src="imgs/folder.png">
+		<img src="/imgs/folder.png">
 		<span class="item-nome">[Item 1]</span>
 		<span class="item-descricao">[descrição]</span>
-		<img src="imgs/seta-direita.png" style="float:right">
+		<img src="/imgs/seta-direita.png" style="float:right">
 	</div>
 	<div class="item">
-		<img src="imgs/post.png">
+		<img src="/imgs/post.png">
 		<span class="item-nome">[Item 2]</span>
 		<span class="item-descricao">[descrição]</span>
 	</div>
 	<div class="item">
-		<img src="imgs/form.png">
+		<img src="/imgs/form.png">
 		<span class="item-nome">[Item 3]</span>
 		<span class="item-descricao">[descrição]</span>
 	</div>
 	<div class="item">
-		<img src="imgs/anexo.png">
+		<img src="/imgs/anexo.png">
 		<span class="item-nome">[Item 4]</span>
 		<span class="item-descricao">[descrição]</span>
 	</div>

@@ -16,13 +16,13 @@ cinzaClaro = rgb(199, 198, 198) / #CCC
 
 @font-face {
 	font-family:MyriadPro;
-	src:local(MyriadPro-Regular), url(MyriadPro-Regular.otf);
+	src:local(MyriadPro-Regular), url(/MyriadPro-Regular.otf);
 	font-weight:normal;
 }
 
 @font-face {
 	font-family:MyriadPro;
-	src:local(MyriadPro-Bold), url(MyriadPro-Bold.otf);
+	src:local(MyriadPro-Bold), url(/MyriadPro-Bold.otf);
 	font-weight:bold;
 }
 
@@ -105,7 +105,7 @@ footer {
 	display:inline-block;
 	width:16px;
 	height:1em;
-	background-image:url(imgs/seta-direita.png);
+	background-image:url(/imgs/seta-direita.png);
 	background-repeat:no-repeat;
 	background-position:center center;
 }

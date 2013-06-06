@@ -1,0 +1,2 @@
+# Proíbe o acesso direto ao diretório de layouts
+Deny from all

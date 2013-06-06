@@ -1,20 +1,26 @@
-<?php
-$pagina = $_GET['pagina'];
-?><!DOCTYPE HTML>
+<!DOCTYPE HTML>
 <html>
 <head>
+<!--
+Central de conhecimento FEJESP
+Contato: ti@fejesp.org.br
+Autor: Guilherme de Oliveira Souza (http://sitegui.com.br)
+Data: 06/06/2013
+-->
 <meta charset="utf-8">
 <title>Central de conhecimento - FEJESP</title>
-<link rel="stylesheet" href="layout.css">
-<link rel="stylesheet" href="layouts/<?=$pagina;?>.css">
-<link rel="shortcut icon" href="imgs/logoCC.png">
-<script src="ajax.js"></script>
+<link rel="stylesheet" href="/layout.css">
+<link rel="stylesheet" href="/css/<?=$_GET['p'];?>.css">
+<link rel="shortcut icon" href="/imgs/logoCC.png">
+<script src="/ajax.js"></script>
+<script src="/utils.js"></script>
+<script src="/js/<?=$_GET['p'];?>.js"></script>
 </head>
 
 <body>
 <header>
 	<div class="container">
-		<a href="http://fejesp.org.br"><img src="imgs/logo.png" align="absmiddle"></a>
+		<a href="http://fejesp.org.br"><img src="/imgs/logo.png" align="absmiddle"></a>
 		<h1><span class="cinzaEscuro"><span class="preto">C</span>entral de <span class="vermelho">C</span>onhecimento</span></h1>
 	</div>
 </header>
@@ -22,7 +28,7 @@ $pagina = $_GET['pagina'];
 <div class="conteudo container">
 <div class="menu">Menu</div>
 <?php
-readfile("layouts/$pagina.html");
+require_once "layouts/$_GET[p].php";
 ?>
 </div>
 

@@ -1,30 +1,30 @@
 <h2>[Nome da pasta]</h2>
-<p>[Descrição da pasta]</p>
+<p>[Descrição da pasta]</p><?=$_GET['q'];?>
 <div class="caminho">
 	<div class="botao">pastaAvô</div><div class="caminho-divisao"></div><div class="botao">pastaPai</div>
 </div>
 
 <div class="acoes">
-	<span class="botao"><img src="imgs/folder_add.png"> Criar sub-pasta</span>
-	<span class="botao"><img src="imgs/post_add.png"> Criar postagem</span>
-	<span class="botao"><img src="imgs/form_add.png"> Criar formulário</span>
+	<span class="botao"><img src="/imgs/folder_add.png"> Criar sub-pasta</span>
+	<span class="botao"><img src="/imgs/post_add.png"> Criar postagem</span>
+	<span class="botao"><img src="/imgs/form_add.png"> Criar formulário</span>
 </div>
 
 <div class="clear"></div>
 <div class="listagem">
 	<div class="item">
-		<img src="imgs/folder.png">
+		<img src="/imgs/folder.png">
 		<span class="item-nome">[Item 1]</span>
 		<span class="item-descricao">[descrição]</span>
-		<img src="imgs/seta-direita.png" style="float:right">
+		<img src="/imgs/seta-direita.png" style="float:right">
 	</div>
 	<div class="item">
-		<img src="imgs/post.png">
+		<img src="/imgs/post.png">
 		<span class="item-nome">[Item 2]</span>
 		<span class="item-descricao">[descrição]</span>
 	</div>
 	<div class="item">
-		<img src="imgs/form.png">
+		<img src="/imgs/form.png">
 		<span class="item-nome">[Item 3]</span>
 		<span class="item-descricao">[descrição]</span>
 	</div>
