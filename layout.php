@@ -2,10 +2,10 @@
 <html>
 <head>
 <!--
-Central de conhecimento FEJESP
-Contato: ti@fejesp.org.br
-Autor: Guilherme de Oliveira Souza (http://sitegui.com.br)
-Data: 06/06/2013
+ - Central de conhecimento FEJESP
+ - Contato: ti@fejesp.org.br
+ - Autor: Guilherme de Oliveira Souza (http://sitegui.com.br)
+ - Data: 06/06/2013
 -->
 <meta charset="utf-8">
 <title>Central de conhecimento - FEJESP</title>
@@ -14,6 +14,7 @@ Data: 06/06/2013
 <link rel="shortcut icon" href="/imgs/logoCC.png">
 <script src="/ajax.js"></script>
 <script src="/utils.js"></script>
+<script src="/layout.js"></script>
 <script src="/js/<?=$_GET['p'];?>.js"></script>
 </head>
 
@@ -26,7 +27,16 @@ Data: 06/06/2013
 </header>
 
 <div class="conteudo container">
-<div class="menu">Menu</div>
+<div class="menu">
+	<?php
+	if ($_usuario) {
+		echo 'Olá ' . $_usuario['nome'] . ', <span class="botao" id="layout-logout"><img src="/imgs/logout.png"> Logout</span>';
+	} else {
+		echo 'Olá anônimo, <span class="botao" id="layout-login"><img src="/imgs/login.png"> Login</span>';
+	}
+	?>
+	<span class="botao" id="layout-buscar"><img src="/imgs/buscar.png"> Buscar</span>
+</div>
 <?php
 require_once "layouts/$_GET[p].php";
 ?>

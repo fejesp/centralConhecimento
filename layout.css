@@ -1,11 +1,17 @@
 /*
+ * Central de conhecimento FEJESP
+ * Contato: ti@fejesp.org.br
+ * Autor: Guilherme de Oliveira Souza (http://sitegui.com.br)
+ * Data: 06/06/2013
+*/
+
+/*
 Cores FEJESP:
 vermelho = rgb(215, 47, 46) / #D33
 preto = rgb(30, 26, 27) / #222
 cinza = rgb(143, 141, 141) / #888
 vermelhoClaro = rgb(235, 151, 151) / #E99
 cinzaClaro = rgb(199, 198, 198) / #CCC
-
 */
 
 /* Layout básico */
@@ -95,10 +101,8 @@ footer {
 	top:0;
 	right:0;
 	width:500px;
-	border-top-right-radius:15px;
-	border-bottom-left-radius:15px;
-	padding:5px 20px;
-	box-shadow:-2px 2px 4px rgba(0,0,0,.5);
+	padding:10px;
+	text-align:right;
 }
 
 .caminho-divisao {
@@ -111,12 +115,11 @@ footer {
 }
 
 .caminho {
-	width:75%;
-	float:left;
+	text-align:left;
 }
 
 .acoes {
-	float:right;
+	text-align:right;
 }
 
 .clear {
@@ -137,6 +140,11 @@ footer {
 	background-color:#E99;
 }
 
+.inativo {
+	color:#777;
+	background-color:#EEE;
+}
+
 /* Listagem */
 .listagem {
 	padding:10px;
@@ -149,15 +157,33 @@ footer {
 .item {
 	border-bottom:thin #888 solid;
 	padding:10px;
+	padding-left:30px;
 	cursor:pointer;
+	background-repeat:no-repeat;
 }
 
 .item:hover {
 	background-color:#CCC;
 }
 
+.item-pasta {
+	background-image:url(/imgs/pasta.png), url(/imgs/seta-direita.png);
+	background-position:1% center, 99% center;
+}
+
+.item-post {
+	background-image:url(/imgs/post.png);
+	background-position:1% center;
+}
+
+.item-form {
+	background-image:url(/imgs/form.png);
+	background-position:1% center;
+}
+
 .item-nome {
 	font-weight:bold;
+	font-size:larger;
 }
 
 .item-descricao {

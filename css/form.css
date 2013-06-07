@@ -1,9 +1,9 @@
 /* Página de visualização de formulário */
-.inativo {
+.form-inativo {
 	position:relative;
 }
 
-.inativo:after {
+.form-inativo:after {
 	content:"";
 	background-color:rgba(199, 198, 198, .5);
 	position:absolute;
