@@ -1,5 +1,4 @@
 /* Página inicial */
-
 .conteudoEsquerdo {
 	width:50%;
 	float:left;
@@ -12,6 +11,6 @@
 	padding:5px;
 }
 
-.menu {
+.menuPrincipal {
 	display:none;
 }

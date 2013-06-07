@@ -13,3 +13,8 @@ window.addEventListener("load", function () {
 	get("seleto").onchange = atualizarLista
 	atualizarLista()
 })
+
+// Volta para a pasta
+setBotao("voltar", function () {
+	window.location = "/pasta"+caminho
+})

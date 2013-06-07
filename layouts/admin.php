@@ -1,7 +1,7 @@
 <h2>Administração</h2>
 
 <h3>Usuários</h3>
-<p><span class="botao"><img src="/imgs/user_add.png"> Criar usuário</span></p>
+<p><span class="botao"><img src="/imgs/criarUsuario.png"> Criar usuário</span></p>
 <table class="usuarios">
 <tbody>
 	<tr><th>Ações</th><th>Nome</th><th>Email</th><th>Acessos</th></tr>

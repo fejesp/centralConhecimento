@@ -14,3 +14,6 @@ $_config['mysql_host'] = 'localhost';
 $_config['mysql_username'] = 'root';
 $_config['mysql_password'] = '';
 $_config['mysql_dbname'] = 'central';
+
+// Limite máximo de espaço (em KiB)
+$_config['espacoTotal'] = 2*1024*1024;

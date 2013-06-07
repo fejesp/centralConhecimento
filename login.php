@@ -31,6 +31,9 @@ setcookie('central_id', $id);
 // Salva o cookie no banco de dados
 new Query('UPDATE usuarios SET cookie=? WHERE id=? LIMIT 1', $cookie, $id);
 
+// Guarda a estatística
+new Query('INSERT INTO acessos VALUES (?, NULL, NOW())', $id);
+
 // Redireciona
 if (empty($_POST['continuar']))
 	redirecionar('pasta');

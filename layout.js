@@ -16,3 +16,7 @@ setBotao("layout-logout", function () {
 setBotao("layout-buscar", function () {
 	window.location.href = "/busca"
 })
+
+setBotao("layout-editarUsuario", function () {
+	window.location = "/editarUsuario"
+})

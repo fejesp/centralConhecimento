@@ -11,6 +11,7 @@ if (!$sucesso || (!$criar && !$dados['id'])) {
 }
 
 imprimir($criar ? 'Criar pasta' : 'Editar pasta ' . $dados['nome'], 'h2');
+gerarJSVar('caminho', $caminho);
 	
 // Valida as permissões do usuário
 if (!$_usuario || (!$criar && !$_usuario['admin'] && $dados['criador'] != $_usuario['id'])) {
@@ -64,5 +65,6 @@ $radio3 = $dados['visibilidade']=='seleto' ? ' checked' : '';
 <div class="clear"></div>
 <input type="hidden" name="caminho" value="<?=assegurarHTML($caminho)?>">
 <input type="submit" style="display:none" id="submit">
+<span class="botao" id="voltar"><img src="/imgs/voltar.png"> Voltar</span>
 <span class="botao" id="salvar"><img src="/imgs/enviar.png"> <?=$criar ? 'Criar' : 'Salvar'?></span>
 </form>

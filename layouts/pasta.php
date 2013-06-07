@@ -37,9 +37,9 @@ if (!$sucesso)
 if ($_usuario && $sucesso) {
 ?>
 <div class="acoes">
-	<span class="botao" id="criarPasta"><img src="/imgs/criar_pasta.png"> Criar pasta</span>
-	<span class="botao" id="criarPost"><img src="/imgs/criar_post.png"> Criar postagem</span>
-	<span class="botao" id="criarForm"><img src="/imgs/criar_form.png"> Criar formulário</span>
+	<span class="botao" id="criarPasta"><img src="/imgs/criarPasta.png"> Criar pasta</span>
+	<span class="botao" id="criarPost"><img src="/imgs/criarPost.png"> Criar postagem</span>
+	<span class="botao" id="criarForm"><img src="/imgs/criarForm.png"> Criar formulário</span>
 </div>
 <?php
 }

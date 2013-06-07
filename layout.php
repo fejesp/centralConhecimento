@@ -10,12 +10,18 @@
 <meta charset="utf-8">
 <title>Central de conhecimento - FEJESP</title>
 <link rel="stylesheet" href="/layout.css">
-<link rel="stylesheet" href="/css/<?=$_GET['p'];?>.css">
+<?php
+if (file_exists("css/$_GET[p].css"))
+	echo "<link rel='stylesheet' href='/css/$_GET[p].css'>";
+?>
 <link rel="shortcut icon" href="/imgs/logoCC.png">
 <script src="/ajax.js"></script>
 <script src="/utils.js"></script>
 <script src="/layout.js"></script>
-<script src="/js/<?=$_GET['p'];?>.js"></script>
+<?php
+if (file_exists("js/$_GET[p].js"))
+	echo "<script src='/js/$_GET[p].js'></script>";
+?>
 </head>
 
 <body>
@@ -31,6 +37,7 @@
 	<?php
 	if ($_usuario) {
 		echo 'Olá ' . $_usuario['nome'] . ', <span class="botao" id="layout-logout"><img src="/imgs/logout.png"> Logout</span>';
+		echo '<span class="botao" id="layout-editarUsuario"><img src="/imgs/editarUsuario.png"> Alterar conta</span>';
 	} else {
 		echo 'Olá anônimo, <span class="botao" id="layout-login"><img src="/imgs/login.png"> Login</span>';
 	}
