@@ -96,7 +96,7 @@ footer {
 	text-align:right;
 }
 
-.menu {
+.menuPrincipal {
 	position:absolute;
 	top:0;
 	right:0;
@@ -145,6 +145,49 @@ footer {
 	background-color:#EEE;
 }
 
+.detalhe {
+	font-size:smaller;
+}
+
+.tags {
+	float:right;
+	width:350px;
+	text-align:center;
+	padding:0 5px 15px 5px;
+}
+
+.tag1, .tag2, .tag3, .tag4, .tag5 {
+	margin:10px;
+	border-bottom:thin #888 solid;
+	cursor:pointer;
+	white-space:nowrap;
+}
+
+.tag1:hover, .tag2:hover, .tag3:hover, .tag4:hover, .tag5:hover {
+	border-bottom:thin #D33 solid;
+	background-color:#FEE;
+}
+
+.tag1 {
+	font-size:x-large;
+}
+
+.tag2 {
+	font-size:large;
+}
+
+.tag3 {
+	font-size:medium;
+}
+
+.tag4 {
+	font-size:small;
+}
+
+.tag5 {
+	font-size:x-small;
+}
+
 /* Listagem */
 .listagem {
 	padding:10px;
@@ -188,4 +231,39 @@ footer {
 
 .item-descricao {
 	font-size:smaller;
+	margin-left:20px;
+}
+
+/* Form */
+.rotuloEsquerdo {
+	float:left;
+	clear:left;
+}
+
+.opcoesDireita {
+	float:left;
+	margin-left:15px;
+}
+
+textarea {
+	width:75%;
+	height:100px;
+}
+
+/* Menu de contexto */
+.menu {
+	position:absolute;
+	border:thin #888 solid;
+	box-shadow:2px 2px 2px 0 rgba(0,0,0,.5);
+	border-radius:5px;
+	overflow:hidden;
+}
+.menu > div {
+	padding:3px 7px;
+	cursor:pointer;
+	font-size:smaller;
+	background-color:#FFF;
+}
+.menu > div:hover {
+	background-color:#E99;
 }

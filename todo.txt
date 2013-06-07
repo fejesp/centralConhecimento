@@ -1,3 +1,0 @@
-adicionar nome como índice em pastas
-adicionar (nome+pai) como único
-exibir informações de visibilidade e criação nos itens

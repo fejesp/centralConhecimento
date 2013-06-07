@@ -35,9 +35,9 @@ var setBotao = (function () {
 })()
 
 // Constroi a representação visual de um caminho
-// O caminho deve estar na forma "a/b/c" num elemento com classe "caminho"
+// O caminho deve estar na forma "/a/b/c" num elemento com classe "caminho"
 function montarCaminho() {
-	var els, el, partes, i, j, botao, divisao, caminho
+	var els, el, partes, i, botao, divisao, caminho
 	
 	var gerarOnclick = function (caminho) {
 		return function () {
@@ -45,29 +45,78 @@ function montarCaminho() {
 		}
 	}
 	
+	els = document.getElementsByClassName("caminho")
+	if (!els.length)
+		return
+	el = els[0]
+	if (el.textContent == "/") {
+		el.textContent = ""
+		return
+	}
 	divisao = document.createElement("span")
 	divisao.className = "caminho-divisao"
-	els = document.getElementsByClassName("caminho")
-	for (i=0; i<els.length; i++) {
-		el = els.item(i)
-		if (!el.textContent)
-			continue
-		partes = el.textContent.split("/")
-		el.innerHTML = ""
-		caminho = ""
+	partes = el.textContent.substr(1).split("/")
+	el.innerHTML = ""
+	caminho = ""
+	botao = document.createElement("span")
+	botao.className = "botao"
+	botao.textContent = "Raiz"
+	botao.onclick = gerarOnclick("")
+	el.appendChild(botao)
+	for (i=0; i<partes.length; i++) {
+		el.appendChild(divisao.cloneNode(false))
 		botao = document.createElement("span")
 		botao.className = "botao"
-		botao.textContent = "Raiz"
-		botao.onclick = gerarOnclick("")
+		botao.textContent = partes[i]
+		caminho += "/"+partes[i]
+		botao.onclick = gerarOnclick(caminho)
 		el.appendChild(botao)
-		for (j=0; j<partes.length; j++) {
-			el.appendChild(divisao.cloneNode(false))
-			botao = document.createElement("span")
-			botao.className = "botao"
-			botao.textContent = partes[j]
-			caminho += "/"+partes[j]
-			botao.onclick = gerarOnclick(caminho)
-			el.appendChild(botao)
-		}
 	}
 }
+
+// Gerencia o funcionamento dos menus
+// Menu.abrir(evento, botoes) recebe o evento do mouse (a partir do qual o menu será montado) e
+// botoes, que é uma array onde cada elemento é uma array na forma [html, onclick]
+// Menu.fechar() fecha imediatamente o menu aberto
+var Menu = (function () {
+	var divMenu = null
+	window.addEventListener("click", function () {
+		Menu.fechar()
+	})
+	
+	return {abrir: function (evento, botoes) {
+		var i, subdiv, fechar
+		
+		// Monta a div
+		Menu.fechar()
+		divMenu = document.createElement("div")
+		divMenu.className = "menu"
+		document.body.appendChild(divMenu)
+		
+		// Insere os botões
+		for (i=0; i<botoes.length; i++) {
+			subdiv = document.createElement("div")
+			subdiv.innerHTML = botoes[i][0]
+			subdiv.onclick = botoes[i][1]
+			divMenu.appendChild(subdiv)
+		}
+		
+		// Posiciona
+		if (evento.pageX+divMenu.offsetWidth > document.documentElement.clientWidth)
+			divMenu.style.left = (evento.pageX-divMenu.offsetWidth)+"px"
+		else
+			divMenu.style.left = evento.pageX+"px"
+		if (evento.pageY+divMenu.offsetHeight > document.documentElement.clientHeight)
+			divMenu.style.top = (evento.pageY-divMenu.offsetHeight)+"px"
+		else
+			divMenu.style.top = evento.pageY+"px"
+		
+		evento.stopPropagation()
+		evento.preventDefault()
+	}, fechar: function () {
+		if (divMenu) {
+			document.body.removeChild(divMenu)
+			divMenu = null
+		}
+	}}
+})()

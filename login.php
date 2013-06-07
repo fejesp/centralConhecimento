@@ -12,10 +12,7 @@
 require_once 'config.php';
 require_once 'utils.php';
 require_once 'Query.php';
-Query::$conexao = new MySQLi($_config['mysql_host'], $_config['mysql_username'], $_config['mysql_password'], $_config['mysql_dbname']);
-if (Query::$conexao->connect_error)
-	die('Erro na conexão: ' . Query::$conexao->connect_error);
-Query::$conexao->set_charset('utf8');
+conectar();
 
 // Pega os parâmetros do login
 $email = @$_POST['email'];
@@ -27,7 +24,7 @@ if ($id === NULL)
 	redirecionar('index?erroLogin');
 
 // Cria o cookie
-$cookie = getRandomString(32);
+$cookie = getRandomString(28) . date('dm');
 setcookie('central_login', $cookie);
 setcookie('central_id', $id);
 

@@ -20,14 +20,14 @@
 
 <body>
 <header>
-	<div class="container">
-		<a href="http://fejesp.org.br"><img src="/imgs/logo.png" align="absmiddle"></a>
+	<div class="container" onclick="window.location='/'" style="cursor:pointer">
+		<img src="/imgs/logo.png" align="absmiddle">
 		<h1><span class="cinzaEscuro"><span class="preto">C</span>entral de <span class="vermelho">C</span>onhecimento</span></h1>
 	</div>
 </header>
 
 <div class="conteudo container">
-<div class="menu">
+<div class="menuPrincipal">
 	<?php
 	if ($_usuario) {
 		echo 'Olá ' . $_usuario['nome'] . ', <span class="botao" id="layout-logout"><img src="/imgs/logout.png"> Logout</span>';
