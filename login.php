@@ -18,21 +18,37 @@ conectar();
 $email = @$_POST['email'];
 $senha = md5(@$_POST['senha']);
 
+// Pega os dados do usuário
+try {
+	$dados = Query::query(true, NULL, 'SELECT id, senha, ativo FROM usuarios WHERE email=? LIMIT 1', $email);
+} catch (Exception $e) {
+	redirecionar('index?erroLogin=1');
+}
+
 // Valida os parâmetros
-$id = Query::getValor('SELECT id FROM usuarios WHERE email=? AND senha=? AND ativo=1 LIMIT 1', $email, $senha);
-if ($id === NULL)
-	redirecionar('index?erroLogin');
+if (!$dados['ativo'])
+	redirecionar('index?erroLogin=2');
+
+// Protege contra ataques de força bruta
+$num = Query::getValor('SELECT COUNT(*) FROM logins WHERE usuario=? AND sucesso=0 AND HOUR(data)=HOUR(NOW())', $dados['id']);
+if ($num >= $_config['maxLogins'])
+	redirecionar('index?erroLogin=3');
+
+if ($senha != $dados['senha']) {
+	new Query('INSERT INTO logins VALUES (?, 0, NOW())', $dados['id']);
+	redirecionar('index?erroLogin=4');
+}
 
 // Cria o cookie
 $cookie = getRandomString(28) . date('dm');
 setcookie('central_login', $cookie);
-setcookie('central_id', $id);
+setcookie('central_id', $dados['id']);
 
 // Salva o cookie no banco de dados
-new Query('UPDATE usuarios SET cookie=? WHERE id=? LIMIT 1', $cookie, $id);
+new Query('UPDATE usuarios SET cookie=? WHERE id=? LIMIT 1', $cookie, $dados['id']);
 
 // Guarda a estatística
-new Query('INSERT INTO acessos VALUES (?, NULL, NOW())', $id);
+new Query('INSERT INTO logins VALUES (?, 1, NOW())', $dados['id']);
 
 // Redireciona
 if (empty($_POST['continuar']))

@@ -1,3 +1,7 @@
 ﻿post_max_size
 upload_max_filesize
 max_file_uploads
+
+proteção contra ataque de força bruta nos logins
+
+mecanismo de recuperar senha

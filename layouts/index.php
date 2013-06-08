@@ -18,8 +18,20 @@ if ($_usuario)
 		<span class="botao" id="comLogin"><img src="/imgs/enviar.png"> Entrar</span>
 	</form>
 	<?php
-	if (isset($_GET['erroLogin']))
-		echo "<p><strong>Erro no login</strong>: email ou senha incorretos</p>";
+	$erroLogin = (int)(@$_GET['erroLogin']);
+	switch ($erroLogin) {
+	case 1:
+		echo '<p><strong>Erro no login</strong>: email não encontrado</p>';
+		break;
+	case 2:
+		echo '<p><strong>Erro no login</strong>: conta inativa, contate o administrador</p>';
+		break;
+	case 3:
+		echo '<p><strong>Erro no login</strong>: conta bloqueada temporariamente, aguarde alguns minutos</p>';
+		break;
+	case 4:
+		echo '<p><strong>Erro no login</strong>: senha incorreta, esqueceu sua senha?</p>';
+	}
 	?>
 	<p>ou <span class="botao" id="semLogin"><img src="/imgs/enviar.png"> entre sem login</span></p>
 </div>
