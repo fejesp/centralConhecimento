@@ -1,4 +1,11 @@
 <?php
+/*
+ * Central de conhecimento FEJESP
+ * Contato: ti@fejesp.org.br
+ * Autor: Guilherme de Oliveira Souza (http://sitegui.com.br)
+ * Data: 07/06/2013
+*/
+
 // Carrega as configurações e conecta ao banco de dados
 require_once 'config.php';
 require_once 'utils.php';
@@ -18,9 +25,9 @@ $senha = @$_POST['senha'];
 
 // Valida os dados
 if (md5($senha) != $_usuario['senha'])
-	die('Erro: senha incorreta');
+	morrerComErro('Senha incorreta');
 if ($novaSenha && $novaSenha != $novaSenha2)
-	die('Erro: a mesma senha deve ser digitada duas vezes');
+	morrerComErro('A mesma senha deve ser digitada duas vezes');
 
 // Salva os novos dados
 $dados = array();

@@ -1,4 +1,11 @@
 <?php
+/*
+ * Central de conhecimento FEJESP
+ * Contato: ti@fejesp.org.br
+ * Autor: Guilherme de Oliveira Souza (http://sitegui.com.br)
+ * Data: 06/06/2013
+*/
+
 // Carrega as configurações e conecta ao banco de dados
 require_once 'config.php';
 require_once 'utils.php';
@@ -8,15 +15,15 @@ validarLogin();
 
 // Interpreta o caminho da pasta
 $dados = NULL;
-$caminho = $_POST['caminho'];
+$caminho = @$_POST['caminho'];
 $criar = isset($_GET['criar']);
 $sucesso = interpretarCaminho($caminho, $dados);
 if (!$sucesso || (!$criar && !$dados['id']))
-	die('Erro: pasta não encontrada');
+	morrerComErro('Pasta não encontrada');
 	
 // Valida as permissões do usuário
 if (!$_usuario || (!$criar && !$_usuario['admin'] && $dados['criador'] != $_usuario['id']))
-	die('Erro: o usuário atual não tem permissão para isso');
+	morrerComErro('O usuário atual não tem permissão para isso');
 
 // Carrega os novos dados
 $nome = $_POST['nome'];
@@ -26,7 +33,7 @@ $selecionados = isset($_POST['selecionados']) ? $_POST['selecionados'] : array()
 
 // Valida o nome
 if (!preg_match('@^[^/]+$@', $nome))
-	die('Erro: nome inválido');
+	morrerComErro('Nome inválido');
 
 // Salva os novos dados
 try {
@@ -46,5 +53,5 @@ try {
 	// Tudo ok, volta para a página anterior
 	redirecionar('pasta' . ($criar ? $caminho : getCaminhoAcima($caminho)));
 } catch (Exception $e) {
-	die('Erro: falha ao gravar os dados, provavelmente já existe uma pasta com esse nome');
+	morrerComErro('Falha ao gravar os dados, provavelmente já existe uma pasta com esse nome');
 }

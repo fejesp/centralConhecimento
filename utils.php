@@ -197,3 +197,15 @@ function interpretarCaminho(&$caminho, &$dados) {
 	
 	return true;
 }
+
+// Mostra a página de erro no layout padrão em layout.php e termina o programa
+// $erro é uma string que será impressa sem processar o HTML
+function morrerComErro($erro) {
+	global $_usuario, $_erro;
+	$_GET['p'] = 'erro';
+	$_usuario = NULL;
+	$_erro = $erro;
+	header('HTTP/1.1 400 Bad Request');
+	require_once 'layout.php';
+	exit;
+}

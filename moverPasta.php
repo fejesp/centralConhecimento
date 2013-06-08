@@ -21,15 +21,15 @@ $novoCaminho = $_POST['novoCaminho'];
 $sucesso = interpretarCaminho($caminho, $dados);
 $sucesso2 = interpretarCaminho($novoCaminho, $dados2);
 if (!$sucesso || !$dados['id'] || !$sucesso2)
-	die('Erro: pasta não encontrada');
+	morrerComErro('Pasta não encontrada');
 	
 // Valida as permissões do usuário
 if (!$_usuario || (!$_usuario['admin'] && $dados['criador'] != $_usuario['id']))
-	die('Erro: o usuário atual não tem permissão para isso');
+	morrerComErro('O usuário atual não tem permissão para isso');
 
 // Não deixa fechar um ciclo
 if (substr($novoCaminho, 0, strlen($caminho)) == $caminho)
-	die('Erro: não é possível colocar uma pasta dentro dela mesmo');
+	morrerComErro('Não é possível colocar uma pasta dentro dela mesmo');
 
 // Salva as alterações
 new Query('UPDATE pastas SET pai=? WHERE id=? LIMIT 1', $dados2['id'], $dados['id']);

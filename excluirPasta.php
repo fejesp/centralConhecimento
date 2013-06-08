@@ -18,31 +18,72 @@ $dados = NULL;
 $caminho = $_GET['caminho'];
 $sucesso = interpretarCaminho($caminho, $dados);
 if (!$sucesso || !$dados['id'])
-	die('Erro: pasta não encontrada');
+	morrerComErro('Pasta não encontrada');
 	
 // Valida as permissões do usuário
 if (!$_usuario || (!$_usuario['admin'] && $dados['criador'] != $_usuario['id']))
-	die('Erro: o usuário atual não tem permissão para isso');
+	morrerComErro('O usuário atual não tem permissão para isso');
 
-// Vai eliminando recursivamente os itens
-// TODO: excluir fisicamente os anexos
-// TODO: excluir estatísticas
-function excluir($pasta) {
-	// Exclui os anexos dos posts
-	new Query('DELETE anexos FROM anexos JOIN posts ON anexos.post=posts.id WHERE posts.pasta=?', $pasta);
+// Faz um levantamento recursivo do que será deletado
+// Para deletar algum item, tem de ser administrador ou seu criador
+$posts = array();
+$forms = array();
+$pastas = array();
+function levantar($pasta, &$posts, &$forms, &$pastas) {
+	global $_usuario;
+	$pastas[] = $pasta;
 	
-	// Exclui os posts e forms
-	new Query('DELETE FROM posts WHERE pasta=?', $pasta);
-	new Query('DELETE FROM forms WHERE pasta=?', $pasta);
+	// Carrega os posts
+	$posts2 = Query::query(false, NULL, 'SELECT id, criador FROM posts WHERE pasta=?', $pasta);
+	for ($i=0; $i<count($posts2); $i++) {
+		if (!$_usuario['admin'] && $posts2[$i]['criador'] != $_usuario['id'])
+			morrerComErro('O usuário atual não tem permissão para excluir todos os itens dentro dessa pasta');
+		$posts[] = $posts2[$i]['id'];
+	}
 	
-	// Exclui as sub-pastas
-	$pastas = Query::query(false, 0, 'SELECT id FROM pastas WHERE pai=?', $pasta);
-	foreach ($pastas as $cada)
-		excluir($cada);
+	// Carrega os forms
+	$forms2 = Query::query(false, NULL, 'SELECT id, criador FROM forms WHERE pasta=?', $pasta);
+	for ($i=0; $i<count($forms2); $i++) {
+		if (!$_usuario['admin'] && $forms2[$i]['criador'] != $_usuario['id'])
+			morrerComErro('O usuário atual não tem permissão para excluir todos os itens dentro dessa pasta');
+		$forms[] = $forms2[$i]['id'];
+	}
 	
-	// Exclui essa pasta
-	new Query('DELETE FROM pastas WHERE id=? LIMIT 1', $pasta);
+	// Carrega as pastas
+	$pastas2 = Query::query(false, NULL, 'SELECT id, criador FROM pastas WHERE pai=?', $pasta);
+	for ($i=0; $i<count($pastas2); $i++) {
+		if (!$_usuario['admin'] && $pastas2[$i]['criador'] != $_usuario['id'])
+			morrerComErro('O usuário atual não tem permissão para excluir todos os itens dentro dessa pasta');
+		levantar($pastas2[$i]['id'], $posts, $forms, $pastas);
+	}
 }
-excluir($dados['id']);
+levantar($dados['id'], $posts, $forms, $pastas);
+$anexos = count($posts) ? Query::query(false, 0, 'SELECT id FROM anexos WHERE post IN ?', $posts) : array();
+
+// Exclui itens relacionados
+if (count($pastas))
+	new Query('DELETE FROM visibilidades WHERE tipoItem="pasta" AND item IN ?', $pastas);
+if (count($posts))
+	new Query('DELETE FROM visibilidades WHERE tipoItem="post" AND item IN ?', $posts);
+if (count($anexos))
+	new Query('DELETE FROM visibilidades WHERE tipoItem="anexo" AND item IN ?', $anexos);
+if (count($posts))
+	new Query('DELETE FROM tagsemposts WHERE post IN ?', $posts);
+if (count($posts))
+	new Query('DELETE FROM acessos WHERE post IN ?', $posts);
+if (count($anexos))
+	new Query('DELETE FROM downloads WHERE anexo IN ?', $anexos);
+
+// Exclui todos os itens
+// TODO: excluir fisicamente os anexos
+if (count($anexos))
+	new Query('DELETE FROM anexos WHERE id IN ?', $anexos);
+if (count($forms))
+	new Query('DELETE FROM forms WHERE id IN ?', $forms);
+if (count($posts))
+	new Query('DELETE FROM posts WHERE id IN ?', $posts);
+
+// Delete a pasta (o banco de dados cuida da recursão)
+new Query('DELETE FROM pastas WHERE id=?', $dados['id']);
 
 redirecionar('pasta' . getCaminhoAcima($caminho));

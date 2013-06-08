@@ -14,18 +14,19 @@
 
 // Essa página verifica o login e delega para as páginas em layouts/ a validação de $_GET['q'] e a montagem do HTML
 
-// Valida a página requisitada
-if (empty($_GET['p']))
-	$_GET['p'] = 'index';
-if (!preg_match('@^[a-zA-Z]+$@', $_GET['p']) || !file_exists('layouts/' . $_GET['p'] . '.php'))
-	die('Página inválida: ' . $_GET['p']);
-
 // Carrega as configurações e conecta ao banco de dados
+ob_start();
 require_once 'config.php';
 require_once 'utils.php';
 require_once 'Query.php';
 conectar();
 validarLogin();
+
+// Valida a página requisitada
+if (empty($_GET['p']))
+	$_GET['p'] = 'index';
+if (!preg_match('@^[a-zA-Z]+$@', $_GET['p']) || !file_exists('layouts/' . $_GET['p'] . '.php'))
+	morrerComErro('Página inválida: ' . $_GET['p']);
 
 // Chama layout.php para iniciar a geração do layout
 require_once 'layout.php';
