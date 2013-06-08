@@ -20,3 +20,6 @@ $_config['espacoTotal'] = 2*1024*1024; // 2 GiB
 
 // Limite de tentativas de login falhas em 1 hora
 $_config['maxLogins'] = 6;
+
+// Limite de tempo de uma conexão (em horas)
+$_config['tempoSessao'] = 17;

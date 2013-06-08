@@ -132,14 +132,21 @@ function conectar() {
 // Se o login for inválido, $_usuario será NULL
 // Se o login for válido, $_usuario terá os índices do seu registro no banco de dados
 function validarLogin() {
-	global $_usuario;
+	global $_usuario, $_config;
 	$_usuario = NULL;
 	if (isset($_COOKIE['central_login']) && isset($_COOKIE['central_id'])) {
 		$id = (int)$_COOKIE['central_id'];
 		$cookie = $_COOKIE['central_login'];
-		if (substr($cookie, -4) == date('dm'))
-			if (Query::existe('SELECT 1 FROM usuarios WHERE id=? AND cookie=? LIMIT 1', $id, $cookie))
-				$_usuario = Query::query(true, NULL, 'SELECT * FROM usuarios WHERE id=?', $id);
+		if (preg_match('@^.{22}[0-9]{10}$@', $cookie)) {
+			$H = substr($cookie, -2, 2);
+			$m = substr($cookie, -4, 2);
+			$d = substr($cookie, -6, 2);
+			$Y = substr($cookie, -10, 4);
+			$time = mktime($H, 0, 0, $m, $d, $Y);
+			if (time()-$time < 3600*$_config['tempoSessao'])
+				if (Query::existe('SELECT 1 FROM usuarios WHERE id=? AND cookie=? LIMIT 1', $id, $cookie))
+					$_usuario = Query::query(true, NULL, 'SELECT * FROM usuarios WHERE id=?', $id);
+		}
 	}
 }
 

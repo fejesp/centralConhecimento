@@ -40,7 +40,7 @@ if ($senha != $dados['senha']) {
 }
 
 // Cria o cookie
-$cookie = getRandomString(28) . date('dm');
+$cookie = getRandomString(22) . date('YdmH');
 setcookie('central_login', $cookie);
 setcookie('central_id', $dados['id']);
 
