@@ -120,3 +120,40 @@ var Menu = (function () {
 		}
 	}}
 })()
+
+// Redireciona para uma outra página
+// Exemplo: redirecionar("pasta", "/um/dois", "tres") => "/pasta/um/dois/tres"
+// redirecionar("index") => "/index"
+// redirecionar("script.php", "/um", "dois") => "/script.php?caminho=/um/dois"
+function redirecionar(tipo, caminho, nome) {
+	caminho = caminho || "/"
+	nome = nome || ""
+	if (tipo.substr(-4) == ".php")
+		window.location = "/"+tipo+"?caminho="+encodeURIComponent((caminho=="/" ? "" : caminho)+"/"+nome)
+	else
+		window.location = "/"+tipo+(caminho=="/" ? "" : caminho)+"/"+nome
+}
+
+// Mostra ou esconde a janela
+var mostrarJanela = (function () {
+	var aberta = false
+	window.addEventListener("load", function () {
+		get("fundoJanela").onclick = function () {
+			mostrarJanela(false)
+		}
+	})
+	return function (estado) {
+		aberta = Boolean(estado)
+		get("janela").style.display = get("fundoJanela").style.display = aberta ? "" : "none"
+	}
+})()
+
+// Cria um novo elemento com a tag, a classe e o conteúdo desejado
+function criarTag(tag, conteudo, classe) {
+	conteudo = conteudo || ""
+	classe = classe || ""
+	var tag = document.createElement(tag)
+	tag.className = classe
+	tag.textContent = conteudo
+	return tag
+}

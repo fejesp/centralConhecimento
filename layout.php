@@ -53,5 +53,8 @@ require_once "layouts/$_GET[p].php";
 	Central de conhecimento da Federação de Empresas Juniores do Estado de São Paulo<br>
 	Desenvolvido por FEJESP/núcleo TI (ti@fejesp.org.br)
 </footer>
+
+<div class="fundoJanela" style="display:none" id="fundoJanela"></div>
+<div class="janela" style="display:none" id="janela"></div>
 </body>
 </html>

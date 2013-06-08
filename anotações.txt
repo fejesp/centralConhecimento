@@ -1,3 +1,5 @@
 post_max_size
 upload_max_filesize
 max_file_uploads
+
+colocar unique em forms, posts e anexos

@@ -49,7 +49,7 @@ if ($sucesso) {
 	$subitens = array();
 	
 	// Carrega as subpastas
-	$subpastas = Query::query(false, NULL, 'SELECT "pasta" AS tipo, id, nome, descricao, visibilidade, criador FROM pastas WHERE id != 0 AND pai=? ORDER BY nome', $dados['id']);
+	$subpastas = Query::query(false, NULL, 'SELECT "pasta" AS tipo, id, nome, descricao, visibilidade, criador FROM pastas WHERE id!=0 AND pai=? ORDER BY nome', $dados['id']);
 	for ($i=0; $i<count($subpastas); $i++)
 		if (verificarVisibilidade('pasta', $subpastas[$i]['id'], $subpastas[$i]['visibilidade'], $subpastas[$i]['criador']))
 			$subitens[] = $subpastas[$i];

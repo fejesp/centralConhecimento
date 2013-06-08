@@ -175,17 +175,14 @@ function interpretarCaminho(&$caminho, &$dados) {
 	$caminho = '/' . implode('/', $pastas);
 	
 	$dados = array('id' => 0, 'visibilidade' => 'publico', 'criador' => 0, 'descricao' => '', 'nome' => 'Diretório raiz');
-	if (!count($pastas)) {
+	if (!count($pastas))
 		// Diretório raiz
 		return true;
-	}
 	
 	// Percorre o caminho, verificando a permissão de acesso
 	for ($i=0; $i<count($pastas); $i++) {
 		// Carrega o id da próxima pasta
 		$pasta = $pastas[$i];
-		if ($pasta == '')
-			continue;
 		try {
 			$dados = Query::query(true, NULL, 'SELECT id, visibilidade, criador, descricao, nome FROM pastas WHERE nome=? AND pai=? LIMIT 1', $pasta, $dados['id']);
 		} catch (Exception $e) {

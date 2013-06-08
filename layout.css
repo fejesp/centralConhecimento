@@ -267,3 +267,50 @@ textarea {
 .menu > div:hover {
 	background-color:#E99;
 }
+
+/* Janela */
+.janela {
+	position:fixed;
+	width:70%;
+	height:70%;
+	box-shadow:0 0 10px #888;
+	border:thin #888 solid;
+	top:15%;
+	left:15%;
+	background-color:white;
+	z-index:2;
+	border-radius:10px;
+	overflow:auto;
+	padding:15px;
+}
+
+.fundoJanela {
+	content:"";
+	z-index:1;
+	display:block;
+	background-color:rgba(30, 26, 27,.1);
+	position:fixed;
+	top:0;
+	left:0;
+	width:100%;
+	height:100%;
+}
+
+/* Árvore de pastas */
+.arvore-pastaFechada, .arvore-pastaAberta, .arvore-pastaFolha {
+	padding:3px 0 3px 25px;
+	background-repeat:no-repeat;
+	background-position:5px 5px;
+}
+
+.arvore-pastaFechada:hover, .arvore-pastaAberta:hover, .arvore-pastaFolha:hover {
+	background-color:rgba(143, 141, 141, .1);
+}
+
+.arvore-pastaFechada {
+	background-image:url(/imgs/expandir.png);
+}
+
+.arvore-pastaAberta {
+	background-image:url(/imgs/retrair.png);
+}
