@@ -26,6 +26,11 @@ function getRandomString($tamanho) {
 	return $str;
 }
 
+// Gera uma nova senha aleatória
+function gerarSenha() {
+	return substr(str_shuffle('abcdefghijklmnopqrstuvwxyz0123456789'), 0, 8);
+}
+
 // Verifica a visibilidade de um item, dado seus parâmetros
 // Não leva em conta as permissões dos itens acima desse
 // $tipo é 'pasta', 'post', 'anexo' ou 'form'
@@ -124,7 +129,7 @@ function conectar() {
 	global $_config;
 	Query::$conexao = new MySQLi($_config['mysql_host'], $_config['mysql_username'], $_config['mysql_password'], $_config['mysql_dbname']);
 	if (Query::$conexao->connect_error)
-		die('Erro na conexão: ' . Query::$conexao->connect_error);
+		morrerComErro('Não foi possível conectar ao banco de dados: ' . Query::$conexao->connect_error);
 	Query::$conexao->set_charset('utf8');
 }
 

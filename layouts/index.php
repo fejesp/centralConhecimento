@@ -30,8 +30,12 @@ if ($_usuario)
 		echo '<p><strong>Erro no login</strong>: conta bloqueada temporariamente, aguarde alguns minutos</p>';
 		break;
 	case 4:
-		echo '<p><strong>Erro no login</strong>: senha incorreta, esqueceu sua senha?</p>';
+		echo '<p><strong>Erro no login</strong>: senha incorreta, <a href="/recuperarSenha.php?email=' . urlencode(@$_GET['email']) . '">esqueceu sua senha</a>?</p>';
 	}
+	if (isset($_GET['senhaRecuperada']))
+		echo '<p>Um link foi enviado para seu email, clique nele para terminar o processo.</p>';
+	if (isset($_GET['senhaRecuperada2']))
+		echo '<p>Sua nova senha foi gerada e enviada por email.</p>';
 	?>
 	<p>ou <span class="botao" id="semLogin"><img src="/imgs/enviar.png"> entre sem login</span></p>
 </div>

@@ -36,7 +36,7 @@ if ($num >= $_config['maxLogins'])
 
 if ($senha != $dados['senha']) {
 	new Query('INSERT INTO logins VALUES (?, 0, NOW())', $dados['id']);
-	redirecionar('index?erroLogin=4');
+	redirecionar('index?erroLogin=4&email=' . urlencode($email));
 }
 
 // Cria o cookie

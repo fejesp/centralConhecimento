@@ -1,9 +1,7 @@
 <h2>Editar usuário</h2>
 <?php
-if (!$_usuario) {
-	imprimir('Erro: usuário não encontrado', 'p strong');
-	return;
-}
+if (!$_usuario)
+	redirecionar('index?continuar=editarUsuario');
 $nome = assegurarHTML($_usuario['nome']);
 $email = assegurarHTML($_usuario['email']);
 ?>
