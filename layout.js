@@ -6,17 +6,21 @@
 */
 
 setBotao("layout-login", function () {
-	window.location.href = "/index?continuar="+encodeURIComponent(window.location.href)
+	redirecionar("index", "", "?continuar="+encodeURIComponent(window.location))
 })
 
 setBotao("layout-logout", function () {
-	window.location.href = "/logout.php"
+	redirecionar("logout.php")
 })
 
 setBotao("layout-buscar", function () {
-	window.location.href = "/busca"
+	redirecionar("busca")
 })
 
 setBotao("layout-editarUsuario", function () {
-	window.location = "/editarUsuario"
+	redirecionar("editarUsuario")
+})
+
+setBotao("layout-admin", function () {
+	redirecionar("admin")
 })

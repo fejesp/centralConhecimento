@@ -1,9 +1,14 @@
 /* Página de administração */
 .usuarios td, .usuarios th {
-	border-bottom:thin #888 solid;
-	border-right:thin #888 solid;
+	border-bottom:thin #888 dashed;
+	border-right:thin #888 dashed;
 	text-align:center;
 	padding:5px;
+}
+
+tr:hover > td {
+	background-color:#CCC;
+	cursor:default;
 }
 
 .espacoTotal {

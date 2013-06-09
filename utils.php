@@ -96,7 +96,7 @@ function pastaEVisivel($pasta) {
 
 // Transforma em HTML seguro
 function assegurarHTML($str) {
-	return htmlentities($str, ENT_COMPAT, 'UTF-8');
+	return htmlentities($str, ENT_QUOTES, 'UTF-8');
 }
 
 // Imprime uma string na forma HTML de forma segura, dentro de uma tag opcional
@@ -220,4 +220,17 @@ function morrerComErro($erro) {
 	header('HTTP/1.1 400 Bad Request');
 	require_once 'layout.php';
 	exit;
+}
+
+// Transforma de número de KiB (int) para string
+function KiB2str($num) {
+	if ($num < 1000)
+		return "$num KiB";
+	if ($num < 10240)
+		return round($num/1024, 2) . ' MiB';
+	if ($num < 102400)
+		return round($num/1024, 1) . ' MiB';
+	if ($num < 1024000)
+		return round($num/1024) . ' MiB';
+	return round($num/1024/1024, 2) . ' GiB';
 }

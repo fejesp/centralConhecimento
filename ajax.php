@@ -63,6 +63,31 @@ if ($op == 'getArvoreInicial') {
 			$visiveis[$dados['nome']] = NULL;
 	
 	retornar($visiveis);
+} else if ($op == 'ativarUsuario') {
+	// Ativa uma conta de usuário
+	if (!$_usuario || !$_usuario['admin'])
+		retornarErro();
+	$id = (int)@$_GET['id'];
+	if ($id != $_usuario['id'])
+		new Query('UPDATE usuarios SET ativo=1 WHERE id=? LIMIT 1', $id);
+	retornar(true);
+} else if ($op == 'desativarUsuario') {
+	// Desativa uma conta de usuário
+	if (!$_usuario || !$_usuario['admin'])
+		retornarErro();
+	$id = (int)@$_GET['id'];
+	if ($id != $_usuario['id'])
+		new Query('UPDATE usuarios SET ativo=0 WHERE id=? LIMIT 1', $id);
+	retornar(false);
+} else if ($op == 'gerarSenha') {
+	// Gera uma nova senha para uma conta de usuário
+	if (!$_usuario || !$_usuario['admin'])
+		retornarErro();
+	$id = (int)@$_GET['id'];
+	$senha = gerarSenha();
+	if ($id != $_usuario['id'])
+		new Query('UPDATE usuarios SET senha=? WHERE id=? LIMIT 1', md5($senha), $id);
+	retornar($senha);
 }
 
 // Gera um erro com o status 400

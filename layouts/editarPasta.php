@@ -58,7 +58,7 @@ $radio3 = $dados['visibilidade']=='seleto' ? ' checked' : '';
 			$selecionado = '';
 		echo '<input type="checkbox" value="' . $usuario['id'] . '" id="usuario' . $usuario['id'];
 		echo '" name="selecionados[]"' . $selecionado . '> ';
-		echo '<label for="usuario' . $usuario['id'] . '">' . $usuario['nome'] . '</label><br>';
+		echo '<label for="usuario' . $usuario['id'] . '">' . assegurarHTML($usuario['nome']) . '</label><br>';
 	}
 	?>
 </div>

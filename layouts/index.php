@@ -10,7 +10,7 @@ if ($_usuario)
 </div>
 <div class="conteudoDireito">
 	<h2>Faça o login</h2>
-	<form method="post" action="login.php">
+	<form method="post" action="/login.php">
 		Email: <input type="email" size="30" autofocus name="email" required><br>
 		Senha: <input type="password" name="senha" required><br>
 		<input type="submit" style="display:none" id="submit">

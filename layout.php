@@ -36,11 +36,12 @@ if (file_exists("js/$_GET[p].js"))
 <div class="menuPrincipal">
 	<?php
 	if ($_usuario) {
-		echo 'Olá ' . $_usuario['nome'] . ', <span class="botao" id="layout-logout"><img src="/imgs/logout.png"> Logout</span>';
-		echo '<span class="botao" id="layout-editarUsuario"><img src="/imgs/editarUsuario.png"> Alterar conta</span>';
-	} else {
-		echo 'Olá anônimo, <span class="botao" id="layout-login"><img src="/imgs/login.png"> Login</span>';
-	}
+		echo 'Olá ' . assegurarHTML($_usuario['nome']) . ', <span class="botao" id="layout-logout"><img src="/imgs/logout.png"> Logout</span> ';
+		echo '<span class="botao" id="layout-editarUsuario"><img src="/imgs/editarUsuario.png"> Alterar conta</span> ';
+		if ($_usuario['admin'])
+			echo '<span class="botao" id="layout-admin"><img src="/imgs/admin.png"> Administração</span> ';
+	} else
+		echo 'Olá anônimo, <span class="botao" id="layout-login"><img src="/imgs/login.png"> Login</span> ';
 	?>
 	<span class="botao" id="layout-buscar"><img src="/imgs/buscar.png"> Buscar</span>
 </div>

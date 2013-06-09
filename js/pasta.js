@@ -39,17 +39,13 @@ function abrirJanelaMover(caminho, nome) {
 	
 	// Vai gerando as divs recursivamente
 	var gerarSubArvore = function (caminhoBase, elBase, arvore) {
-		var div, i, input, n = 0, label
+		var div, i, input, n = 0, label, id
 		for (i in arvore) {
 			n++
-			div = document.createElement("div")
-			label = document.createElement("label")
-			label.textContent = i+" "
-			div.appendChild(label)
-			input = document.createElement("input")
-			input.type = "radio"
-			input.name = "novoCaminho"
-			input.id = label.htmlFor = "input"+Math.random()
+			div = criarTag("div")
+			id = "input"+Math.random()
+			div.appendChild(criarTag("label", i+" ", {"for": id}))
+			input = criarTag("input", "", {type: "radio", name: "novoCaminho", id: id})
 			input.value = div.dataset.caminho = (caminhoBase=="/" ? "" : caminhoBase)+"/"+i
 			if (input.value == caminho)
 				input.checked = true
@@ -114,25 +110,16 @@ function abrirJanelaMover(caminho, nome) {
 	
 	// Envia a requisição da árvore básica
 	Ajax({url: "/ajax.php?op=getArvoreInicial", dados: {caminho: caminho}, funcao: function (arvore) {
-		var janela = get("janela"), p, form, input
-		janela.innerHTML = ""
-		form = document.createElement("form")
-		form.id = "form"
-		form.action = "/moverPasta.php"
-		form.method = "post"
-		form.appendChild(criarTag("h2", "Mover "+nome))
-		form.appendChild(criarTag("p", "Selecione a nova localidade:"))
-		input = document.createElement("input")
-		input.type = "hidden"
-		input.name = "caminho"
-		input.value = (caminho=="/" ? "" : caminho)+"/"+nome
-		form.appendChild(input)
-		gerarSubArvore("", form, arvore)
-		p = criarTag("p")
-		p.innerHTML = "<input type='submit' id='submit' style='display:none'>"+
-			"<span class='botao' onclick='mostrarJanela(false)'><img src='/imgs/voltar.png'> Cancelar</span> "+
-			"<span class='botao' onclick='get(\"submit\").click()'><img src='/imgs/enviar.png'> Salvar</span>"
-		form.appendChild(p)
-		janela.appendChild(form)
+		var janela = get("janela")
+		janela.innerHTML = "<form action='/moverPasta.php' method='post'>"+
+		"<h2>Mover "+assegurarHTML(nome)+"</h2>"+
+		"<p>Selecione a nova localidade:</p>"+
+		"<input type='hidden' name='caminho' value='"+assegurarHTML((caminho=="/" ? "" : caminho)+"/"+nome)+"'>"+
+		"<div id='arvore'></div>"+
+		"<input type='submit' id='submit' style='display:none'>"+
+		"<p><span class='botao' onclick='mostrarJanela(false)'><img src='/imgs/voltar.png'> Cancelar</span> "+
+		"<span class='botao' onclick='get(\"submit\").click()'><img src='/imgs/enviar.png'> Salvar</span></p>"+
+		"</form>"
+		gerarSubArvore("", get("arvore"), arvore)
 	}, retorno: "json"})
 }

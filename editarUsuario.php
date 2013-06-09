@@ -14,7 +14,7 @@ conectar();
 validarLogin();
 
 if (!$_usuario)
-	die('Erro: usuário não encontrado');
+	morrerComErro('Usuário não encontrado');
 
 // Recebe os dados
 $nome = @$_POST['nome'];

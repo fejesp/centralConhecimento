@@ -148,12 +148,44 @@ var mostrarJanela = (function () {
 	}
 })()
 
-// Cria um novo elemento com a tag, a classe e o conteúdo desejado
-function criarTag(tag, conteudo, classe) {
-	conteudo = conteudo || ""
-	classe = classe || ""
-	var tag = document.createElement(tag)
-	tag.className = classe
-	tag.textContent = conteudo
-	return tag
+// Cria um novo elemento com a tag, conteúdo e atributos desejados
+// tag é uma string com o nome da tag. Opcionalmente, pode conter o nome da classe, ex: "span.botao"
+// conteudo é uma string, um nó ou uma array de string/nós
+// atributos é um objeto com os atributos do elemento, ex: {onclick: "alert('oi')"}
+function criarTag(tag, conteudo, atributos) {
+	var el, pos, i
+	
+	// Cria o elemento
+	pos = tag.indexOf(".")
+	if (pos == -1)
+		el = document.createElement(tag)
+	else {
+		el = document.createElement(tag.substr(0, pos))
+		el.className = tag.substr(pos+1)
+	}
+	
+	// Coloca o conteúdo
+	if (Array.isArray(conteudo))
+		for (i=0; i<conteudo.length; i++) {
+			if (typeof conteudo[i] == "object")
+				el.appendChild(conteudo[i])
+			else
+				el.appendChild(document.createTextNode(conteudo[i]))
+		}
+	else if (typeof conteudo == "object")
+		el.appendChild(conteudo[i])
+	else if (conteudo !== "" && conteudo !== undefined)
+		el.appendChild(document.createTextNode(conteudo))
+	
+	// Coloca os parâmetros
+	if (atributos)
+		for (i in atributos)
+			el.setAttribute(i, atributos[i])
+	
+	return el
+}
+
+// Transforma em HTML seguro
+function assegurarHTML(str) {
+	return str.replace(/</g, "&lt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;")
 }
