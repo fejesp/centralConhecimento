@@ -18,22 +18,29 @@ function menu(tipo, criador, evento) {
 		Menu.abrir(evento, [["<img src='/imgs/editar.png'> Editar item", function () {
 			if (tipo == "pasta")
 				redirecionar("editarPasta", caminho, nome)
+			else if (tipo == "post")
+				redirecionar("editarPost", caminho, nome)
 		}], ["<img src='/imgs/remover.png'> Remover item", function () {
-			if (tipo == "pasta" && confirm("Você tem certeza que deseja excluir a pasta "+nome+"\nTodo o seu conteúdo será excluído permanentemente!"))
+			if (tipo == "pasta" && confirm("Você tem certeza que deseja excluir a pasta "+nome+"?\nTodo o seu conteúdo será excluído permanentemente!"))
 				redirecionar("excluirPasta.php", caminho, nome)
+			else if (tipo == "post" && confirm("Você tem certeza que deseja excluir o post "+nome+"?\nTodo o seu conteúdo será excluído permanentemente!"))
+				redirecionar("excluirPost.php", caminho, nome)
 		}], ["<img src='/imgs/mover.png'> Mover item", function () {
-			abrirJanelaMover(caminho, nome)
+			abrirJanelaMover(tipo, caminho, nome)
 		}]])
 }
 
-// Cria uma nova pasta
 setBotao("criarPasta", function () {
 	redirecionar("editarPasta", caminho, "?criar")
 })
 
+setBotao("criarPost", function () {
+	redirecionar("editarPost", caminho, "?criar")
+})
+
 // Abre uma janela para escolher o novo local de um item
 // caminho é o local atual do item
-function abrirJanelaMover(caminho, nome) {
+function abrirJanelaMover(tipo, caminho, nome) {
 	mostrarJanela(true)
 	get("janela").innerHTML = "<p>Carregando</p>"
 	
@@ -110,8 +117,9 @@ function abrirJanelaMover(caminho, nome) {
 	
 	// Envia a requisição da árvore básica
 	Ajax({url: "/ajax.php?op=getArvoreInicial", dados: {caminho: caminho}, funcao: function (arvore) {
-		var janela = get("janela")
-		janela.innerHTML = "<form action='/moverPasta.php' method='post'>"+
+		var janela = get("janela"), action
+		action = tipo=="pasta" ? "moverPasta" : (tipo=="post" ? "moverPost" : "moverForm")
+		janela.innerHTML = "<form action='/"+action+".php' method='post'>"+
 		"<h2>Mover "+assegurarHTML(nome)+"</h2>"+
 		"<p>Selecione a nova localidade:</p>"+
 		"<input type='hidden' name='caminho' value='"+assegurarHTML((caminho=="/" ? "" : caminho)+"/"+nome)+"'>"+

@@ -49,10 +49,8 @@ function montarCaminho() {
 	if (!els.length)
 		return
 	el = els[0]
-	if (el.textContent == "/") {
-		el.textContent = ""
+	if (!el.textContent)
 		return
-	}
 	divisao = document.createElement("span")
 	divisao.className = "caminho-divisao"
 	partes = el.textContent.substr(1).split("/")
@@ -64,6 +62,8 @@ function montarCaminho() {
 	botao.onclick = gerarOnclick("")
 	el.appendChild(botao)
 	for (i=0; i<partes.length; i++) {
+		if (!partes[i])
+			continue
 		el.appendChild(divisao.cloneNode(false))
 		botao = document.createElement("span")
 		botao.className = "botao"

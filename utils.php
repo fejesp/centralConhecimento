@@ -103,7 +103,7 @@ function assegurarHTML($str) {
 // $tags é uma sequência de tags separada por espaço, cada tag pode ter uma classe associada após um ponto
 // Exemplo: echoTag('oi', 'div.painel strong') => '<div class="painel"><strong>oi</strong></p>'
 function imprimir($str, $tags='p') {
-	$tags = explode(' ', strtolower($tags));
+	$tags = explode(' ', $tags);
 	$str = assegurarHTML($str);
 	for ($i=count($tags)-1; $i>=0; $i--) {
 		$tag = $tags[$i];
@@ -172,7 +172,7 @@ function getCaminho($pasta) {
 // Exemplo: '/a/b/c' => '/a/b' => '/a' => '/' => '/'
 function getCaminhoAcima($caminho) {
 	if ($caminho == '/')
-		return '/';
+		return '';
 	$partes = explode('/', substr($caminho, 1));
 	array_pop($partes);
 	return '/' . implode('/', $partes);
@@ -180,23 +180,29 @@ function getCaminhoAcima($caminho) {
 
 // Interpreta um caminho, levando em conta a visibilidade das pastas
 // Se houver algum erro, a função irá retornar false (retorna true em caso de sucesso)
-// Em caso de sucesso, $dados irá conter id, visibilidade, criador, descricao e nome da última pasta
+// Em caso de sucesso, $dados irá conter todas as colunas do registro do item no banco de dados
 // Altera $caminho, deixando-o normalizado na forma "/a/b"
-function interpretarCaminho(&$caminho, &$dados) {
+// $tipo é 'pasta' ou 'post' e indica o tipo do item apontado pelo caminho
+function interpretarCaminho(&$caminho, &$dados, $tipo='pasta') {
 	$pastas = preg_split('@/@', $caminho, -1, PREG_SPLIT_NO_EMPTY);
 	$caminho = '/' . implode('/', $pastas);
 	
-	$dados = array('id' => 0, 'visibilidade' => 'publico', 'criador' => 0, 'descricao' => '', 'nome' => 'Diretório raiz');
-	if (!count($pastas))
-		// Diretório raiz
-		return true;
+	// Diretório raiz
+	if (!count($pastas)) {
+		if ($tipo == 'pasta') {
+			$dados = Query::query(true, NULL, 'SELECT * FROM pastas WHERE id=0 LIMIT 1');
+			return true;
+		} else
+			return false;
+	}
 	
 	// Percorre o caminho, verificando a permissão de acesso
-	for ($i=0; $i<count($pastas); $i++) {
+	$dados = array('id' => 0);
+	for ($i=0; $i<count($pastas)-1; $i++) {
 		// Carrega o id da próxima pasta
 		$pasta = $pastas[$i];
 		try {
-			$dados = Query::query(true, NULL, 'SELECT id, visibilidade, criador, descricao, nome FROM pastas WHERE nome=? AND pai=? LIMIT 1', $pasta, $dados['id']);
+			$dados = Query::query(true, NULL, 'SELECT id, visibilidade, criador FROM pastas WHERE nome=? AND pai=? LIMIT 1', $pasta, $dados['id']);
 		} catch (Exception $e) {
 			// Pasta não encontrada
 			return false;
@@ -206,6 +212,22 @@ function interpretarCaminho(&$caminho, &$dados) {
 		if (!verificarVisibilidade('pasta', $dados['id'], $dados['visibilidade'], $dados['criador']))
 			return false;
 	}
+	
+	// Pega o último item
+	$item = $pastas[count($pastas)-1];
+	try {
+		if ($tipo == 'pasta')
+			$dados = Query::query(true, NULL, 'SELECT * FROM pastas WHERE nome=? AND pai=? LIMIT 1', $item, $dados['id']);
+		else
+			$dados = Query::query(true, NULL, 'SELECT * FROM posts WHERE nome=? AND pasta=? LIMIT 1', $item, $dados['id']);
+	} catch (Exception $e) {
+		// Item não encontrado
+		return false;
+	}
+	
+	// Verifica se o item é visível para esse usuário
+	if (!verificarVisibilidade($tipo, $dados['id'], $dados['visibilidade'], $dados['criador']))
+		return false;
 	
 	return true;
 }
@@ -233,4 +255,43 @@ function KiB2str($num) {
 	if ($num < 1024000)
 		return round($num/1024) . ' MiB';
 	return round($num/1024/1024, 2) . ' GiB';
+}
+
+// Converte da data do banco de dados para um formato mais legível
+// Ex: "2013-06-09 12:39:27" => "Há 14 horas e 12 minutos"
+function data2str($data) {
+	// Calcula a diferença em segundos
+	$Y = substr($data, 0, 4);
+	$m = substr($data, 5, 2);
+	$d = substr($data, 8, 2);
+	$H = substr($data, 11, 2);
+	$i = substr($data, 14, 2);
+	$s = substr($data, 17, 2);
+	$diff = time()-mktime($H, $i, $s, $m, $d, $Y);
+	
+	// Calcula a diferença em várias unidades
+	$s = $diff;
+	$min = floor($s/60);
+	$h = floor($min/60);
+	$d = floor($h/24);
+	$m = floor($d/30.4375);
+	$a = floor($m/12);
+	$m %= 12;
+	$d %= 30;
+	$h %= 24;
+	$min %= 60;
+	$s %= 60;
+	
+	// Transforma num formato melhor
+	if ($a)
+		return 'há ' . ($a==1 ? 'um ano' : $a . ' anos') . ' e ' . ($m==1 ? 'um mês' : $m . ' meses');
+	if ($m)
+		return 'há ' . ($m==1 ? 'um mês' : $m . ' meses') . ' e ' . ($d==1 ? 'um dia' : $d . ' dias');
+	if ($d)
+		return 'há ' . ($d==1 ? 'um dia' : $d . ' dias') . ' e ' . ($h==1 ? 'uma hora' : $h . ' horas');
+	if ($h)
+		return 'há ' . ($h==1 ? 'uma hora' : $h . ' horas') . ' e ' . ($min==1 ? 'um minuto' : $min . ' minutos');
+	if ($min)
+		return 'há ' . ($min==1 ? 'um minuto' : $min . ' minutos') . ' e ' . ($s==1 ? 'um segundo' : $s . ' segundos');
+	return 'há ' . ($s==1 ? 'um segundo' : $s . ' segundos');
 }

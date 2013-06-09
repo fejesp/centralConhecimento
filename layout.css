@@ -89,11 +89,13 @@ div.conteudo:after {
 .subConteudo {
 	border:thin #CCC dashed;
 	padding:15px;
+	white-space:pre-wrap;
 }
 
 footer {
 	font-size:smaller;
 	text-align:right;
+	padding-bottom:30px;
 }
 
 .menuPrincipal {

@@ -15,7 +15,7 @@ validarLogin();
 
 // Interpreta o caminho da pasta
 $dados = NULL;
-$caminho = $_GET['caminho'];
+$caminho = @$_GET['caminho'];
 $sucesso = interpretarCaminho($caminho, $dados);
 if (!$sucesso || !$dados['id'])
 	morrerComErro('Pasta não encontrada');
