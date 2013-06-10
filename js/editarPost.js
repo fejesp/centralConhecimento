@@ -1,3 +1,12 @@
+// Guarda o elemento da lista sendo editado
+var _editando = null
+
+// Guarda o número de novos anexos
+var _numNovos = 0
+
+// Guarda o tamanho total dos novos anexos
+var _tamanhoNovos = 0
+
 // Envia o formulário
 setBotao("salvar", function () {
 	get("submit").click()
@@ -19,11 +28,15 @@ window.addEventListener("load", function () {
 
 // Volta para a pasta
 setBotao("voltar", function () {
-	window.location = "/pasta"+caminho
+	window.location = "/pasta"+_caminho
 })
 
 setBotao("adicionarAnexo", function () {
-	montarJanelaAnexo()
+	// Limita o número de anexos por envio
+	if (_numNovos >= _maxNum)
+		alert("O sistema só permite o upload de no máximo "+_maxNum+" anexos por vez\nSalve e edite o post para enviar o restante")
+	else
+		montarJanelaAnexo()
 })
 
 // Monta a janela de opções de anexo
@@ -38,7 +51,7 @@ function montarJanelaAnexo(visibilidade, selecionados) {
 		"<label for='anexo-usuario"+_usuarios[i].id+"'>"+assegurarHTML(_usuarios[i].nome)+"</label><br>"
 	
 	janela.innerHTML = (visibilidade ? "<h2>Editando anexo</h2>" : "<h2>Novo anexo</h2>")+
-	(visibilidade ? "" : "<p>Arquivo: <input type='file' id='anexo-file'></p>")+
+	(visibilidade ? "" : "<p>Arquivo: <input type='file' id='anexo-file'> (máx "+KiB2str(_maxCada)+")</p>")+
 	"<p class='rotuloEsquerdo'>Visibilidade: </p>"+
 	"<p class='opcoesDireita'>"+
 	"<input type='radio' name='anexo-visibilidade' id='anexo-publico' onchange='atualizarLista2()' checked> <label for='anexo-publico'>para qualquer um</label><br>"+
@@ -78,11 +91,23 @@ function menu(evento) {
 	Menu.abrir(evento, botoes)
 }
 
+// Permite baixa o anexo
+// Recebe a <div> do anexo clicado
+function baixarAnexo(el) {
+	var src = "/anexo"+_caminhoPost+"/"+el.querySelector("span.item-nome").textContent
+	document.body.appendChild(criarTag("iframe", "", {src: src, style: "display:none"}))
+}
+
 // Remove um anexo
 function removerAnexo(el) {
 	if (el.dataset.novo == "0") {
 		// Marca que foi removido
 		get("form").appendChild(criarTag("input", "", {type: "hidden", name: "removidos["+el.dataset.id+"]", value: "1"}))
+		if (_quotaLivre !== null)
+			_quotaLivre += Number(el.dataset.tamanho)
+	} else {
+		_numNovos--
+		_tamanhoNovos -= Number(el.dataset.tamanho)
 	}
 	
 	// Remove da lista
@@ -91,12 +116,21 @@ function removerAnexo(el) {
 
 // Coloca o novo anexo na lista
 function adicionarAnexo() {
-	var file, visibilidade, selecionados, els, i, anexos, id, info, div
+	var file, visibilidade, selecionados, els, i, anexos, id, info, div, tamanho
 	
-	// Pega os dados da janela
+	// Valida as restrições de número e tamanho
 	file = get("anexo-file")
 	if (!file.files.length)
 		return alert("Nenhum arquivo selecionado")
+	tamanho = file.files[0].size/1024
+	if (tamanho > _maxCada)
+		return alert("O arquivo selecionado é muito grande\nO tamanho máximo permitido por arquivo é de "+KiB2str(_maxCada)+"\nSelecione outro ou contate o administrador")
+	if (_tamanhoNovos+tamanho > _maxTotal-1024)
+		return alert("O sistema só permite enviar "+KiB2str(_maxTotal)+" de anexos por vez\nSalve e edite o post para enviar o restante")
+	if (_quotaLivre !== null && _tamanhoNovos+tamanho > _quotaLivre)
+		return alert("Você passou da sua cota de uso de espaço de "+KiB2str(_quota)+"\nContate o administrador para poder usar mais espaço")
+	
+	// Pega os dados da janela
 	visibilidade = get("anexo-publico").checked ? "publico" : (get("anexo-geral").checked ? "geral" : "seleto")
 	if (visibilidade == "seleto") {
 		selecionados = []
@@ -110,9 +144,9 @@ function adicionarAnexo() {
 	
 	// Coloca o item visualmente na lista
 	anexos = get("anexos")
-	div = criarTag("div", "", {class: "item item-anexo", oncontextmenu: "menu(event)", "data-novo": "1"})
+	div = criarTag("div", "", {class: "item item-anexo", oncontextmenu: "menu(event)", "data-novo": "1", "data-tamanho": tamanho})
 	div.innerHTML = "<span class='item-nome'>"+file.files[0].name+"</span>"+
-	"<span class='item-descricao'>"+KiB2str(file.files[0].size/1024)+
+	"<span class='item-descricao'>"+KiB2str(tamanho)+
 	"</span><span class='item-descricao'>"+visibilidade2str(visibilidade, selecionados)+"</span>"
 	anexos.appendChild(div)
 	
@@ -125,6 +159,8 @@ function adicionarAnexo() {
 	div.appendChild(criarTag("input", "", {type: "hidden", name: "infos["+id+"]", value: info}))
 	mostrarJanela(false)
 	get("janela").innerHTML = ""
+	_numNovos++
+	_tamanhoNovos += tamanho
 }
 
 // Retorna uma representação em string da visibilidade de um anexo
@@ -145,7 +181,6 @@ function visibilidade2str(visibilidade, selecionados) {
 
 // Abre a janela para editar um anexo
 // Recebe o elemento <div> dele na lista
-var _editando = null // Guarda o elemento da lista sendo editado
 function editarAnexo(el) {
 	var visibilidade, selecionados
 	

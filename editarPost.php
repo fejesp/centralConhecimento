@@ -90,6 +90,8 @@ try {
 	
 	// Trata os novos anexos
 	if (isset($_FILES['arquivos'])) {
+		$cotaUsada = Query::getValor('SELECT SUM(a.tamanho) FROM anexos AS a JOIN posts AS p ON a.post=p.id WHERE p.criador=?', $_usuario['id']);
+		$cotaLivre = $_usuario['usoMax']-$cotaUsada;
 		$nomes = $_FILES['arquivos']['name'];
 		$tmp_names = $_FILES['arquivos']['tmp_name'];
 		$erros = $_FILES['arquivos']['error'];
@@ -97,7 +99,13 @@ try {
 		$infos = $_POST['infos'];
 		foreach ($nomes as $idAnexo=>$nomeAnexo) {
 			if ($erros[$idAnexo])
-				morrerComErro('Falha no upload do arquivo ' . $nomeAnexo);
+				throw new ErrorException('Falha no upload do arquivo ' . $nomeAnexo);
+			
+			// Verifica se não passa da cota
+			$tamanho = round($tamanhos[$idAnexo]/1024);
+			$cotaLivre -= $tamanho;
+			if ($_usuario['usoMax'] && $cotaLivre < 0)
+				throw new ErrorException('O usuário não possui mais cota livre');
 			
 			// Insere no BD
 			$visibilidade = $infos[$idAnexo];
@@ -105,7 +113,7 @@ try {
 				$selecionados = json_decode(substr($visibilidade, 6));
 				$visibilidade = 'seleto';
 			}
-			new Query('INSERT INTO anexos VALUES (NULL, ?, ?, ?, ?)', $nomeAnexo, $dados['id'], $visibilidade, round($tamanhos[$idAnexo]/1024));
+			new Query('INSERT INTO anexos VALUES (NULL, ?, ?, ?, ?)', $nomeAnexo, $dados['id'], $visibilidade, $tamanho);
 			$id = Query::$conexao->insert_id;
 			if ($visibilidade == 'seleto')
 				for ($i=0; $i<count($selecionados); $i++)
@@ -127,8 +135,8 @@ try {
 	}
 	
 	// Tudo ok, volta para a página anterior
-	//redirecionar('post' . ($criar ? $caminho . '/' . $nome : $caminho));
+	redirecionar('post' . ($criar ? $caminho . '/' . $nome : $caminho));
 } catch (Exception $e) {
 	Query::$conexao->rollback();
-	morrerComErro('Falha ao gravar os dados: ' . $e);
+	morrerComErro('Falha ao gravar os dados: ' . $e->getMessage());
 }

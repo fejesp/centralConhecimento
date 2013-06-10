@@ -1,3 +1,5 @@
 ﻿usar links <a> na pasta (SEO)
 
-impor limites de quota (interface e servidor)
+impor limites de quota (servidor)
+
+revisar todos os textos de visibilidade deixando mais claro o sistema de visibilidades

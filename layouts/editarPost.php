@@ -11,18 +11,14 @@ if (!$sucesso) {
 }
 
 imprimir($criar ? 'Criar post' : 'Editar post', 'h2');
-gerarJSVar('caminho', $criar ? $caminho : getCaminhoAcima($caminho));
+gerarJSVar('_caminho', $criar ? $caminho : getCaminhoAcima($caminho));
+gerarJSVar('_caminhoPost', $caminho);
 	
 // Valida as permissões do usuário
 if (!$_usuario || (!$criar && !$_usuario['admin'] && $dados['criador'] != $_usuario['id'])) {
 	imprimir('Erro: o usuário atual não tem permissão para isso', 'p strong');
 	return;
 }
-
-// Informa as limitações de upload e espaço
-gerarJSVar('_maxNum', (int)ini_get('max_file_uploads'));
-gerarJSVar('_maxTotal', ini2KiB(ini_get('post_max_size')));
-gerarJSVar('_maxCada', ini2KiB(ini_get('upload_max_filesize')));
 
 // Trata os parâmetros para serem HTML seguro
 if ($criar) {
@@ -31,12 +27,23 @@ if ($criar) {
 	$dados['visibilidade'] = 'publico';
 	$dados['criador'] = $_usuario['id'];
 }
-gerarJSVar('_criador', $dados['criador']);
 $nomeHTML = assegurarHTML($dados['nome']);
 $conteudoHTML = assegurarHTML($dados['conteudo']);
 $radio1 = $dados['visibilidade']=='publico' ? ' checked' : '';
 $radio2 = $dados['visibilidade']=='geral' ? ' checked' : '';
 $radio3 = $dados['visibilidade']=='seleto' ? ' checked' : '';
+
+// Informa as limitações de upload e espaço
+gerarJSVar('_criador', $dados['criador']);
+gerarJSVar('_maxNum', (int)ini_get('max_file_uploads'));
+gerarJSVar('_maxTotal', ini2KiB(ini_get('post_max_size')));
+gerarJSVar('_maxCada', ini2KiB(ini_get('upload_max_filesize')));
+if ($_usuario['id'] == $dados['criador'] && $_usuario['usoMax']) {
+	$uso = Query::getValor('SELECT SUM(a.tamanho) FROM anexos AS a JOIN posts AS p ON a.post=p.id WHERE p.criador=?', $_usuario['id']);
+	gerarJSVar('_quotaLivre', $_usuario['usoMax']-$uso);
+} else
+	gerarJSVar('_quotaLivre', NULL);
+gerarJSVar('_quota', $_usuario['usoMax']);
 ?>
 <form method="post" action="/editarPost.php<?=$criar ? '?criar' : ''?>" enctype="multipart/form-data" id="form">
 <p><label for="nome">Nome:</label> <input size="30" name="nome" id="nome" required pattern="[^/]+" value="<?=$nomeHTML?>" autofocus></p>
@@ -90,7 +97,7 @@ $radio3 = $dados['visibilidade']=='seleto' ? ' checked' : '';
 				$info = 'seleto' . json_encode($idsSelecionados);
 			} else
 				$info = $visibilidade;
-			echo '<div class="item item-anexo" oncontextmenu="menu(event)" data-visibilidade="' . $info . '" data-novo="0" data-id="' . $anexo['id'] . '">';
+			echo '<div class="item item-anexo" oncontextmenu="menu(event)" data-visibilidade="' . $info . '" data-novo="0" data-id="' . $anexo['id'] . '" data-tamanho="' . $anexo['tamanho'] . '">';
 			imprimir($anexo['nome'], 'span.item-nome');
 			imprimir(KiB2str($anexo['tamanho']), 'span.item-descricao');
 			imprimir(visibilidade2str($anexo['visibilidade'], $nomesSelecionados), 'span.item-descricao');
