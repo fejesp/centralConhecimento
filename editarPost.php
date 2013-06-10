@@ -36,7 +36,10 @@ if (!preg_match('@^[^/]+$@', $nome))
 	morrerComErro('Nome inválido');
 
 // Salva os novos dados
+$novosAnexos = array();
+$anexosRemovidos = array();
 try {
+	// Salva/cria o post
 	Query::$conexao->autocommit(false);
 	if ($criar) {
 		new Query('INSERT INTO posts VALUES (NULL, ?, ?, ?, NOW(), ?, ?)', $dados['id'], $nome, $conteudo, $visibilidade, $_usuario['id']);
@@ -49,10 +52,54 @@ try {
 	for ($i=0; $i<count($selecionados); $i++)
 		if ((int)$selecionados[$i] != $dados['criador'])
 			new Query('INSERT INTO visibilidades VALUES ("post", ?, ?)', $dados['id'], (int)$selecionados[$i]);
+	
+	// Remove os anexos selecionados
+	if (isset($_POST['removidos']))
+		foreach ($_POST['removidos'] as $cada) {
+			new Query();
+			$anexosRemovidos[] = $cada; // TODO: parei aqui!!!
+		}
+	
+	// Trata os novos anexos
+	if (isset($_FILES['arquivos'])) {
+		$nomes = $_FILES['arquivos']['name'];
+		$tmp_names = $_FILES['arquivos']['tmp_name'];
+		$erros = $_FILES['arquivos']['error'];
+		$tamanhos = $_FILES['arquivos']['size'];
+		$infos = $_POST['infos'];
+		foreach ($nomes as $idAnexo=>$nome) {
+			if ($erros[$idAnexo])
+				morrerComErro('Falha no upload do arquivo ' . $nome);
+			
+			// Insere no BD
+			$visibilidade = $infos[$idAnexo];
+			if (substr($visibilidade, 0, 6) == 'seleto') {
+				$selecionados = json_decode(substr($visibilidade, 6));
+				$visibilidade = 'seleto';
+			}
+			new Query('INSERT INTO anexos VALUES (NULL, ?, ?, ?, ?)', $nome, $dados['id'], $visibilidade, round($tamanhos[$idAnexo]/1024));
+			$id = Query::$conexao->insert_id;
+			if ($visibilidade == 'seleto')
+				for ($i=0; $i<count($selecionados); $i++)
+					new Query('INSERT INTO visibilidades VALUES ("anexo", ?, ?)', $id, $selecionados[$i]);
+			
+			// Move para a pasta correta
+			$novosAnexos[] = array("arquivos/$id", "arquivos/$id/$nome");
+			mkdir("arquivos/$id");
+			move_uploaded_file($tmp_names[$idAnexo], "arquivos/$id/$nome");
+		}
+	}
+	
 	Query::$conexao->commit();
 	
 	// Tudo ok, volta para a página anterior
 	redirecionar('post' . ($criar ? $caminho . '/' . $nome : $caminho));
 } catch (Exception $e) {
-	morrerComErro('Falha ao gravar os dados, provavelmente já existe um post com esse nome');
+	// Elimina todos os novos anexos das pastas
+	foreach ($novosAnexos as $cada) {
+		unlink($cada[1]);
+		rmdir($cada[0]);
+	}
+	
+	morrerComErro('Falha ao gravar os dados: ' . $e);
 }

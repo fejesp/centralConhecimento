@@ -22,7 +22,7 @@ if ($dados['id']) {
 	else {
 		$selecionados = Query::query(false, 0, 'SELECT u.nome FROM usuarios AS u JOIN visibilidades AS v ON v.usuario=u.id WHERE v.tipoItem="pasta" AND v.item=?', $dados['id']);
 		if (count($selecionados))
-			imprimir('Pasta visível para somente para ' . implode(', ', $selecionados) . ' e o seu criador', 'p.detalhe');
+			imprimir('Pasta visível somente para ' . implode(', ', $selecionados) . ' e o seu criador', 'p.detalhe');
 		else
 			imprimir('Pasta visível para somente para o criador', 'p.detalhe');
 	}

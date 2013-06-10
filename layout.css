@@ -225,6 +225,11 @@ footer {
 	background-position:1% center;
 }
 
+.item-anexo {
+	background-image:url(/imgs/anexo.png);
+	background-position:1% center;
+}
+
 .item-nome {
 	font-weight:bold;
 	font-size:larger;

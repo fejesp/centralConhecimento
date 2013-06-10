@@ -247,7 +247,7 @@ function morrerComErro($erro) {
 // Transforma de número de KiB (int) para string
 function KiB2str($num) {
 	if ($num < 1000)
-		return "$num KiB";
+		return round($num) . ' KiB';
 	if ($num < 10240)
 		return round($num/1024, 2) . ' MiB';
 	if ($num < 102400)
@@ -294,4 +294,33 @@ function data2str($data) {
 	if ($min)
 		return 'há ' . ($min==1 ? 'um minuto' : $min . ' minutos') . ' e ' . ($s==1 ? 'um segundo' : $s . ' segundos');
 	return 'há ' . ($s==1 ? 'um segundo' : $s . ' segundos');
+}
+
+// Transforma do formato de bytes no php.ini em KiB
+// Exemplo: "123456" => 120; "2M" => 2048
+function ini2KiB($str) {
+	$fator = 1/1024;
+	if (strtoupper(substr($str, -1)) == 'K')
+		$fator = 1;
+	else if (strtoupper(substr($str, -1)) == 'M')
+		$fator = 1024;
+	else if (strtoupper(substr($str, -1)) == 'G')
+		$fator = 1024*1024;
+	if ($fator >= 1)
+		$str = substr($str, 0, -1);
+	$num = (int)$str;
+	return ceil($num*$fator);
+}
+
+// Exclui um anexo da árvore de arquivos
+// Recebe o $id (int) do anexo
+// Atenção: isso não irá remover o registro do anexo do banco de dados, somente use essa função após fazer isso
+function unlinkAnexo($id) {
+	$dir = "arquivos/$id";
+	if (file_exists($dir)) {
+		foreach (scandir($dir) as $cada)
+			if ($cada != '.' && $cada != '..')
+				unlink($cada);
+		rmdir($dir);
+	}
 }

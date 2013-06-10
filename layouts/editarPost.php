@@ -19,6 +19,11 @@ if (!$_usuario || (!$criar && !$_usuario['admin'] && $dados['criador'] != $_usua
 	return;
 }
 
+// Informa as limitações de upload e espaço
+gerarJSVar('_maxNum', (int)ini_get('max_file_uploads'));
+gerarJSVar('_maxTotal', ini2KiB(ini_get('post_max_size')));
+gerarJSVar('_maxCada', ini2KiB(ini_get('upload_max_filesize')));
+
 // Trata os parâmetros para serem HTML seguro
 if ($criar) {
 	$dados['nome'] = '';
@@ -26,13 +31,14 @@ if ($criar) {
 	$dados['visibilidade'] = 'publico';
 	$dados['criador'] = $_usuario['id'];
 }
+gerarJSVar('_criador', $dados['criador']);
 $nomeHTML = assegurarHTML($dados['nome']);
 $conteudoHTML = assegurarHTML($dados['conteudo']);
 $radio1 = $dados['visibilidade']=='publico' ? ' checked' : '';
 $radio2 = $dados['visibilidade']=='geral' ? ' checked' : '';
 $radio3 = $dados['visibilidade']=='seleto' ? ' checked' : '';
 ?>
-<form method="post" action="/editarPost.php<?=$criar ? '?criar' : ''?>">
+<form method="post" action="/editarPost.php<?=$criar ? '?criar' : ''?>" enctype="multipart/form-data" id="form">
 <p><label for="nome">Nome:</label> <input size="30" name="nome" id="nome" required pattern="[^/]+" value="<?=$nomeHTML?>" autofocus></p>
 <p><label for="conteudo">Conteúdo:</label><br>
 <textarea name="conteudo" id="conteudo"><?=$conteudoHTML?></textarea></p>
@@ -47,6 +53,7 @@ $radio3 = $dados['visibilidade']=='seleto' ? ' checked' : '';
 	<?php
 	// Imprime uma lista dos usuários
 	$usuarios = Query::query(false, NULL, 'SELECT id, nome FROM usuarios ORDER BY nome');
+	gerarJSVar('_usuarios', $usuarios);
 	$selecionados = $criar ? array() : Query::query(false, 0, 'SELECT usuario FROM visibilidades WHERE tipoItem="post" AND item=?', $dados['id']);
 	for ($i=0; $i<count($usuarios); $i++) {
 		$usuario = $usuarios[$i];
@@ -64,6 +71,45 @@ $radio3 = $dados['visibilidade']=='seleto' ? ' checked' : '';
 </div>
 <div class="clear"></div>
 <input type="hidden" name="caminho" value="<?=assegurarHTML($caminho)?>">
+<h2>Anexos</h2>
+<div class="acoes"><span class="botao" id="adicionarAnexo"><img src="/imgs/adicionar.png"> Adicionar anexo</span></div>
+<div class="listagem" id="anexos">
+	<?php
+	if (!$criar) {
+		// Carrega os anexos
+		$anexos = Query::query(false, NULL, 'SELECT id, nome, visibilidade, tamanho FROM anexos WHERE post=? ORDER BY nome', $dados['id']);
+		foreach ($anexos as $anexo) {
+			$visibilidade = $anexo['visibilidade'];
+			$idsSelecionados = array();
+			$nomesSelecionados = array();
+			if ($visibilidade == 'seleto') {
+				foreach (Query::query(false, NULL, 'SELECT u.id AS id, u.nome AS nome FROM usuarios AS u JOIN visibilidades AS v ON v.usuario=u.id WHERE v.tipoItem="anexo" AND v.item=?', $anexo['id']) as $cada) {
+					$idsSelecionados[] = $cada['id'];
+					$nomesSelecionados[] = $cada['nome'];
+				}
+				$info = 'seleto' . json_encode($idsSelecionados);
+			} else
+				$info = $visibilidade;
+			echo '<div class="item item-anexo" oncontextmenu="menu(event)" data-visibilidade="' . $info . '" data-novo="0" data-id="' . $anexo['id'] . '">';
+			imprimir($anexo['nome'], 'span.item-nome');
+			imprimir(KiB2str($anexo['tamanho']), 'span.item-descricao');
+			imprimir(visibilidade2str($anexo['visibilidade'], $nomesSelecionados), 'span.item-descricao');
+			echo '</div>';
+		}
+	}
+	
+	function visibilidade2str($visibilidade, $selecionados) {
+		if ($visibilidade == 'publico')
+			return 'Visível publicamente';
+		else if ($dados['visibilidade'] == 'geral')
+			return 'Visível para todos os usuários logados';
+		else if (count($selecionados))
+			return 'Visível para somente para ' . implode(', ', $selecionados) . ' e o criador';
+		else
+			return 'Visível somente para o criador';
+	}
+	?>
+</div>
 <input type="submit" style="display:none" id="submit">
 <span class="botao" id="voltar"><img src="/imgs/voltar.png"> Voltar</span>
 <span class="botao" id="salvar"><img src="/imgs/enviar.png"> <?=$criar ? 'Criar' : 'Salvar'?></span>

@@ -189,3 +189,24 @@ function criarTag(tag, conteudo, atributos) {
 function assegurarHTML(str) {
 	return str.replace(/</g, "&lt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;")
 }
+
+// Se comporta como o round do PHP
+function round(num, casas) {
+	var passo
+	casas = casas || 0
+	passo = Math.pow(10, casas)
+	return Math.round(num*passo)/passo
+}
+
+// Transforma de número de KiB (int) para string
+function KiB2str(num) {
+	if (num < 1000)
+		return round(num)+" KiB"
+	if (num < 10240)
+		return round(num/1024, 2)+" MiB"
+	if (num < 102400)
+		return round(num/1024, 1)+" MiB"
+	if (num < 1024000)
+		return round(num/1024)+" MiB"
+	return round(num/(1024*1024), 2)+" GiB"
+}
