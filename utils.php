@@ -182,7 +182,7 @@ function getCaminhoAcima($caminho) {
 // Se houver algum erro, a função irá retornar false (retorna true em caso de sucesso)
 // Em caso de sucesso, $dados irá conter todas as colunas do registro do item no banco de dados
 // Altera $caminho, deixando-o normalizado na forma "/a/b"
-// $tipo é 'pasta' ou 'post' e indica o tipo do item apontado pelo caminho
+// $tipo é 'pasta', 'post' ou 'anexo' e indica o tipo do item apontado pelo caminho
 function interpretarCaminho(&$caminho, &$dados, $tipo='pasta') {
 	$pastas = preg_split('@/@', $caminho, -1, PREG_SPLIT_NO_EMPTY);
 	$caminho = '/' . implode('/', $pastas);
@@ -198,7 +198,8 @@ function interpretarCaminho(&$caminho, &$dados, $tipo='pasta') {
 	
 	// Percorre o caminho, verificando a permissão de acesso
 	$dados = array('id' => 0);
-	for ($i=0; $i<count($pastas)-1; $i++) {
+	$max = $tipo=='anexo' ? count($pastas)-2 : count($pastas)-1;
+	for ($i=0; $i<$max; $i++) {
 		// Carrega o id da próxima pasta
 		$pasta = $pastas[$i];
 		try {
@@ -214,7 +215,7 @@ function interpretarCaminho(&$caminho, &$dados, $tipo='pasta') {
 	}
 	
 	// Pega o último item
-	$item = $pastas[count($pastas)-1];
+	$item = $pastas[$max];
 	try {
 		if ($tipo == 'pasta')
 			$dados = Query::query(true, NULL, 'SELECT * FROM pastas WHERE nome=? AND pai=? LIMIT 1', $item, $dados['id']);
@@ -226,8 +227,16 @@ function interpretarCaminho(&$caminho, &$dados, $tipo='pasta') {
 	}
 	
 	// Verifica se o item é visível para esse usuário
-	if (!verificarVisibilidade($tipo, $dados['id'], $dados['visibilidade'], $dados['criador']))
+	if (!verificarVisibilidade($tipo=='anexo' ? 'post' : $tipo, $dados['id'], $dados['visibilidade'], $dados['criador']))
 		return false;
+	
+	// Verifica o anexo finalmente
+	if ($tipo == 'anexo') {
+		$criador = $dados['criador'];
+		$dados = Query::query(true, NULL, 'SELECT * FROM anexos WHERE nome=? AND post=? LIMIT 1', $pastas[$max+1], $dados['id']);
+		if (!verificarVisibilidade('anexo', $dados['id'], $dados['visibilidade'], $criador))
+			return false;
+	}
 	
 	return true;
 }
@@ -320,7 +329,7 @@ function unlinkAnexo($id) {
 	if (file_exists($dir)) {
 		foreach (scandir($dir) as $cada)
 			if ($cada != '.' && $cada != '..')
-				unlink($cada);
+				unlink("$dir/$cada");
 		rmdir($dir);
 	}
 }

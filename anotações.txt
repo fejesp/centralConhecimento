@@ -1,1 +1,3 @@
 ﻿usar links <a> na pasta (SEO)
+
+impor limites de quota (interface e servidor)

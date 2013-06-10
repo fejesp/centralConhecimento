@@ -101,7 +101,7 @@ $radio3 = $dados['visibilidade']=='seleto' ? ' checked' : '';
 	function visibilidade2str($visibilidade, $selecionados) {
 		if ($visibilidade == 'publico')
 			return 'Visível publicamente';
-		else if ($dados['visibilidade'] == 'geral')
+		else if ($visibilidade == 'geral')
 			return 'Visível para todos os usuários logados';
 		else if (count($selecionados))
 			return 'Visível para somente para ' . implode(', ', $selecionados) . ' e o criador';

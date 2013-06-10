@@ -54,7 +54,7 @@ imprimir($dados['conteudo'], 'div.subConteudo');
 	$anexos = Query::query(false, NULL, 'SELECT id, nome, visibilidade, tamanho FROM anexos WHERE post=? ORDER BY nome', $dados['id']);
 	foreach ($anexos as $anexo) {
 		if (verificarVisibilidade('anexo', $anexo['id'], $anexo['visibilidade'], $dados['criador'])) {
-			echo '<div class="item item-anexo">';
+			echo '<div class="item item-anexo" onclick="ir(this)">';
 			imprimir($anexo['nome'], 'span.item-nome');
 			imprimir(KiB2str($anexo['tamanho']), 'span.item-descricao');
 			echo '</div>';
