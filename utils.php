@@ -215,6 +215,8 @@ function interpretarCaminho(&$caminho, &$dados, $tipo='pasta') {
 	}
 	
 	// Pega o último item
+	if ($max<0)
+		return false;
 	$item = $pastas[$max];
 	try {
 		if ($tipo == 'pasta')
