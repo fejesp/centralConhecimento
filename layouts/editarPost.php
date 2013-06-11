@@ -4,13 +4,12 @@ $dados = NULL;
 $caminho = $_GET['q'];
 $criar = isset($_GET['criar']);
 $sucesso = interpretarCaminho($caminho, $dados, $criar ? 'pasta' : 'post');
+imprimir($criar ? 'Criar postagem' : 'Editar postagem', 'h2');
 if (!$sucesso) {
-	imprimir($criar ? 'Criar post' : 'Editar post', 'h2');
 	imprimir('Erro: post não encontrado', 'p strong');
 	return;
 }
 
-imprimir($criar ? 'Criar post' : 'Editar post', 'h2');
 gerarJSVar('_caminho', $criar ? $caminho : getCaminhoAcima($caminho));
 gerarJSVar('_caminhoPost', $caminho);
 	

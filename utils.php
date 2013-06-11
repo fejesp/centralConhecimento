@@ -64,36 +64,6 @@ function verificarVisibilidade($tipo, $id, $visibilidade, $criador) {
 	return false;
 }
 
-// Verifica se uma dada pasta é visível para o usuário atual
-// $pasta é o id da pasta a ser verificada (ela deve existir)
-// TODO: não utilizada, remover!
-function pastaEVisivel($pasta) {
-	global $_usuario;
-	if ($_usuario && $_usuario['admin'])
-		// Para um administrador, tudo é visível
-		return true;
-	if (!$pasta)
-		// Pasta raiz sempre é visível
-		return true;
-	$dados = Query::query(true, NULL, 'SELECT visibilidade, criador, pai FROM pastas WHERE id=? LIMIT 1', $pasta);
-	if ($_usuario && $dados['criador'] == $_usuario['id'])
-		// A pasta é visível para seu criador
-		return pastaEVisivel($dados['pai']);
-	if ($dados['visibilidade'] == 'publico')
-		// Visibilidade pública
-		return pastaEVisivel($dados['pai']);
-	if (!$_usuario)
-		// Não é público e o usuário não está logado
-		return false;
-	if ($dados['visibilidade'] == 'geral')
-		// Todos os usuários podem ver
-		return pastaEVisivel($dados['pai']);
-	if ($dados['visibilidade'] == 'seleto' && Query::existe('SELECT 1 FROM visibilidades WHERE tipoItem="pasta" AND item=? AND usuario=? LIMIT 1', $pasta, $_usuario['id']))
-		// Somente os usuários selecionados podem ver
-		return pastaEVisivel($dados['pai']);
-	return false;
-}
-
 // Transforma em HTML seguro
 function assegurarHTML($str) {
 	return htmlentities($str, ENT_QUOTES, 'UTF-8');
@@ -182,7 +152,7 @@ function getCaminhoAcima($caminho) {
 // Se houver algum erro, a função irá retornar false (retorna true em caso de sucesso)
 // Em caso de sucesso, $dados irá conter todas as colunas do registro do item no banco de dados
 // Altera $caminho, deixando-o normalizado na forma "/a/b"
-// $tipo é 'pasta', 'post' ou 'anexo' e indica o tipo do item apontado pelo caminho
+// $tipo é 'pasta', 'post', 'anexo' ou 'form' e indica o tipo do item apontado pelo caminho
 function interpretarCaminho(&$caminho, &$dados, $tipo='pasta') {
 	$pastas = preg_split('@/@', $caminho, -1, PREG_SPLIT_NO_EMPTY);
 	$caminho = '/' . implode('/', $pastas);
@@ -221,6 +191,8 @@ function interpretarCaminho(&$caminho, &$dados, $tipo='pasta') {
 	try {
 		if ($tipo == 'pasta')
 			$dados = Query::query(true, NULL, 'SELECT * FROM pastas WHERE nome=? AND pai=? LIMIT 1', $item, $dados['id']);
+		else if ($tipo == 'form')
+			$dados = Query::query(true, NULL, 'SELECT * FROM forms WHERE nome=? AND pasta=? LIMIT 1', $item, $dados['id']);
 		else
 			$dados = Query::query(true, NULL, 'SELECT * FROM posts WHERE nome=? AND pasta=? LIMIT 1', $item, $dados['id']);
 	} catch (Exception $e) {
@@ -229,7 +201,7 @@ function interpretarCaminho(&$caminho, &$dados, $tipo='pasta') {
 	}
 	
 	// Verifica se o item é visível para esse usuário
-	if (!verificarVisibilidade($tipo=='anexo' ? 'post' : $tipo, $dados['id'], $dados['visibilidade'], $dados['criador']))
+	if (!verificarVisibilidade($tipo=='anexo' ? 'post' : $tipo, $dados['id'], $tipo=='form' ? $dados['ativo'] : $dados['visibilidade'], $dados['criador']))
 		return false;
 	
 	// Verifica o anexo finalmente

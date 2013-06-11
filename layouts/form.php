@@ -11,7 +11,7 @@
 </div>
 
 <div class="clear"></div>
-<form class="subConteudo form-inativo">
+<form class="">
 	<p>Parágrafo fixo</p>
 	<p>Texto simples: <input></p>
 	<p>Texto grande:<br><textarea></textarea></p>

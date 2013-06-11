@@ -88,7 +88,24 @@ if ($op == 'getArvoreInicial') {
 	if ($id != $_usuario['id'])
 		new Query('UPDATE usuarios SET senha=? WHERE id=? LIMIT 1', md5($senha), $id);
 	retornar($senha);
-}
+} else if ($op == 'ativarForm') {
+	$caminho = $_GET['caminho'];
+	$dados = NULL;
+	$sucesso = interpretarCaminho($caminho, $dados, 'form');
+	if ($sucesso && $_usuario && ($_usuario['admin'] || $dados['criador']==$_usuario['id'])) {
+		new Query('UPDATE forms SET ativo=1 WHERE id=? LIMIT 1', $dados['id']);
+	} else
+		retornarErro();
+} else if ($op == 'desativarForm') {
+	$caminho = $_GET['caminho'];
+	$dados = NULL;
+	$sucesso = interpretarCaminho($caminho, $dados, 'form');
+	if ($sucesso && $_usuario && ($_usuario['admin'] || $dados['criador']==$_usuario['id'])) {
+		new Query('UPDATE forms SET ativo=0 WHERE id=? LIMIT 1', $dados['id']);
+	} else
+		retornarErro();
+} else
+	retornarErro();
 
 // Gera um erro com o status 400
 function retornarErro() {

@@ -13,21 +13,45 @@ function ir(el, tipo) {
 
 // Abre o menu de editar e remover
 function menu(tipo, criador, evento) {
-	var nome = evento.currentTarget.querySelector("span").textContent
-	if (admin || usuario == criador)
-		Menu.abrir(evento, [["<img src='/imgs/editar.png'> Editar item", function () {
+	var el, nome, botoes
+	el = evento.currentTarget
+	nome = el.querySelector("span").textContent
+	if (admin || usuario == criador) {
+		botoes = [["<img src='/imgs/editar.png'> Editar item", function () {
 			if (tipo == "pasta")
 				redirecionar("editarPasta", caminho, nome)
 			else if (tipo == "post")
 				redirecionar("editarPost", caminho, nome)
+			else if (tipo == "form")
+				redirecionar("editarForm", caminho, nome)
 		}], ["<img src='/imgs/remover.png'> Remover item", function () {
 			if (tipo == "pasta" && confirm("Você tem certeza que deseja excluir a pasta "+nome+"?\nTodo o seu conteúdo será excluído permanentemente!"))
 				redirecionar("excluirPasta.php", caminho, nome)
 			else if (tipo == "post" && confirm("Você tem certeza que deseja excluir o post "+nome+"?\nTodo o seu conteúdo será excluído permanentemente!"))
 				redirecionar("excluirPost.php", caminho, nome)
+			else if (tipo == "form" && confirm("Você tem certeza que deseja excluir o form "+nome+"?\nTalvez seja melhor desativa-lo"))
+				redirecionar("excluirForm.php", caminho, nome)
 		}], ["<img src='/imgs/mover.png'> Mover item", function () {
 			abrirJanelaMover(tipo, caminho, nome)
-		}]])
+		}]]
+		
+		// Adiciona os botões de ativar/desativar formulário
+		if (tipo == "form") {
+			if (el.classList.contains("inativo"))
+				botoes.push(["<img src='/imgs/ativar.png'> Reativar formulário", function () {
+					Ajax({url: "/ajax.php?op=ativarForm", dados: {caminho: caminho+"/"+nome}, funcao: function () {
+						el.classList.remove("inativo")
+					}})
+				}])
+			else
+				botoes.push(["<img src='/imgs/desativar.png'> Desativar formulário", function () {
+					Ajax({url: "/ajax.php?op=desativarForm", dados: {caminho: caminho+"/"+nome}, funcao: function () {
+						el.classList.add("inativo")
+					}})
+				}])
+		}
+		Menu.abrir(evento, botoes)
+	}
 }
 
 setBotao("criarPasta", function () {
@@ -36,6 +60,10 @@ setBotao("criarPasta", function () {
 
 setBotao("criarPost", function () {
 	redirecionar("editarPost", caminho, "?criar")
+})
+
+setBotao("criarForm", function () {
+	redirecionar("editarForm", caminho, "?criar")
 })
 
 // Abre uma janela para escolher o novo local de um item

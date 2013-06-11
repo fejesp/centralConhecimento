@@ -1,0 +1,21 @@
+.campos {
+	padding:10px;
+}
+
+.campo:last-child {
+	border-bottom:thin #888 solid;
+}
+
+.campo {
+	border-top:thin #888 solid;
+}
+
+.campo-acoes {
+	float:right;
+	font-size:smaller;
+	padding:5px;
+}
+
+.campo-acoes img {
+	width:12px;
+}

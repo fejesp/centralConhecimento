@@ -126,8 +126,7 @@ COMMENT = 'Grava as permissões dos itens com visibilidade seleta';
 -- -----------------------------------------------------
 CREATE  TABLE IF NOT EXISTS `central`.`tags` (
   `id` INT NOT NULL AUTO_INCREMENT COMMENT 'Identificação interna' ,
-  `nome` VARCHAR(50) NOT NULL COMMENT 'Nome da tag' ,
-  `descricao` VARCHAR(200) NOT NULL COMMENT 'Pequena descrição do que ela representa' ,
+  `nome` VARCHAR(200) NOT NULL COMMENT 'Nome da tag' ,
   PRIMARY KEY (`id`) ,
   UNIQUE INDEX `nome_UNIQUE` (`nome` ASC) )
 ENGINE = InnoDB
@@ -164,14 +163,15 @@ CREATE  TABLE IF NOT EXISTS `central`.`forms` (
   `id` INT NOT NULL AUTO_INCREMENT COMMENT 'Identificação interna' ,
   `pasta` INT NOT NULL COMMENT 'Referencia a pasta na qual o formulário irá criar postagens' ,
   `nome` VARCHAR(200) NOT NULL COMMENT 'Nome do formulário' ,
-  `conteudo` TEXT NOT NULL COMMENT 'Armazena a definição dos campos (formato a definir)' ,
+  `descricao` TEXT NOT NULL COMMENT 'Descrição do formulário' ,
+  `conteudo` TEXT NOT NULL COMMENT 'Armazena a definição dos campos em JSON' ,
   `data` DATETIME NOT NULL ,
   `ativo` TINYINT(1) NOT NULL COMMENT 'Indica se o formulário está aceitando submissões' ,
   `criador` INT NOT NULL COMMENT 'Referencia o usuário que criou o formulário' ,
   PRIMARY KEY (`id`) ,
   INDEX `formularios_pasta` (`pasta` ASC) ,
   INDEX `formularios_criador` (`criador` ASC) ,
-  UNIQUE INDEX `forms_unico` (`pasta` ASC, `nome` ASC) ,
+  UNIQUE INDEX `forms_unico` (`nome` ASC, `pasta` ASC) ,
   CONSTRAINT `formularios_pasta`
     FOREIGN KEY (`pasta` )
     REFERENCES `central`.`pastas` (`id` )

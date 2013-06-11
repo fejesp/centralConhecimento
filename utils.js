@@ -173,7 +173,7 @@ function criarTag(tag, conteudo, atributos) {
 				el.appendChild(document.createTextNode(conteudo[i]))
 		}
 	else if (typeof conteudo == "object")
-		el.appendChild(conteudo[i])
+		el.appendChild(conteudo)
 	else if (conteudo !== "" && conteudo !== undefined)
 		el.appendChild(document.createTextNode(conteudo))
 	

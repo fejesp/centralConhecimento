@@ -65,7 +65,7 @@ for ($i=0; $i<count($posts); $i++)
 // Carrega os forms
 $forms = Query::query(false, NULL, 'SELECT "form" AS tipo, id, nome, data, ativo, criador FROM forms WHERE pasta=? ORDER BY nome', $dados['id']);
 for ($i=0; $i<count($forms); $i++)
-	if (verificarVisibilidade('form', $posts[$i]['id'], $posts[$i]['ativo'], $posts[$i]['criador']))
+	if (verificarVisibilidade('form', $forms[$i]['id'], $forms[$i]['ativo'], $forms[$i]['criador']))
 		$subitens[] = $forms[$i];
 
 // Imprime cada item
@@ -84,7 +84,7 @@ for ($i=0; $i<count($subitens); $i++) {
 		imprimir('Postado ' . data2str($subitem['data']), 'span.item-descricao');
 		echo '</div>';
 	} else if ($subitem['tipo'] == 'form') {
-		echo "<div class='item item-form'" . ($subitem['ativo'] ? '' : ' inativo') . " onclick='ir(this, \"form\")' oncontextmenu='menu(\"form\", $itemCriador, event)'>";
+		echo "<div class='item item-form" . ($subitem['ativo'] ? '' : ' inativo') . "' onclick='ir(this, \"form\")' oncontextmenu='menu(\"form\", $itemCriador, event)'>";
 		imprimir($subitem['nome'], 'span.item-nome');
 		imprimir('Criado ' . data2str($subitem['data']), 'span.item-descricao');
 		echo '</div>';
