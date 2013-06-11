@@ -34,9 +34,11 @@ function adicionarCampo(tipo) {
 	div.appendChild(criarTag("p", titulo))
 	div.appendChild(p = criarTag("p"))
 	id = String(Math.random())
-	p.innerHTML = "Título da questão: <input size='40' name='nomes["+id+"]' required> "+
+	p.innerHTML = "Título da questão: <input size='30' name='nomes["+id+"]' required> "+
 	"<input type='checkbox' id='campo"+id+"' name='obrigatorio["+id+"]'> <label for='campo"+id+"'>Preenchimento obrigatório</label>"+
 	"<input type='hidden' name='campos[]' value='"+id+":"+tipo+"'>"
+	div.appendChild(p = criarTag("p"))
+	p.innerHTML = "Texto de ajuda: <input size='40' name='ajudas["+id+"]'>"
 	if (tipo == "input")
 		titulo.textContent = "Texto"
 	else if (tipo == "textarea")

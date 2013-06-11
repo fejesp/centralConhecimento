@@ -8,6 +8,4 @@ colocar descrição nos campos de forms
 
 mostrar visibilidade dos itens na listagem da pasta
 
-aceitar anexos nos forms
-
 sistema de busca

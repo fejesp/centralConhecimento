@@ -35,18 +35,23 @@ if ($_usuario && ($_usuario['admin'] || $dados['criador'] == $_usuario['id'])) {
 	echo '</div>';
 }
 
+// Informa as limitações de upload e espaço
+gerarJSVar('_maxNum', (int)ini_get('max_file_uploads'));
+gerarJSVar('_maxTotal', ini2KiB(ini_get('post_max_size')));
+gerarJSVar('_maxCada', ini2KiB(ini_get('upload_max_filesize')));
+
 // Mostra o conteúdo
 imprimir('', 'div.clear');
 imprimir($dados['descricao'], 'div.descricaoForm');
 
 // Monta os campos iniciais do formulário (identificação do post e do usuário)
-echo '<form' . ($dados['ativo'] ? '' : ' class="inativo"') . ' action="/form.php" method="post">';
+echo '<form' . ($dados['ativo'] ? '' : ' class="inativo"') . ' action="/form.php" method="post" enctype="multipart/form-data">';
 if (!$_usuario)
 	echo '<p>Se você possui cadastro no sistema, por favor faça o login</p>
 	<p>Se não, informe seu email e sua empresa júnior<br>
 	Email do responsável: <input size="30" type="email" name="email" required><br>
 	Nome da Empresa Júnior: <input name="ej" required></p>';
-echo '<p>Nome da postagem:<br><input size="30" name="nome" required pattern="[^/]+"></p>';
+echo '<p><strong>Nome da postagem</strong>:<br><input size="30" name="nome" required pattern="[^/]+"></p>';
 echo '<input type="hidden" name="caminho" value="' . assegurarHTML($caminho) . '">';
 echo '<input type="hidden" name="data" value="' . $dados['data'] . '">';
 
@@ -54,17 +59,18 @@ echo '<input type="hidden" name="data" value="' . $dados['data'] . '">';
 foreach (json_decode($dados['conteudo'], true) as $i=>$campo) {
 	$tipoCampo = $campo['tipo'];
 	$nomeHTML = assegurarHTML($campo['nome']);
+	$ajudaHTML = assegurarHTML($campo['ajuda']);
 	$obrigatorio = $campo['obrigatorio'] ? ' required' : '';
 	// Imprime o HTML de cada tipo de campo
 	switch ($campo['tipo']) {
 	case 'input':
-		echo "<p>$nomeHTML:<br><input size='40'$obrigatorio name='campos[$i]'></p>";
+		echo "<p><strong>$nomeHTML</strong>:<br><input size='40'$obrigatorio name='campos[$i]'></p>";
 		break;
 	case 'textarea':
-		echo "<p>$nomeHTML:<br><textarea$obrigatorio name='campos[$i]'></textarea></p>";
+		echo "<p><strong>$nomeHTML</strong>:<br>$ajudaHTML<br><textarea$obrigatorio name='campos[$i]'></textarea></p>";
 		break;
 	case 'radio':
-		echo "<p>$nomeHTML:<br>";
+		echo "<p><strong>$nomeHTML</strong>:<br>";
 		foreach ($campo['valores'] as $valor) {
 			$idCampo = gerarSenha();
 			$valor = assegurarHTML($valor);
@@ -73,7 +79,7 @@ foreach (json_decode($dados['conteudo'], true) as $i=>$campo) {
 		echo '</p>';
 		break;
 	case 'checkbox':
-		echo "<p>$nomeHTML:<br>";
+		echo "<p><strong>$nomeHTML</strong>:<br>";
 		foreach ($campo['valores'] as $valor) {
 			$idCampo = gerarSenha();
 			$valor = assegurarHTML($valor);
@@ -84,6 +90,13 @@ foreach (json_decode($dados['conteudo'], true) as $i=>$campo) {
 	}
 }
 
+?>
+
+<h2>Anexos</h2>
+<div class="acoes"><span class="botao" id="adicionarAnexo"><img src="/imgs/adicionar.png"> Adicionar anexo</span></div>
+<div class="listagem" id="anexos"></div>
+
+<?php
 // Imprime o fim do HTML do form
 echo '<input type="submit" style="display:none" id="submit">
 <span class="botao" id="voltar"><img src="/imgs/voltar.png"> Voltar</span>

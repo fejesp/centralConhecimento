@@ -50,6 +50,12 @@ if ($_usuario) {
 // Imprime a listagem de sub-itens
 $subitens = array();
 
+// Carrega os forms
+$forms = Query::query(false, NULL, 'SELECT "form" AS tipo, id, nome, data, ativo, criador FROM forms WHERE pasta=? ORDER BY nome', $dados['id']);
+for ($i=0; $i<count($forms); $i++)
+	if (verificarVisibilidade('form', $forms[$i]['id'], $forms[$i]['ativo'], $forms[$i]['criador']))
+		$subitens[] = $forms[$i];
+
 // Carrega as subpastas
 $subpastas = Query::query(false, NULL, 'SELECT "pasta" AS tipo, id, nome, descricao, visibilidade, criador FROM pastas WHERE id!=0 AND pai=? ORDER BY nome', $dados['id']);
 for ($i=0; $i<count($subpastas); $i++)
@@ -61,12 +67,6 @@ $posts = Query::query(false, NULL, 'SELECT "post" AS tipo, id, nome, data, visib
 for ($i=0; $i<count($posts); $i++)
 	if (verificarVisibilidade('post', $posts[$i]['id'], $posts[$i]['visibilidade'], $posts[$i]['criador']))
 		$subitens[] = $posts[$i];
-
-// Carrega os forms
-$forms = Query::query(false, NULL, 'SELECT "form" AS tipo, id, nome, data, ativo, criador FROM forms WHERE pasta=? ORDER BY nome', $dados['id']);
-for ($i=0; $i<count($forms); $i++)
-	if (verificarVisibilidade('form', $forms[$i]['id'], $forms[$i]['ativo'], $forms[$i]['criador']))
-		$subitens[] = $forms[$i];
 
 // Imprime cada item
 echo '<div class="listagem" id="listagem">';

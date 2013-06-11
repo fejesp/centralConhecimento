@@ -43,7 +43,7 @@ if ($data != $dados['data'])
 	morrerComErro('O formulário foi alterado, por favor volte e responda o novo');
 
 // Monta o conteúdo do post
-$campos = $_POST['campos'];
+$campos = empty($_POST['campos']) ? array() : $_POST['campos'];
 $conteudo = array();
 foreach (json_decode($dados['conteudo'], true) as $i=>$campo) {
 	if (empty($campos[$i]))
@@ -59,13 +59,48 @@ foreach (json_decode($dados['conteudo'], true) as $i=>$campo) {
 $conteudo = implode("\n\n", $conteudo);
 
 // Salva no banco de dados
+Query::$conexao->autocommit(false);
+$novosAnexos = array();
 try {
 	// Cria o post
 	new Query('INSERT INTO posts VALUES (NULL, ?, ?, ?, NOW(), "seleto", ?)', $dados['pasta'], $nome, $conteudo, $criador);
 	$idPost = Query::$conexao->insert_id;
 	
+	// Trata os novos anexos
+	if (isset($_FILES['arquivos'])) {
+		$espacoLivre = $_config['espacoTotal']-Query::getValor('SELECT SUM(tamanho) FROM anexos');
+		$nomes = $_FILES['arquivos']['name'];
+		$tmp_names = $_FILES['arquivos']['tmp_name'];
+		$erros = $_FILES['arquivos']['error'];
+		$tamanhos = $_FILES['arquivos']['size'];
+		foreach ($nomes as $i=>$nomeAnexo) {
+			if ($erros[$i])
+				throw new ErrorException('Falha no upload do arquivo ' . $nomeAnexo);
+			
+			// Verifica se não passa da cota
+			$tamanho = round($tamanhos[$i]/1024);
+			$espacoLivre -= $tamanho;
+			if ($espacoLivre < 0)
+				throw new ErrorException('O sistema não possui mais espaço livre');
+			
+			// Insere no BD
+			new Query('INSERT INTO anexos VALUES (NULL, ?, ?, "publico", ?)', $nomeAnexo, $idPost, $tamanho);
+			
+			// Marca para mover depois
+			$novosAnexos[] = array(Query::$conexao->insert_id, $nomeAnexo, $tmp_names[$i]);
+		}
+	}
+	
+	// Torna efetivo as modificações
+	Query::$conexao->commit();
+	foreach ($novosAnexos as $cada) {
+		mkdir("arquivos/$cada[0]");
+		move_uploaded_file($cada[2], "arquivos/$cada[0]/$cada[1]");
+	}
+	
 	// Vai para a pasta
 	redirecionar('pasta' . getCaminhoAcima($caminho));
 } catch (Exception $e) {
+	Query::$conexao->rollback();
 	morrerComErro('Falha ao gravar os dados: ' . $e->getMessage());
 }
