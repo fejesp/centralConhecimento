@@ -76,12 +76,15 @@ for ($i=0; $i<count($subitens); $i++) {
 	if ($subitem['tipo'] == 'pasta') {
 		echo "<div class='item item-pasta' onclick='ir(this, \"pasta\")' oncontextmenu='menu(\"pasta\", $itemCriador, event)'>";
 		imprimir($subitem['nome'], 'span.item-nome');
-		imprimir($subitem['descricao'], 'span.item-descricao');
+		if ($subitem['descricao'])
+			imprimir($subitem['descricao'], 'span.item-descricao');
+		imprimir(visibilidade2str('pasta', $subitem['id'], $subitem['visibilidade']), 'span.item-visibilidade');
 		echo '</div>';
 	} else if ($subitem['tipo'] == 'post') {
 		echo "<div class='item item-post' onclick='ir(this, \"post\")' oncontextmenu='menu(\"post\", $itemCriador, event)'>";
 		imprimir($subitem['nome'], 'span.item-nome');
 		imprimir('Postado ' . data2str($subitem['data']), 'span.item-descricao');
+		imprimir(visibilidade2str('post', $subitem['id'], $subitem['visibilidade']), 'span.item-visibilidade');
 		echo '</div>';
 	} else if ($subitem['tipo'] == 'form') {
 		echo "<div class='item item-form" . ($subitem['ativo'] ? '' : ' inativo') . "' onclick='ir(this, \"form\")' oncontextmenu='menu(\"form\", $itemCriador, event)'>";
@@ -95,4 +98,18 @@ echo '</div>';
 // Diz que não tem nada
 if (!count($subitens))
 	imprimir('Pasta vazia');
+
+function visibilidade2str($tipo, $id, $visibilidade) {
+	if ($visibilidade == 'publico')
+		return 'Visível publicamente';
+	else if ($visibilidade == 'geral')
+		return 'Visível para todos os usuários logados';
+	else {
+		$selecionados = Query::query(false, 0, 'SELECT u.nome FROM usuarios AS u JOIN visibilidades AS v ON v.usuario=u.id WHERE v.tipoItem=? AND v.item=? ORDER BY u.nome', $tipo, $id);
+		if (count($selecionados))
+			return 'Visível para somente para ' . implode(', ', $selecionados) . ' e o criador';
+		else
+			return 'Visível somente para o criador';
+	}
+}
 ?>

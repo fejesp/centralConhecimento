@@ -251,3 +251,4 @@ INSERT INTO `central`.`usuarios` (`id`, `nome`, `email`, `senha`, `admin`, `ativ
 INSERT INTO `central`.`usuarios` (`id`, `nome`, `email`, `senha`, `admin`, `ativo`, `usoMax`, `cookie`) VALUES (2, 'Guilherme', '19gui94@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', 0, 1, 0, 'y');
 
 COMMIT;
+

@@ -127,7 +127,7 @@ foreach ($tags as $tag)
 			echo '<div class="item item-anexo" oncontextmenu="menu(event)" data-visibilidade="' . $info . '" data-novo="0" data-id="' . $anexo['id'] . '" data-tamanho="' . $anexo['tamanho'] . '">';
 			imprimir($anexo['nome'], 'span.item-nome');
 			imprimir(KiB2str($anexo['tamanho']), 'span.item-descricao');
-			imprimir(visibilidade2str($anexo['visibilidade'], $nomesSelecionados), 'span.item-descricao');
+			imprimir(visibilidade2str($anexo['visibilidade'], $nomesSelecionados), 'span.item-visibilidade');
 			echo '</div>';
 		}
 	}

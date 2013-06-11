@@ -147,7 +147,7 @@ function adicionarAnexo() {
 	div = criarTag("div", "", {class: "item item-anexo", oncontextmenu: "menu(event)", "data-novo": "1", "data-tamanho": tamanho})
 	div.innerHTML = "<span class='item-nome'>"+file.files[0].name+"</span>"+
 	"<span class='item-descricao'>"+KiB2str(tamanho)+
-	"</span><span class='item-descricao'>"+visibilidade2str(visibilidade, selecionados)+"</span>"
+	"</span><span class='item-visibilidade'>"+visibilidade2str(visibilidade, selecionados)+"</span>"
 	anexos.appendChild(div)
 	
 	// Coloca os dados no formulário

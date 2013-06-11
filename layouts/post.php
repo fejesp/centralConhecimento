@@ -63,8 +63,25 @@ foreach (Query::query(false, 0, 'SELECT t2.nome FROM tagsEmPosts AS t JOIN tags 
 			echo '<div class="item item-anexo" onclick="ir(this)">';
 			imprimir($anexo['nome'], 'span.item-nome');
 			imprimir(KiB2str($anexo['tamanho']), 'span.item-descricao');
+			imprimir(visibilidade2str('anexo', $anexo['id'], $anexo['visibilidade']), 'span.item-visibilidade');
 			echo '</div>';
 		}
 	}
 	?>
 </div>
+
+<?php
+function visibilidade2str($tipo, $id, $visibilidade) {
+	if ($visibilidade == 'publico')
+		return 'Visível publicamente';
+	else if ($visibilidade == 'geral')
+		return 'Visível para todos os usuários logados';
+	else {
+		$selecionados = Query::query(false, 0, 'SELECT u.nome FROM usuarios AS u JOIN visibilidades AS v ON v.usuario=u.id WHERE v.tipoItem=? AND v.item=? ORDER BY u.nome', $tipo, $id);
+		if (count($selecionados))
+			return 'Visível para somente para ' . implode(', ', $selecionados) . ' e o criador';
+		else
+			return 'Visível somente para o criador';
+	}
+}
+?>

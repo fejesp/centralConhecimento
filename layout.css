@@ -240,6 +240,17 @@ footer {
 	margin-left:20px;
 }
 
+.item-visibilidade {
+	visibility:hidden;
+	font-size:smaller;
+	margin-left:20px;
+	color:#888;
+}
+
+.item:hover .item-visibilidade {
+	visibility:visible;
+}
+
 /* Form */
 .rotuloEsquerdo {
 	float:left;
