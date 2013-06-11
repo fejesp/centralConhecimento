@@ -44,6 +44,12 @@ if ($_usuario['id'] == $dados['criador'] && $_usuario['usoMax']) {
 } else
 	gerarJSVar('_quotaLivre', NULL);
 gerarJSVar('_quota', $_usuario['usoMax']);
+
+// Carrega as tags
+if (!$criar)
+	$tags = Query::query(false, 0, 'SELECT t2.nome FROM tagsEmPosts AS t JOIN tags AS t2 ON t.tag=t2.id WHERE t.post=?', $dados['id']);
+else
+	$tags = array();
 ?>
 <form method="post" action="/editarPost.php<?=$criar ? '?criar' : ''?>" enctype="multipart/form-data" id="form">
 <p><label for="nome">Nome:</label> <input size="30" name="nome" id="nome" required pattern="[^/]+" value="<?=$nomeHTML?>" autofocus></p>
@@ -78,6 +84,28 @@ gerarJSVar('_quota', $_usuario['usoMax']);
 </div>
 <div class="clear"></div>
 <input type="hidden" name="caminho" value="<?=assegurarHTML($caminho)?>">
+
+<h2>Tags</h2>
+<div class="tags">
+<?php
+// Gera a nuvem de tags
+$nuvem = Query::query(false, NULL, 'SELECT t.nome, COUNT(*) AS num FROM tags AS t JOIN tagsEmPosts AS tEP ON tEP.tag=t.id GROUP BY t.id HAVING COUNT(*)>0 ORDER BY COUNT(*) DESC LIMIT 10');
+if (count($nuvem)) {
+	$max = $nuvem[0]['num'];
+	foreach ($nuvem as $cada)
+		echo '<span class="tag' . round(5-4*$cada['num']/$max) . '" onclick="adicionarTagDaNuvem(this)">' . assegurarHTML($cada['nome']) . '</span>';
+}
+?>
+</div>
+<input type="hidden" name="tags" id="tags" value="<?=assegurarHTML(json_encode($tags))?>">
+<p>Adicione tags a este post ou selecione entre as mais usadas</p>
+<p><input id="campoTags" size="25"> <span class="botao" id="adicionarTag"><img src="/imgs/adicionar.png"> Adicionar</span></p>
+<p id="tagsSelecionadas"><?php
+foreach ($tags as $tag)
+	echo '<span class="tag" onclick="removerTag(this)">' . assegurarHTML($tag) . '</span>';
+?></p>
+<div class="clear"></div>
+
 <h2>Anexos</h2>
 <div class="acoes"><span class="botao" id="adicionarAnexo"><img src="/imgs/adicionar.png"> Adicionar anexo</span></div>
 <div class="listagem" id="anexos">
@@ -117,6 +145,7 @@ gerarJSVar('_quota', $_usuario['usoMax']);
 	}
 	?>
 </div>
+
 <input type="submit" style="display:none" id="submit">
 <span class="botao" id="voltar"><img src="/imgs/voltar.png"> Voltar</span>
 <span class="botao" id="salvar"><img src="/imgs/enviar.png"> <?=$criar ? 'Criar' : 'Salvar'?></span>

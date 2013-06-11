@@ -231,3 +231,61 @@ function salvarEdicaoAnexo() {
 	get("janela").innerHTML = ""
 	_editando = null
 }
+
+/*
+
+Interface para as tags
+
+*/
+
+// Adiciona os ouvintes
+window.addEventListener("load", function () {
+	get("campoTags").onkeydown = function (evento) {
+		if (evento.keyCode == 13) {
+			adicionarTagDoCampo()
+			evento.preventDefault()
+		}
+	}
+	get("adicionarTag").onclick = adicionarTagDoCampo
+})
+
+// Adiciona a tag no campo de entrada
+function adicionarTagDoCampo() {
+	var tag, campo
+	campo = get("campoTags")
+	var tag = campo.value
+	if (tag)
+		adicionarTag(tag)
+	campo.value = ""
+	campo.focus()
+}
+
+// Adiciona uma tag da nuvem de tags
+function adicionarTagDaNuvem(tag) {
+	adicionarTag(tag.textContent)
+}
+
+// Adiciona uma nova tag à lista
+function adicionarTag(tag) {
+	var input, tags
+	input = get("tags")
+	tags = JSON.parse(input.value)
+	if (tags.indexOf(tag) == -1) {
+		tags.push(tag)
+		get("tagsSelecionadas").appendChild(criarTag("span.tag", tag, {onclick: "removerTag(this)"}))
+		input.value = JSON.stringify(tags)
+	}
+}
+
+// Remove a tag clicada da lista
+function removerTag(tag) {
+	var input, tags, pos
+	input = get("tags")
+	tags = JSON.parse(input.value)
+	pos = tags.indexOf(tag.textContent)
+	if (pos != -1) {
+		tags.splice(pos, 1)
+		tag.parentNode.removeChild(tag)
+		input.value = JSON.stringify(tags)
+	}
+}

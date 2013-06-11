@@ -47,6 +47,12 @@ if ($_usuario && ($_usuario['admin'] || $dados['criador'] == $_usuario['id']))
 imprimir('', 'div.clear');
 imprimir($dados['conteudo'], 'div.subConteudo');
 ?>
+<h2>Tags</h2>
+<p><?php
+// Exibe as tags
+foreach (Query::query(false, 0, 'SELECT t2.nome FROM tagsEmPosts AS t JOIN tags AS t2 ON t.tag=t2.id WHERE t.post=?', $dados['id']) as $tag)
+	echo '<span class="tag">' . assegurarHTML($tag) . '</span>';
+?></p>
 <h2>Anexos</h2>
 <div class="listagem">
 	<?php

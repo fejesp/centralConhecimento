@@ -62,6 +62,17 @@ try {
 		if ((int)$selecionados[$i] != $dados['criador'])
 			new Query('INSERT INTO visibilidades VALUES ("post", ?, ?)', $dados['id'], (int)$selecionados[$i]);
 	
+	// Insere as tags
+	new Query('DELETE FROM tagsEmPosts WHERE post=?', $dados['id']);
+	foreach (json_decode($_POST['tags']) as $tag) {
+		$idTag = Query::getValor('SELECT id FROM tags WHERE nome=? LIMIT 1', $tag);
+		if (!$idTag) {
+			new Query('INSERT INTO tags VALUES (NULL, ?)', $tag);
+			$idTag = Query::$conexao->insert_id;
+		}
+		new Query('INSERT INTO tagsEmPosts VALUES (?, ?)', $dados['id'], $idTag);
+	}
+	
 	// Remove os anexos selecionados
 	if (isset($_POST['removidos']))
 		foreach ($_POST['removidos'] as $id=>$temp) {

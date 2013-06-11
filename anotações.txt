@@ -2,3 +2,4 @@
 
 revisar todos os textos de visibilidade deixando mais claro o sistema de visibilidades
 
+colocar link nas tags dos posts para busca por tag

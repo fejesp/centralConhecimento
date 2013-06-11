@@ -1,0 +1,18 @@
+.tag {
+	display:inline-block;
+	border-radius:5px;
+	white-space:nowrap;
+	padding:3px 22px 3px 3px;
+	margin:5px 3px;
+	border-bottom:thin #888 solid;
+	border-right:thin #888 solid;
+	background-color:#EEE;
+	cursor:pointer;
+	background-image:url(/imgs/remover.png);
+	background-repeat:no-repeat;
+	background-position:right 3px center;
+}
+
+.tag:hover {
+	background-color:#E99;
+}
