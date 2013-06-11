@@ -12,11 +12,11 @@ if (isset($_GET['novoUsuario']))
 <p><span class="botao" id="criarUsuario"><img src="/imgs/criarUsuario.png"> Criar usuário</span></p>
 <table class="usuarios" id="tabelaUsuarios">
 <tbody>
-	<tr><th>Nome</th><th>Email</th><th>Acessos</th><th>Espaço usado</th></tr>
+	<tr><th>Nome</th><th>Email</th><th>Acessos esse ano</th><th>Espaço usado</th></tr>
 	<?php
 	// Carrega os dados
 	$usuarios = Query::query(false, NULL, 'SELECT id, nome, email, ativo, usoMax FROM usuarios ORDER BY nome');
-	$acessos = Query::query(false, NULL, 'SELECT u.id, COUNT(*) AS acessos FROM usuarios AS u JOIN logins AS l ON l.usuario=u.id WHERE l.sucesso=1 GROUP BY u.id');
+	$acessos = Query::query(false, NULL, 'SELECT u.id, COUNT(*) AS acessos FROM usuarios AS u JOIN logins AS l ON l.usuario=u.id WHERE l.sucesso=1 AND YEAR(l.data)=YEAR(NOW()) GROUP BY u.id');
 	$usos = Query::query(false, NULL, 'SELECT u.id, SUM(a.tamanho) AS uso FROM usuarios AS u JOIN posts AS p ON p.criador=u.id JOIN anexos AS a ON a.post=p.id GROUP BY u.id');
 	
 	// Coloca num formato melhor
@@ -51,13 +51,22 @@ if (isset($_GET['novoUsuario']))
 </table>
 
 <h3>Uso do espaço</h3>
+<?php
+// Mede o espaço utilizado
+$usoAdmin = Query::getValor('SELECT SUM(a.tamanho) FROM anexos AS a JOIN posts AS p ON a.post=p.id JOIN usuarios AS u ON p.criador=u.id WHERE u.admin=1');
+$usoNaoAdmin = Query::getValor('SELECT SUM(a.tamanho) FROM anexos AS a JOIN posts AS p ON a.post=p.id JOIN usuarios AS u ON p.criador=u.id WHERE u.admin=0');
+$total = $_config['espacoTotal'];
+$livre = $total-$usoAdmin-$usoNaoAdmin;
+$porcemAdmin = round(100*$usoAdmin/$total);
+$porcemNaoAdmin = round(100*$usoNaoAdmin/$total);
+?>
 <div class="espacoTotal">
-	<div class="espacoUsadoAdmin" style="width:37%">37%</div>
-	<div class="espacoUsado" style="width:17%">17%</div>
+	<div class="espacoUsadoAdmin" style="width:<?=$porcemAdmin?>%"><?=$porcemAdmin?>%</div>
+	<div class="espacoUsado" style="width:<?=$porcemNaoAdmin?>%"><?=$porcemNaoAdmin?>%</div>
 </div>
-<p><span class="legendaUsoAdmin">@</span> Espaço utilizado pelo administrador: 370 MiB<br>
-<span class="legendaUso">@</span> Espaço utilizado pelos outros usuários: 170 MiB<br>
-<span class="legendaLivre">@</span> Espaço livre: 460 MiB</p>
+<p><span class="legendaUsoAdmin">@</span> Espaço utilizado pelo administrador: <?=KiB2str($usoAdmin)?><br>
+<span class="legendaUso">@</span> Espaço utilizado pelos outros usuários: <?=KiB2str($usoNaoAdmin)?><br>
+<span class="legendaLivre">@</span> Espaço livre: <?=KiB2str($livre)?></p>
 
 <h3>Estatísticas</h3>
 <p>[Gráfico de acessos]</p>

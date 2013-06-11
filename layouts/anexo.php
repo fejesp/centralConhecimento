@@ -15,8 +15,8 @@ if (!$sucesso) {
 $info = NULL;
 if (isset($_POST['email'])) {
 	$info = array('email' => $_POST['email'], 'empresa' => @$_POST['empresa']);
-	setcookie('central_email', $info['email']);
-	setcookie('central_empresa', $info['empresa']);
+	setcookie('central_email', $info['email'], 0, '/');
+	setcookie('central_empresa', $info['empresa'], 0, '/');
 } else if (isset($_COOKIE['central_email']))
 	$info = array('email' => $_COOKIE['central_email'], 'empresa' => @$_COOKIE['central_empresa']);
 

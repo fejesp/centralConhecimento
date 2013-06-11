@@ -32,7 +32,6 @@ new Query('DELETE FROM visibilidades WHERE tipoItem="post" AND item=?', $dados['
 if (count($anexos))
 	new Query('DELETE FROM visibilidades WHERE tipoItem="anexo" AND item IN ?', $anexos);
 new Query('DELETE FROM tagsemposts WHERE post=?', $dados['id']);
-new Query('DELETE FROM acessos WHERE post=?', $dados['id']);
 if (count($anexos))
 	new Query('DELETE FROM downloads WHERE anexo IN ?', $anexos);
 

@@ -69,15 +69,15 @@ if (count($anexos))
 	new Query('DELETE FROM visibilidades WHERE tipoItem="anexo" AND item IN ?', $anexos);
 if (count($posts))
 	new Query('DELETE FROM tagsemposts WHERE post IN ?', $posts);
-if (count($posts))
-	new Query('DELETE FROM acessos WHERE post IN ?', $posts);
 if (count($anexos))
 	new Query('DELETE FROM downloads WHERE anexo IN ?', $anexos);
 
 // Exclui todos os itens
-// TODO: excluir fisicamente os anexos
-if (count($anexos))
+if (count($anexos)) {
 	new Query('DELETE FROM anexos WHERE id IN ?', $anexos);
+	foreach ($anexos as $cada)
+		unlinkAnexo($cada);
+}
 if (count($forms))
 	new Query('DELETE FROM forms WHERE id IN ?', $forms);
 if (count($posts))

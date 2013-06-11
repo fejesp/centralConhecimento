@@ -55,9 +55,11 @@ function editarUsuario(linha) {
 		id = linha.dataset.id
 		nome = linha.dataset.nome
 		email = linha.dataset.email
-		usoMax = linha.dataset.usoMax
-	} else
-		id = nome = email = usoMax = ""
+		usoMax = linha.dataset.usoMax/1024
+	} else {
+		id = nome = email = ""
+		usoMax = 10
+	}
 	
 	// Monta a janela
 	mostrarJanela(true)
@@ -67,7 +69,7 @@ function editarUsuario(linha) {
 		"<div class='rotuloEsquerdo'>Nome: <br>Email: <br>Quota de uso de espaço: </div>"+
 		"<div class='opcoesDireita'><input size='30' name='nome' value='"+assegurarHTML(nome)+"' required><br>"+
 		"<input size='30' name='email' type='email' value='"+assegurarHTML(email)+"' required><br>"+
-		"<input name='usoMax' size='10' value='"+usoMax+"' required type='number' min='0' step='1'> KiB (0 = sem limites)</div>"+
+		"<input name='usoMax' size='10' value='"+usoMax+"' required type='number' min='0' step='1'> MiB (0 = sem limites)</div>"+
 		"<div class='clear'></div>"+
 		"<input name='id' type='hidden' value='"+id+"'><input type='submit' style='display:none' id='submit'>"+
 		"<p><span class='botao' onclick='mostrarJanela(false)'><img src='/imgs/voltar.png'> Voltar</span> "+

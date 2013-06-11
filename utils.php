@@ -28,7 +28,7 @@ function getRandomString($tamanho) {
 
 // Gera uma nova senha aleatória
 function gerarSenha() {
-	return substr(str_shuffle('abcdefghijklmnopqrstuvwxyz0123456789'), 0, 8);
+	return substr(str_shuffle('abcdefghjklmnpqrstuvwxyz23456789'), 0, 8);
 }
 
 // Verifica a visibilidade de um item, dado seus parâmetros

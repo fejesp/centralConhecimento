@@ -21,7 +21,7 @@ $criar = isset($_GET['criar']);
 $id = (int)@$_POST['id'];
 $nome = @$_POST['nome'];
 $email = @$_POST['email'];
-$usoMax = (int)@$_POST['usoMax'];
+$usoMax = 1024*(int)@$_POST['usoMax'];
 
 // Salva no banco de dados
 try {

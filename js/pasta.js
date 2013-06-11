@@ -51,7 +51,7 @@ function abrirJanelaMover(tipo, caminho, nome) {
 			n++
 			div = criarTag("div")
 			id = "input"+Math.random()
-			div.appendChild(criarTag("label", i+" ", {"for": id}))
+			div.appendChild(criarTag("label", i ? i+" " : "Diretório raiz", {"for": id}))
 			input = criarTag("input", "", {type: "radio", name: "novoCaminho", id: id})
 			input.value = div.dataset.caminho = (caminhoBase=="/" ? "" : caminhoBase)+"/"+i
 			if (input.value == caminho)

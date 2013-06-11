@@ -92,6 +92,7 @@ try {
 	if (isset($_FILES['arquivos'])) {
 		$cotaUsada = Query::getValor('SELECT SUM(a.tamanho) FROM anexos AS a JOIN posts AS p ON a.post=p.id WHERE p.criador=?', $_usuario['id']);
 		$cotaLivre = $_usuario['usoMax']-$cotaUsada;
+		$espacoLivre = $_config['espacoTotal']-Query::getValor('SELECT SUM(tamanho) FROM anexos');
 		$nomes = $_FILES['arquivos']['name'];
 		$tmp_names = $_FILES['arquivos']['tmp_name'];
 		$erros = $_FILES['arquivos']['error'];
@@ -104,8 +105,11 @@ try {
 			// Verifica se não passa da cota
 			$tamanho = round($tamanhos[$idAnexo]/1024);
 			$cotaLivre -= $tamanho;
+			$espacoLivre -= $tamanho;
 			if ($_usuario['usoMax'] && $cotaLivre < 0)
 				throw new ErrorException('O usuário não possui mais cota livre');
+			if ($espacoLivre < 0)
+				throw new ErrorException('O sistema não possui mais espaço livre');
 			
 			// Insere no BD
 			$visibilidade = $infos[$idAnexo];
