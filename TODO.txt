@@ -3,3 +3,11 @@
 revisar todos os textos de visibilidade deixando mais claro o sistema de visibilidades
 
 colocar link nas tags dos posts para busca por tag
+
+colocar descrição nos campos de forms
+
+mostrar visibilidade dos itens na listagem da pasta
+
+aceitar anexos nos forms
+
+sistema de busca

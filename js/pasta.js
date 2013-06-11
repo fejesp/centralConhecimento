@@ -30,7 +30,7 @@ function menu(tipo, criador, evento) {
 			else if (tipo == "post" && confirm("Você tem certeza que deseja excluir o post "+nome+"?\nTodo o seu conteúdo será excluído permanentemente!"))
 				redirecionar("excluirPost.php", caminho, nome)
 			else if (tipo == "form" && confirm("Você tem certeza que deseja excluir o form "+nome+"?\nTalvez seja melhor desativa-lo"))
-				Ajax({url: "ajax.php?op=excluirForm", dados: {caminho: caminho+"/"+nome}, funcao: function () {
+				Ajax({url: "/ajax.php?op=excluirForm", dados: {caminho: caminho+"/"+nome}, funcao: function () {
 					el.parentNode.removeChild(el)
 				}})
 		}], ["<img src='/imgs/mover.png'> Mover item", function () {

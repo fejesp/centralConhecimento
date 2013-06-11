@@ -22,7 +22,7 @@ if (!$_usuario || (!$criar && !$_usuario['admin'] && $dados['criador'] != $_usua
 if ($criar) {
 	$dados['nome'] = '';
 	$dados['descricao'] = '';
-	$dados['conteudo'] = '';
+	$dados['conteudo'] = '[]';
 	$dados['ativo'] = 1;
 	$dados['criador'] = $_usuario['id'];
 }
@@ -31,7 +31,7 @@ $descricaoHTML = assegurarHTML($dados['descricao']);
 ?>
 <form method="post" action="/editarForm.php<?=$criar ? '?criar' : ''?>" enctype="multipart/form-data" id="form">
 <p><label for="nome">Nome:</label> <input size="30" name="nome" id="nome" required pattern="[^/]+" value="<?=$nomeHTML?>" autofocus></p>
-<p><label for="descricao">Conteúdo:</label><br>
+<p><label for="descricao">Descrição:</label><br>
 <textarea name="descricao" id="descricao"><?=$descricaoHTML?></textarea></p>
 <p><input type="checkbox" name="ativo" id="ativo"<?=$dados['ativo'] ? ' checked' : ''?>> <label for="ativo">Formulário ativo (aceitando respostas)</labeL></p>
 <input type="hidden" name="caminho" value="<?=assegurarHTML($caminho)?>">

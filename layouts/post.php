@@ -27,7 +27,7 @@ else {
 
 // Mostra quem e quando postou
 $criador = Query::getValor('SELECT nome FROM usuarios WHERE id=? LIMIT 1', $dados['criador']);
-imprimir('Pastado por ' . $criador . ' ' . data2str($dados['data']), 'p.detalhe');
+imprimir('Postado por ' . $criador . ' ' . data2str($dados['data']), 'p.detalhe');
 
 // Coloca a sequência do caminho
 imprimir(getCaminhoAcima($caminho), 'div.caminho');
