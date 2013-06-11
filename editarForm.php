@@ -55,7 +55,7 @@ try {
 		new Query('UPDATE forms SET nome=?, descricao=?, conteudo=?, data=NOW(), ativo=? WHERE id=? LIMIT 1', $nome, $descricao, $conteudo, $ativo, $dados['id']);
 		
 	// Vai para o form
-	redirecionar('form' . ($criar ? $caminho . '/' . $nome : $caminho));
+	redirecionar('pasta' . ($criar ? $caminho : getCaminhoAcima($caminho)));
 } catch (Exception $e) {
 	morrerComErro('Falha ao gravar os dados: ' . $e->getMessage());
 }

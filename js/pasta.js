@@ -30,7 +30,9 @@ function menu(tipo, criador, evento) {
 			else if (tipo == "post" && confirm("Você tem certeza que deseja excluir o post "+nome+"?\nTodo o seu conteúdo será excluído permanentemente!"))
 				redirecionar("excluirPost.php", caminho, nome)
 			else if (tipo == "form" && confirm("Você tem certeza que deseja excluir o form "+nome+"?\nTalvez seja melhor desativa-lo"))
-				redirecionar("excluirForm.php", caminho, nome)
+				Ajax({url: "ajax.php?op=excluirForm", dados: {caminho: caminho+"/"+nome}, funcao: function () {
+					el.parentNode.removeChild(el)
+				}})
 		}], ["<img src='/imgs/mover.png'> Mover item", function () {
 			abrirJanelaMover(tipo, caminho, nome)
 		}]]
@@ -38,13 +40,13 @@ function menu(tipo, criador, evento) {
 		// Adiciona os botões de ativar/desativar formulário
 		if (tipo == "form") {
 			if (el.classList.contains("inativo"))
-				botoes.push(["<img src='/imgs/ativar.png'> Reativar formulário", function () {
+				botoes.unshift(["<img src='/imgs/ativar.png'> Reativar formulário", function () {
 					Ajax({url: "/ajax.php?op=ativarForm", dados: {caminho: caminho+"/"+nome}, funcao: function () {
 						el.classList.remove("inativo")
 					}})
 				}])
 			else
-				botoes.push(["<img src='/imgs/desativar.png'> Desativar formulário", function () {
+				botoes.unshift(["<img src='/imgs/desativar.png'> Desativar formulário", function () {
 					Ajax({url: "/ajax.php?op=desativarForm", dados: {caminho: caminho+"/"+nome}, funcao: function () {
 						el.classList.add("inativo")
 					}})

@@ -25,9 +25,9 @@ function adicionarCampo(tipo) {
 	// Monta os elementos básicos
 	div = criarTag("div.campo")
 	div.appendChild(acoes = criarTag("div.campo-acoes"))
-	acoes.innerHTML = "<span class='botao'><img src='/imgs/praCima.png' onclick='moverAcima()'> Mover para cima</span> "+
-	"<span class='botao'><img src='/imgs/praBaixo.png' onclick='moverAbaixo()'> Mover para baixo</span> "+
-	"<span class='botao'><img src='/imgs/remover.png' onclick='remover()'> Remover</span>"
+	acoes.innerHTML = "<span class='botao' onclick='moverCampoAcima(this)'><img src='/imgs/praCima.png'> Mover para cima</span> "+
+	"<span class='botao' onclick='moverCampoAbaixo(this)'><img src='/imgs/praBaixo.png'> Mover para baixo</span> "+
+	"<span class='botao' onclick='removerCampo(this)'><img src='/imgs/remover.png'> Remover</span>"
 	
 	// Monta os elementos de cada tipo de campo
 	titulo = criarTag("strong")
@@ -52,4 +52,38 @@ function adicionarCampo(tipo) {
 	}
 	
 	get("campos").appendChild(div)
+}
+
+// Remove um campo da lista
+function removerCampo(el) {
+	var divCampo = getDivCampo(el)
+	divCampo.parentNode.removeChild(divCampo)
+}
+
+// Move um campo para cima na lista
+function moverCampoAcima(el) {
+	var divCampo, pos, antes
+	divCampo = getDivCampo(el)
+	antes = divCampo.previousSibling
+	if (antes)
+		divCampo.parentNode.insertBefore(divCampo, antes)
+}
+
+// Move um campo para baixo na lista
+function moverCampoAbaixo(el) {
+	var divCampo, pos, depois
+	divCampo = getDivCampo(el)
+	depois = divCampo.nextSibling
+	if (depois)
+		divCampo.parentNode.insertBefore(divCampo, depois.nextSibling)
+}
+
+// Retorna a div com a classe "campo" que está acima do elemento dado
+function getDivCampo(el) {
+	while (el != null)
+		if (el.className == "campo")
+			return el
+		else
+			el = el.parentNode
+	return null
 }
