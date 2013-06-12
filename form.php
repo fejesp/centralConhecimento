@@ -67,6 +67,10 @@ try {
 	new Query('INSERT INTO posts VALUES (NULL, ?, ?, ?, NOW(), "seleto", ?)', $dados['pasta'], $nome, $conteudo, $criador);
 	$idPost = Query::$conexao->insert_id;
 	
+	// Adiciona o criador do post na lista de visibilidades
+	if ($dados['criador'] != $criador)
+		new Query('INSERT INTO visibilidades VALUES ("post", ?, ?)', $idPost, $dados['criador']);
+	
 	// Trata os novos anexos
 	if (isset($_FILES['arquivos'])) {
 		$espacoLivre = $_config['espacoTotal']-Query::getValor('SELECT SUM(tamanho) FROM anexos');
@@ -108,7 +112,8 @@ try {
 	<p>' . (count($resumoAnexos) ? 'Anexos:<br><ul>' . assegurarHTML(implode('', $resumoAnexos)) : 'Nenhum anexo') . '</ul></p>
 	<p>Att,<br>
 	Núcleo de TI - FEJESP</p>';
-	$cabecalhos = "From: ti@fejesp.org.br\r\nContent-type: text/html; charset=UTF-8";
+	$emailCriador = Query::getValor('SELECT email FROM usuarios WHERE id=? LIMIT 1', $dados['criador']);
+	$cabecalhos = "From: ti@fejesp.org.br\r\nCc: $emailCriador\r\nContent-type: text/html; charset=UTF-8";
 	mail($email, $assunto, $mensagem, $cabecalhos);
 	
 	// Vai para a pasta

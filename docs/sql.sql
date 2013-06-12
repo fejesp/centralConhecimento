@@ -224,6 +224,7 @@ CREATE  TABLE IF NOT EXISTS `logins` (
 ENGINE = InnoDB
 COMMENT = 'Armazena as tentativas de login';
 
+
 -- -----------------------------------------------------
 -- Data for table `pastas`
 -- -----------------------------------------------------
@@ -241,7 +242,7 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 -- Data for table `usuarios`
 -- -----------------------------------------------------
 START TRANSACTION;
-INSERT INTO `usuarios` (`id`, `nome`, `email`, `senha`, `admin`, `ativo`, `usoMax`, `cookie`) VALUES (1, 'FEJESP', 'conhecimento@fejesp.org.br', '827ccb0eea8a706c4c34a16891f84e7b', 1, 1, 0, 'x');
-INSERT INTO `usuarios` (`id`, `nome`, `email`, `senha`, `admin`, `ativo`, `usoMax`, `cookie`) VALUES (2, 'Guilherme', '19gui94@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', 0, 1, 0, 'y');
+INSERT INTO `usuarios` (`id`, `nome`, `email`, `senha`, `admin`, `ativo`, `usoMax`, `cookie`) VALUES (1, 'FEJESP', 'admin@email.com', '827ccb0eea8a706c4c34a16891f84e7b', 1, 1, 0, 'x');
+INSERT INTO `usuarios` (`id`, `nome`, `email`, `senha`, `admin`, `ativo`, `usoMax`, `cookie`) VALUES (2, 'Usuário', 'user@email.com', '827ccb0eea8a706c4c34a16891f84e7b', 0, 1, 10240, 'y');
 
 COMMIT;

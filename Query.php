@@ -95,7 +95,8 @@ class Query {
 	// Uso: $usuarios = Query::query(false, 0, 'SELECT id FROM usuarios');
 	public static function query($primeiro /*=false*/, $coluna /*=NULL*/, $base /*, $args... */) {
 		$novo = new Query;
-		call_user_func_array(array($novo, '__construct'), array_slice(func_get_args(), 2));
+		$obrigadoPHPPorSerMuitoGambiarrado = func_get_args();
+		call_user_func_array(array($novo, '__construct'), array_slice($obrigadoPHPPorSerMuitoGambiarrado, 2));
 		return $novo->get($primeiro, $coluna);
 	}
 	
@@ -104,7 +105,8 @@ class Query {
 	// Uso: if (!Query::existe('SELECT 1 FROM usuarios WHERE nome=? AND senha=?', $nome, $senha)) exit;
 	public static function existe($base /*, $args... */) {
 		$novo = new Query;
-		call_user_func_array(array($novo, '__construct'), func_get_args());
+		$obrigadoPHPPorSerMuitoGambiarrado = func_get_args();
+		call_user_func_array(array($novo, '__construct'), $obrigadoPHPPorSerMuitoGambiarrado);
 		return (bool)($novo->result->num_rows);
 	}
 	
@@ -114,7 +116,8 @@ class Query {
 	public static function getValor($base /*, $args... */) {
 		try {
 			$novo = new Query;
-			call_user_func_array(array($novo, '__construct'), func_get_args());
+			$obrigadoPHPPorSerMuitoGambiarrado = func_get_args();
+			call_user_func_array(array($novo, '__construct'), $obrigadoPHPPorSerMuitoGambiarrado);
 			return $novo->get(true, 0);
 		} catch (Exception $e) {
 			return NULL;
