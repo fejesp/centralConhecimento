@@ -2,14 +2,11 @@ SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES,NO_AUTO_VALUE_ON_ZERO';
 
-DROP SCHEMA IF EXISTS `central` ;
-CREATE SCHEMA IF NOT EXISTS `central` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci ;
-USE `central` ;
 
 -- -----------------------------------------------------
--- Table `central`.`usuarios`
+-- Table `usuarios`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `central`.`usuarios` (
+CREATE  TABLE IF NOT EXISTS `usuarios` (
   `id` INT NOT NULL AUTO_INCREMENT COMMENT 'Identificação interna do usuário' ,
   `nome` VARCHAR(200) NOT NULL COMMENT 'Nome de exibição do usuário' ,
   `email` VARCHAR(200) NOT NULL COMMENT 'Email de contato e login no sistema' ,
@@ -26,9 +23,9 @@ COMMENT = 'Armazena os dados de todos os usuários do sistema';
 
 
 -- -----------------------------------------------------
--- Table `central`.`pastas`
+-- Table `pastas`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `central`.`pastas` (
+CREATE  TABLE IF NOT EXISTS `pastas` (
   `id` INT NOT NULL AUTO_INCREMENT COMMENT 'Identificação interna da pasta' ,
   `nome` VARCHAR(200) NOT NULL COMMENT 'Nome de exibição da pasta' ,
   `descricao` TEXT NOT NULL ,
@@ -41,12 +38,12 @@ CREATE  TABLE IF NOT EXISTS `central`.`pastas` (
   UNIQUE INDEX `pastas_nomeEPai` (`nome` ASC, `pai` ASC) ,
   CONSTRAINT `pastas_pai`
     FOREIGN KEY (`pai` )
-    REFERENCES `central`.`pastas` (`id` )
+    REFERENCES `pastas` (`id` )
     ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT `pastas_criador`
     FOREIGN KEY (`criador` )
-    REFERENCES `central`.`usuarios` (`id` )
+    REFERENCES `usuarios` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -54,9 +51,9 @@ COMMENT = 'Armazena a estrutura hierárquica das pastas';
 
 
 -- -----------------------------------------------------
--- Table `central`.`posts`
+-- Table `posts`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `central`.`posts` (
+CREATE  TABLE IF NOT EXISTS `posts` (
   `id` INT NOT NULL AUTO_INCREMENT COMMENT 'Identificação interna' ,
   `pasta` INT NOT NULL COMMENT 'Referencia a pasta na qual esse post foi publicado' ,
   `nome` VARCHAR(200) NOT NULL COMMENT 'Título do post' ,
@@ -70,12 +67,12 @@ CREATE  TABLE IF NOT EXISTS `central`.`posts` (
   UNIQUE INDEX `posts_unico` (`pasta` ASC, `nome` ASC) ,
   CONSTRAINT `posts_pasta`
     FOREIGN KEY (`pasta` )
-    REFERENCES `central`.`pastas` (`id` )
+    REFERENCES `pastas` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `posts_criador`
     FOREIGN KEY (`criador` )
-    REFERENCES `central`.`usuarios` (`id` )
+    REFERENCES `usuarios` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -83,9 +80,9 @@ COMMENT = 'Armazena todas as postagens feitas';
 
 
 -- -----------------------------------------------------
--- Table `central`.`anexos`
+-- Table `anexos`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `central`.`anexos` (
+CREATE  TABLE IF NOT EXISTS `anexos` (
   `id` INT NOT NULL AUTO_INCREMENT COMMENT 'Identificação do anexo (também é o nome da pasta onde está armazenado)' ,
   `nome` VARCHAR(200) NOT NULL COMMENT 'Nome original do arquivo' ,
   `post` INT NOT NULL COMMENT 'Referencia o post no qual está anexado' ,
@@ -96,7 +93,7 @@ CREATE  TABLE IF NOT EXISTS `central`.`anexos` (
   UNIQUE INDEX `anexos_unico` (`nome` ASC, `post` ASC) ,
   CONSTRAINT `anexos_post`
     FOREIGN KEY (`post` )
-    REFERENCES `central`.`posts` (`id` )
+    REFERENCES `posts` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -104,9 +101,9 @@ COMMENT = 'Lista todos os arquivos anexos usados no sistema';
 
 
 -- -----------------------------------------------------
--- Table `central`.`visibilidades`
+-- Table `visibilidades`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `central`.`visibilidades` (
+CREATE  TABLE IF NOT EXISTS `visibilidades` (
   `tipoItem` ENUM('pasta','post','anexo') NOT NULL COMMENT 'Indica o tipo de item' ,
   `item` INT NOT NULL COMMENT 'Referencia o item' ,
   `usuario` INT NOT NULL COMMENT 'Referencia o usuário que pode ver o item' ,
@@ -114,7 +111,7 @@ CREATE  TABLE IF NOT EXISTS `central`.`visibilidades` (
   INDEX `visibilidades_usuario` (`usuario` ASC) ,
   CONSTRAINT `visibilidades_usuario`
     FOREIGN KEY (`usuario` )
-    REFERENCES `central`.`usuarios` (`id` )
+    REFERENCES `usuarios` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -122,9 +119,9 @@ COMMENT = 'Grava as permissões dos itens com visibilidade seleta';
 
 
 -- -----------------------------------------------------
--- Table `central`.`tags`
+-- Table `tags`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `central`.`tags` (
+CREATE  TABLE IF NOT EXISTS `tags` (
   `id` INT NOT NULL AUTO_INCREMENT COMMENT 'Identificação interna' ,
   `nome` VARCHAR(200) NOT NULL COMMENT 'Nome da tag' ,
   PRIMARY KEY (`id`) ,
@@ -134,9 +131,9 @@ COMMENT = 'Lista todas as tags criadas';
 
 
 -- -----------------------------------------------------
--- Table `central`.`tagsEmPosts`
+-- Table `tagsEmPosts`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `central`.`tagsEmPosts` (
+CREATE  TABLE IF NOT EXISTS `tagsEmPosts` (
   `post` INT NOT NULL COMMENT 'Referencia o post' ,
   `tag` INT NOT NULL COMMENT 'Referencia a tag' ,
   PRIMARY KEY (`post`, `tag`) ,
@@ -144,12 +141,12 @@ CREATE  TABLE IF NOT EXISTS `central`.`tagsEmPosts` (
   INDEX `tagsEmPosts_tag` (`tag` ASC) ,
   CONSTRAINT `tagsEmPosts_post`
     FOREIGN KEY (`post` )
-    REFERENCES `central`.`posts` (`id` )
+    REFERENCES `posts` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `tagsEmPosts_tag`
     FOREIGN KEY (`tag` )
-    REFERENCES `central`.`tags` (`id` )
+    REFERENCES `tags` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -157,9 +154,9 @@ COMMENT = 'Guarda a relação entre tags e posts';
 
 
 -- -----------------------------------------------------
--- Table `central`.`forms`
+-- Table `forms`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `central`.`forms` (
+CREATE  TABLE IF NOT EXISTS `forms` (
   `id` INT NOT NULL AUTO_INCREMENT COMMENT 'Identificação interna' ,
   `pasta` INT NOT NULL COMMENT 'Referencia a pasta na qual o formulário irá criar postagens' ,
   `nome` VARCHAR(200) NOT NULL COMMENT 'Nome do formulário' ,
@@ -174,12 +171,12 @@ CREATE  TABLE IF NOT EXISTS `central`.`forms` (
   UNIQUE INDEX `forms_unico` (`nome` ASC, `pasta` ASC) ,
   CONSTRAINT `formularios_pasta`
     FOREIGN KEY (`pasta` )
-    REFERENCES `central`.`pastas` (`id` )
+    REFERENCES `pastas` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `formularios_criador`
     FOREIGN KEY (`criador` )
-    REFERENCES `central`.`usuarios` (`id` )
+    REFERENCES `usuarios` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -187,9 +184,9 @@ COMMENT = 'Armazena todos os formulários de submissão';
 
 
 -- -----------------------------------------------------
--- Table `central`.`downloads`
+-- Table `downloads`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `central`.`downloads` (
+CREATE  TABLE IF NOT EXISTS `downloads` (
   `anexo` INT NOT NULL COMMENT 'Referencia o anexo baixado' ,
   `usuario` INT NULL COMMENT 'Referencia o usuário que fez o donwload (NULL = não usuário)' ,
   `data` DATETIME NOT NULL COMMENT 'Indica a data do download' ,
@@ -199,12 +196,12 @@ CREATE  TABLE IF NOT EXISTS `central`.`downloads` (
   INDEX `downloads_usuario_idx` (`usuario` ASC) ,
   CONSTRAINT `downloads_anexo`
     FOREIGN KEY (`anexo` )
-    REFERENCES `central`.`anexos` (`id` )
+    REFERENCES `anexos` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `downloads_usuario`
     FOREIGN KEY (`usuario` )
-    REFERENCES `central`.`usuarios` (`id` )
+    REFERENCES `usuarios` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -212,43 +209,39 @@ COMMENT = 'Armazena as estatísticas de downloas feitos';
 
 
 -- -----------------------------------------------------
--- Table `central`.`logins`
+-- Table `logins`
 -- -----------------------------------------------------
-CREATE  TABLE IF NOT EXISTS `central`.`logins` (
+CREATE  TABLE IF NOT EXISTS `logins` (
   `usuario` INT NOT NULL ,
   `sucesso` TINYINT(1) NOT NULL ,
   `data` DATETIME NOT NULL ,
   INDEX `logins_usuario_idx` (`usuario` ASC) ,
   CONSTRAINT `logins_usuario`
     FOREIGN KEY (`usuario` )
-    REFERENCES `central`.`usuarios` (`id` )
+    REFERENCES `usuarios` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
 COMMENT = 'Armazena as tentativas de login';
 
-USE `central` ;
-
 -- -----------------------------------------------------
--- Data for table `central`.`pastas`
+-- Data for table `pastas`
 -- -----------------------------------------------------
 START TRANSACTION;
-USE `central`;
-INSERT INTO `central`.`pastas` (`id`, `nome`, `descricao`, `pai`, `visibilidade`, `criador`) VALUES (0, 'Diretório raiz', '', 0, 'publico', 0);
+INSERT INTO `pastas` (`id`, `nome`, `descricao`, `pai`, `visibilidade`, `criador`) VALUES (0, 'Diretório raiz', '', 0, 'publico', 0);
 
 COMMIT;
+
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
 -- -----------------------------------------------------
--- Data for table `central`.`usuarios`
+-- Data for table `usuarios`
 -- -----------------------------------------------------
 START TRANSACTION;
-USE `central`;
-INSERT INTO `central`.`usuarios` (`id`, `nome`, `email`, `senha`, `admin`, `ativo`, `usoMax`, `cookie`) VALUES (1, 'FEJESP', 'conhecimento@fejesp.org.br', '827ccb0eea8a706c4c34a16891f84e7b', 1, 1, 0, 'x');
-INSERT INTO `central`.`usuarios` (`id`, `nome`, `email`, `senha`, `admin`, `ativo`, `usoMax`, `cookie`) VALUES (2, 'Guilherme', '19gui94@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', 0, 1, 0, 'y');
+INSERT INTO `usuarios` (`id`, `nome`, `email`, `senha`, `admin`, `ativo`, `usoMax`, `cookie`) VALUES (1, 'FEJESP', 'conhecimento@fejesp.org.br', '827ccb0eea8a706c4c34a16891f84e7b', 1, 1, 0, 'x');
+INSERT INTO `usuarios` (`id`, `nome`, `email`, `senha`, `admin`, `ativo`, `usoMax`, `cookie`) VALUES (2, 'Guilherme', '19gui94@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', 0, 1, 0, 'y');
 
 COMMIT;
-

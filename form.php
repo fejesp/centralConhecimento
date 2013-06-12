@@ -24,7 +24,7 @@ if (!$sucesso)
 if ($_usuario) {
 	$email = $_usuario['email'];
 	$criador = $_usuario['id'];
-	$EJ = NULL;
+	$EJ = $_usuario['nome'];
 } else {
 	$email = $_POST['email'];
 	$EJ = $_POST['ej'];
@@ -61,6 +61,7 @@ $conteudo = implode("\n\n", $conteudo);
 // Salva no banco de dados
 Query::$conexao->autocommit(false);
 $novosAnexos = array();
+$resumoAnexos = array();
 try {
 	// Cria o post
 	new Query('INSERT INTO posts VALUES (NULL, ?, ?, ?, NOW(), "seleto", ?)', $dados['pasta'], $nome, $conteudo, $criador);
@@ -88,6 +89,7 @@ try {
 			
 			// Marca para mover depois
 			$novosAnexos[] = array(Query::$conexao->insert_id, $nomeAnexo, $tmp_names[$i]);
+			$resumoAnexos[] = '<li>' . $nomeAnexo . ' (' . KiB2str($tamanho) . ')</li>';
 		}
 	}
 	
@@ -97,6 +99,17 @@ try {
 		mkdir("arquivos/$cada[0]");
 		move_uploaded_file($cada[2], "arquivos/$cada[0]/$cada[1]");
 	}
+	
+	// Envia um e-mail confirmando a submissão do formulário
+	$assunto = '[FEJESP][Central de conhecimento] ' . $dados['nome'];
+	$mensagem = '<p>Olá ' . assegurarHTML($EJ) . ',</p>
+	<p>Sua submissão ao formulário ' . assegurarHTML($dados['nome']) . ' foi efetuada com sucesso. Abaixo segue um resumo das suas respostas e dos arquivos anexados:</p>
+	<pre>' . assegurarHTML($conteudo) . '</pre>
+	<p>' . (count($resumoAnexos) ? 'Anexos:<br><ul>' . assegurarHTML(implode('', $resumoAnexos)) : 'Nenhum anexo') . '</ul></p>
+	<p>Att,<br>
+	Núcleo de TI - FEJESP</p>';
+	$cabecalhos = "From: ti@fejesp.org.br\r\nContent-type: text/html; charset=UTF-8";
+	mail($email, $assunto, $mensagem, $cabecalhos);
 	
 	// Vai para a pasta
 	redirecionar('pasta' . getCaminhoAcima($caminho));

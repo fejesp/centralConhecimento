@@ -30,7 +30,7 @@ if (!isset($_GET['passo2'])) {
 	// Envia um email para o usuário com seu id e sua senha criptografada (duas vezes)
 	$assunto = '[FEJESP][Central de conhecimento] Recuperação de senha';
 	$link = $_config['urlBase'] . 'recuperarSenha.php?passo2&id=' . $dados['id'] . '&chave=' . md5($dados['senha']);
-	$mensagem = "<p>Olá $dados[nome],</p>
+	$mensagem = "<p>Olá " . assegurarHTML($dados['nome']) . ",</p>
 	
 	<p>Recebemos um pedido de recuperação de senha da sua conta na central de conhecimento da FEJESP.<br>
 	Caso você tenha efetuado esse pedido, <a href='$link'>clique aqui</a> para receber uma nova senha.<br>
@@ -61,7 +61,7 @@ if (!isset($_GET['passo2'])) {
 	new Query('UPDATE usuarios SET senha=? WHERE id=? LIMIT 1', md5($nova), $id);
 	$assunto = '[FEJESP][Central de conhecimento] Recuperação de senha';
 	$link = $_config['urlBase'] . 'editarUsuario';
-	$mensagem = "<p>Olá $dados[nome],</p>
+	$mensagem = "<p>Olá " . assegurarHTML($dados['nome']) . ",</p>
 	
 	<p>Uma nova senha foi gerada para sua conta: <strong>$nova</strong>.<br>
 	Para acessar a central e alterá-la <a href='$link'>clique aqui</a>.</p>
