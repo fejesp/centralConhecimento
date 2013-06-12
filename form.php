@@ -93,7 +93,7 @@ try {
 			
 			// Marca para mover depois
 			$novosAnexos[] = array(Query::$conexao->insert_id, $nomeAnexo, $tmp_names[$i]);
-			$resumoAnexos[] = '<li>' . $nomeAnexo . ' (' . KiB2str($tamanho) . ')</li>';
+			$resumoAnexos[] = '<li>' . $nomeAnexo . ' (' . kiB2str($tamanho) . ')</li>';
 		}
 	}
 	

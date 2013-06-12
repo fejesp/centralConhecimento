@@ -47,7 +47,7 @@ setBotao("adicionarAnexo", function () {
 	mostrarJanela(true)
 	
 	get("janela").innerHTML = "<h2>Novo anexo</h2>"+
-	"<p>Arquivo: <input type='file' id='anexo-file' name='arquivos[]'> (máx "+KiB2str(_maxCada)+")</p>"+
+	"<p>Arquivo: <input type='file' id='anexo-file' name='arquivos[]'> (máx "+kiB2str(_maxCada)+")</p>"+
 	"<span class='botao' onclick='mostrarJanela(false)'><img src='/imgs/voltar.png'> Voltar</span> "+
 	"<span class='botao' onclick='adicionarAnexo()'><img src='/imgs/enviar.png'> Salvar</span>"
 	
@@ -64,14 +64,14 @@ function adicionarAnexo() {
 		return alert("Nenhum arquivo selecionado")
 	tamanho = file.files[0].size/1024
 	if (tamanho > _maxCada)
-		return alert("O arquivo selecionado é muito grande\nO tamanho máximo permitido por arquivo é de "+KiB2str(_maxCada)+"\nSelecione outro ou contate o administrador")
+		return alert("O arquivo selecionado é muito grande\nO tamanho máximo permitido por arquivo é de "+kiB2str(_maxCada)+"\nSelecione outro ou contate o administrador")
 	if (_tamanhoNovos+tamanho > _maxTotal-1024)
-		return alert("O sistema só permite enviar "+KiB2str(_maxTotal)+" de anexos")
+		return alert("O sistema só permite enviar "+kiB2str(_maxTotal)+" de anexos")
 	
 	// Coloca o item visualmente na lista
 	div = criarTag("div", "", {class: "item item-anexo", oncontextmenu: "menu(event)", "data-tamanho": tamanho})
 	div.innerHTML = "<span class='item-nome'>"+file.files[0].name+"</span>"+
-	"<span class='item-descricao'>"+KiB2str(tamanho)+"</span>"
+	"<span class='item-descricao'>"+kiB2str(tamanho)+"</span>"
 	get("anexos").appendChild(div)
 	
 	// Coloca os dados no formulário

@@ -15,7 +15,7 @@ $_config['mysql_username'] = 'root';
 $_config['mysql_password'] = '';
 $_config['mysql_dbname'] = 'central';
 
-// Limite máximo de espaço (em KiB)
+// Limite máximo de espaço (em kiB)
 $_config['espacoTotal'] = 2*1024*1024; // 2 GiB
 
 // Limite de tentativas de login falhas em 1 hora

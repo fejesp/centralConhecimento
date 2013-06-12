@@ -131,7 +131,7 @@ function redirecionar(tipo, caminho, nome) {
 	if (tipo.substr(-4) == ".php")
 		window.location = "/"+tipo+"?caminho="+encodeURIComponent((caminho=="/" ? "" : caminho)+"/"+nome)
 	else
-		window.location = "/"+tipo+(caminho=="/" ? "" : caminho)+"/"+nome
+		window.location = "/"+tipo+((caminho=="/" ? "" : caminho)+"/"+nome).replace(/\+/g, "%252B")
 }
 
 // Mostra ou esconde a janela
@@ -198,10 +198,10 @@ function round(num, casas) {
 	return Math.round(num*passo)/passo
 }
 
-// Transforma de número de KiB (int) para string
-function KiB2str(num) {
+// Transforma de número de kiB (int) para string
+function kiB2str(num) {
 	if (num < 1000)
-		return round(num)+" KiB"
+		return round(num)+" kiB"
 	if (num < 10240)
 		return round(num/1024, 2)+" MiB"
 	if (num < 102400)

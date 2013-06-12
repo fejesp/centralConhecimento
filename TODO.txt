@@ -5,3 +5,5 @@ revisar todos os textos de visibilidade deixando mais claro o sistema de visibil
 colocar link nas tags dos posts para busca por tag
 
 sistema de busca
+
+gerar cookie random ao criar

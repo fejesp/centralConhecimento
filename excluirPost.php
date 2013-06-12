@@ -36,9 +36,11 @@ if (count($anexos))
 	new Query('DELETE FROM downloads WHERE anexo IN ?', $anexos);
 
 // Exclui todos os itens
-// TODO: excluir fisicamente os anexos
-if (count($anexos))
+if (count($anexos)) {
+	foreach ($anexos as $cada)
+		unlinkAnexo($cada);
 	new Query('DELETE FROM anexos WHERE id IN ?', $anexos);
+}
 new Query('DELETE FROM posts WHERE id=?', $dados['id']);
 
 redirecionar('pasta' . getCaminhoAcima($caminho));

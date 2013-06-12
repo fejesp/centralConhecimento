@@ -37,8 +37,8 @@ if ($_usuario && ($_usuario['admin'] || $dados['criador'] == $_usuario['id'])) {
 
 // Informa as limitações de upload e espaço
 gerarJSVar('_maxNum', (int)ini_get('max_file_uploads'));
-gerarJSVar('_maxTotal', ini2KiB(ini_get('post_max_size')));
-gerarJSVar('_maxCada', ini2KiB(ini_get('upload_max_filesize')));
+gerarJSVar('_maxTotal', ini2kiB(ini_get('post_max_size')));
+gerarJSVar('_maxCada', ini2kiB(ini_get('upload_max_filesize')));
 
 // Mostra o conteúdo
 imprimir('', 'div.clear');

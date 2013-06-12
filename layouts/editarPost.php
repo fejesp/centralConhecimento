@@ -35,8 +35,8 @@ $radio3 = $dados['visibilidade']=='seleto' ? ' checked' : '';
 // Informa as limitações de upload e espaço
 gerarJSVar('_criador', $dados['criador']);
 gerarJSVar('_maxNum', (int)ini_get('max_file_uploads'));
-gerarJSVar('_maxTotal', ini2KiB(ini_get('post_max_size')));
-gerarJSVar('_maxCada', ini2KiB(ini_get('upload_max_filesize')));
+gerarJSVar('_maxTotal', ini2kiB(ini_get('post_max_size')));
+gerarJSVar('_maxCada', ini2kiB(ini_get('upload_max_filesize')));
 if ($_usuario['id'] == $dados['criador'] && $_usuario['usoMax']) {
 	$uso = Query::getValor('SELECT SUM(a.tamanho) FROM anexos AS a JOIN posts AS p ON a.post=p.id WHERE p.criador=?', $_usuario['id']);
 	gerarJSVar('_quotaLivre', $_usuario['usoMax']-$uso);
@@ -126,7 +126,7 @@ foreach ($tags as $tag)
 				$info = $visibilidade;
 			echo '<div class="item item-anexo" oncontextmenu="menu(event)" data-visibilidade="' . $info . '" data-novo="0" data-id="' . $anexo['id'] . '" data-tamanho="' . $anexo['tamanho'] . '">';
 			imprimir($anexo['nome'], 'span.item-nome');
-			imprimir(KiB2str($anexo['tamanho']), 'span.item-descricao');
+			imprimir(kiB2str($anexo['tamanho']), 'span.item-descricao');
 			imprimir(visibilidade2str($anexo['visibilidade'], $nomesSelecionados), 'span.item-visibilidade');
 			echo '</div>';
 		}

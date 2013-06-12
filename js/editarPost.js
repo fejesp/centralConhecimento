@@ -51,7 +51,7 @@ function montarJanelaAnexo(visibilidade, selecionados) {
 		"<label for='anexo-usuario"+_usuarios[i].id+"'>"+assegurarHTML(_usuarios[i].nome)+"</label><br>"
 	
 	janela.innerHTML = (visibilidade ? "<h2>Editando anexo</h2>" : "<h2>Novo anexo</h2>")+
-	(visibilidade ? "" : "<p>Arquivo: <input type='file' id='anexo-file'> (máx "+KiB2str(_maxCada)+")</p>")+
+	(visibilidade ? "" : "<p>Arquivo: <input type='file' id='anexo-file'> (máx "+kiB2str(_maxCada)+")</p>")+
 	"<p class='rotuloEsquerdo'>Visibilidade: </p>"+
 	"<p class='opcoesDireita'>"+
 	"<input type='radio' name='anexo-visibilidade' id='anexo-publico' onchange='atualizarLista2()' checked> <label for='anexo-publico'>para qualquer um</label><br>"+
@@ -124,11 +124,11 @@ function adicionarAnexo() {
 		return alert("Nenhum arquivo selecionado")
 	tamanho = file.files[0].size/1024
 	if (tamanho > _maxCada)
-		return alert("O arquivo selecionado é muito grande\nO tamanho máximo permitido por arquivo é de "+KiB2str(_maxCada)+"\nSelecione outro ou contate o administrador")
+		return alert("O arquivo selecionado é muito grande\nO tamanho máximo permitido por arquivo é de "+kiB2str(_maxCada)+"\nSelecione outro ou contate o administrador")
 	if (_tamanhoNovos+tamanho > _maxTotal-1024)
-		return alert("O sistema só permite enviar "+KiB2str(_maxTotal)+" de anexos por vez\nSalve e edite o post para enviar o restante")
+		return alert("O sistema só permite enviar "+kiB2str(_maxTotal)+" de anexos por vez\nSalve e edite o post para enviar o restante")
 	if (_quotaLivre !== null && _tamanhoNovos+tamanho > _quotaLivre)
-		return alert("Você passou da sua cota de uso de espaço de "+KiB2str(_quota)+"\nContate o administrador para poder usar mais espaço")
+		return alert("Você passou da sua cota de uso de espaço de "+kiB2str(_quota)+"\nContate o administrador para poder usar mais espaço")
 	
 	// Pega os dados da janela
 	visibilidade = get("anexo-publico").checked ? "publico" : (get("anexo-geral").checked ? "geral" : "seleto")
@@ -146,7 +146,7 @@ function adicionarAnexo() {
 	anexos = get("anexos")
 	div = criarTag("div", "", {class: "item item-anexo", oncontextmenu: "menu(event)", "data-novo": "1", "data-tamanho": tamanho})
 	div.innerHTML = "<span class='item-nome'>"+file.files[0].name+"</span>"+
-	"<span class='item-descricao'>"+KiB2str(tamanho)+
+	"<span class='item-descricao'>"+kiB2str(tamanho)+
 	"</span><span class='item-visibilidade'>"+visibilidade2str(visibilidade, selecionados)+"</span>"
 	anexos.appendChild(div)
 	

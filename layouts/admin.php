@@ -41,9 +41,9 @@ if (isset($_GET['novoUsuario']))
 		imprimir($cada['email'], 'td');
 		imprimir($cada['acessos'], 'td');
 		if ($cada['usoMax'])
-			imprimir(KiB2str($cada['uso']) . ' de ' . KiB2str($cada['usoMax']), 'td');
+			imprimir(kiB2str($cada['uso']) . ' de ' . kiB2str($cada['usoMax']), 'td');
 		else
-			imprimir(KiB2str($cada['uso']), 'td');
+			imprimir(kiB2str($cada['uso']), 'td');
 		echo '</tr>';
 	}
 	?>
@@ -64,9 +64,9 @@ $porcemNaoAdmin = round(100*$usoNaoAdmin/$total);
 	<div class="espacoUsadoAdmin" style="width:<?=$porcemAdmin?>%"><?=$porcemAdmin?>%</div>
 	<div class="espacoUsado" style="width:<?=$porcemNaoAdmin?>%"><?=$porcemNaoAdmin?>%</div>
 </div>
-<p><span class="legendaUsoAdmin">@</span> Espaço utilizado pelo administrador: <?=KiB2str($usoAdmin)?><br>
-<span class="legendaUso">@</span> Espaço utilizado pelos outros usuários: <?=KiB2str($usoNaoAdmin)?><br>
-<span class="legendaLivre">@</span> Espaço livre: <?=KiB2str($livre)?></p>
+<p><span class="legendaUsoAdmin">@</span> Espaço utilizado pelo administrador: <?=kiB2str($usoAdmin)?><br>
+<span class="legendaUso">@</span> Espaço utilizado pelos outros usuários: <?=kiB2str($usoNaoAdmin)?><br>
+<span class="legendaLivre">@</span> Espaço livre: <?=kiB2str($livre)?></p>
 
 <h3>Estatísticas</h3>
 <p>[Gráfico de acessos]</p>

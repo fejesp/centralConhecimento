@@ -62,7 +62,7 @@ foreach (Query::query(false, 0, 'SELECT t2.nome FROM tagsEmPosts AS t JOIN tags 
 		if (verificarVisibilidade('anexo', $anexo['id'], $anexo['visibilidade'], $dados['criador'])) {
 			echo '<div class="item item-anexo" onclick="ir(this)">';
 			imprimir($anexo['nome'], 'span.item-nome');
-			imprimir(KiB2str($anexo['tamanho']), 'span.item-descricao');
+			imprimir(kiB2str($anexo['tamanho']), 'span.item-descricao');
 			imprimir(visibilidade2str('anexo', $anexo['id'], $anexo['visibilidade']), 'span.item-visibilidade');
 			echo '</div>';
 		}

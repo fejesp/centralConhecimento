@@ -227,10 +227,10 @@ function morrerComErro($erro) {
 	exit;
 }
 
-// Transforma de número de KiB (int) para string
-function KiB2str($num) {
+// Transforma de número de kiB (int) para string
+function kiB2str($num) {
 	if ($num < 1000)
-		return round($num) . ' KiB';
+		return round($num) . ' kiB';
 	if ($num < 10240)
 		return round($num/1024, 2) . ' MiB';
 	if ($num < 102400)
@@ -279,9 +279,9 @@ function data2str($data) {
 	return 'há ' . ($s==1 ? 'um segundo' : $s . ' segundos');
 }
 
-// Transforma do formato de bytes no php.ini em KiB
+// Transforma do formato de bytes no php.ini em kiB
 // Exemplo: "123456" => 120; "2M" => 2048
-function ini2KiB($str) {
+function ini2kiB($str) {
 	$fator = 1/1024;
 	if (strtoupper(substr($str, -1)) == 'K')
 		$fator = 1;
