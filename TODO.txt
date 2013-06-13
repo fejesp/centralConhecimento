@@ -6,4 +6,4 @@ colocar link nas tags dos posts para busca por tag
 
 sistema de busca
 
-gerar cookie random ao criar
+cuidar com o caractere "+" nas URLs

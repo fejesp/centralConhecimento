@@ -24,5 +24,8 @@ $_config['maxLogins'] = 10;
 // Limite de tempo de uma conexão (em horas)
 $_config['tempoSessao'] = 17;
 
+// Limite de tempo entre logins que podem compartilhar a mesma conexão (em horas)
+$_config['tempoCompartilharSessao'] = 2;
+
 // URL base da central (deve terminar em '/')
 $_config['urlBase'] = 'http://localhost:10082/';

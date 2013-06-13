@@ -39,13 +39,23 @@ if ($senha != $dados['senha']) {
 	redirecionar('index?erroLogin=4&email=' . urlencode($email));
 }
 
-// Cria o cookie
-$cookie = getRandomString(22) . date('YdmH');
+// Verifica se dá para usar o mesmo cookie gerado da última vez
+// Isso permite vários logins ao mesmo tempo na mesma conta
+$cookie = Query::getValor('SELECT cookie FROM usuarios WHERE id=? LIMIT 1', $dados['id']);
+$H = substr($cookie, -2, 2);
+$m = substr($cookie, -4, 2);
+$d = substr($cookie, -6, 2);
+$Y = substr($cookie, -10, 4);
+$time = mktime($H, 0, 0, $m, $d, $Y);
+if (time()-$time > 3600*$_config['tempoCompartilharSessao']) {
+	// Gera o novo cookie e salva no banco de dados
+	$cookie = gerarChaveLogin();
+	new Query('UPDATE usuarios SET cookie=? WHERE id=? LIMIT 1', $cookie, $dados['id']);
+}
+
+// Salva o cookie
 setcookie('central_login', $cookie);
 setcookie('central_id', $dados['id']);
-
-// Salva o cookie no banco de dados
-new Query('UPDATE usuarios SET cookie=? WHERE id=? LIMIT 1', $cookie, $dados['id']);
 
 // Guarda a estatística
 new Query('INSERT INTO logins VALUES (?, 1, NOW())', $dados['id']);

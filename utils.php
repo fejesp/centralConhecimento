@@ -17,13 +17,13 @@ function redirecionar($pagina) {
 	exit;
 }
 
-// Retorna uma string aleatório com o tamanho desejado
-function getRandomString($tamanho) {
+// Retorna uma chave de login, usada para identificar e validar os logins
+function gerarChaveLogin() {
 	$base = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-';
 	$str = '';
-	for ($i=0; $i<$tamanho; $i++)
+	for ($i=0; $i<22; $i++)
 		$str .= $base[mt_rand(0, 63)];
-	return $str;
+	return $str . date('YdmH');
 }
 
 // Gera uma nova senha aleatória
