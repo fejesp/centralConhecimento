@@ -22,21 +22,21 @@ $senha = md5(@$_POST['senha']);
 try {
 	$dados = Query::query(true, NULL, 'SELECT id, senha, ativo FROM usuarios WHERE email=? LIMIT 1', $email);
 } catch (Exception $e) {
-	redirecionar('index?erroLogin=1');
+	redirecionar('index', '', '', 'erroLogin=1');
 }
 
 // Valida os parâmetros
 if (!$dados['ativo'])
-	redirecionar('index?erroLogin=2');
+	redirecionar('index', '', '', 'erroLogin=2');
 
 // Protege contra ataques de força bruta
 $num = Query::getValor('SELECT COUNT(*) FROM logins WHERE usuario=? AND sucesso=0 AND HOUR(data)=HOUR(NOW())', $dados['id']);
 if ($num >= $_config['maxLogins'])
-	redirecionar('index?erroLogin=3');
+	redirecionar('index', '', '', 'erroLogin=3');
 
 if ($senha != $dados['senha']) {
 	new Query('INSERT INTO logins VALUES (?, 0, NOW())', $dados['id']);
-	redirecionar('index?erroLogin=4&email=' . urlencode($email));
+	redirecionar('index', '', '', 'erroLogin=4&email=' . urlencode($email));
 }
 
 // Verifica se dá para usar o mesmo cookie gerado da última vez
@@ -63,5 +63,7 @@ new Query('INSERT INTO logins VALUES (?, 1, NOW())', $dados['id']);
 // Redireciona
 if (empty($_POST['continuar']))
 	redirecionar('pasta');
-else
-	redirecionar($_POST['continuar']);
+else {
+	header("Location: $_POST[continuar]");
+	exit;
+}

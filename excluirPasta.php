@@ -86,4 +86,4 @@ if (count($posts))
 // Delete a pasta (o banco de dados cuida da recursão)
 new Query('DELETE FROM pastas WHERE id=?', $dados['id']);
 
-redirecionar('pasta' . getCaminhoAcima($caminho));
+redirecionar('pasta', getCaminhoAcima($caminho));

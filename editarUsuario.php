@@ -39,4 +39,4 @@ if ($novaSenha)
 	$dados['senha'] = md5($novaSenha);
 if (count($dados))
 	new Query('UPDATE usuarios SET ? WHERE id=? LIMIT 1', $dados, $_usuario['id']);
-redirecionar('');
+redirecionar('index');

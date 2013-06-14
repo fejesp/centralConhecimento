@@ -30,4 +30,4 @@ if (!$_usuario || (!$_usuario['admin'] && $dados['criador'] != $_usuario['id']))
 // Salva as alterações
 new Query('UPDATE posts SET pasta=? WHERE id=? LIMIT 1', $dados2['id'], $dados['id']);
 
-redirecionar('pasta' . getCaminhoAcima($caminho));
+redirecionar('pasta', getCaminhoAcima($caminho));

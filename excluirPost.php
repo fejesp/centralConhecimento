@@ -43,4 +43,4 @@ if (count($anexos)) {
 }
 new Query('DELETE FROM posts WHERE id=?', $dados['id']);
 
-redirecionar('pasta' . getCaminhoAcima($caminho));
+redirecionar('pasta', getCaminhoAcima($caminho));

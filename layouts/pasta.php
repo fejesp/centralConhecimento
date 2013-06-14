@@ -5,9 +5,9 @@ $caminho = $_GET['q'];
 $sucesso = interpretarCaminho($caminho, $dados);
 
 if (!$sucesso) {
-	// Post invisível ou não encontrado
+	// Pasta invisível ou não encontrada
 	imprimir('Erro', 'h2');
-	imprimir('Post não encontrado', 'p strong');
+	imprimir('Pasta não encontrada', 'p strong');
 	return;
 }
 
@@ -74,23 +74,23 @@ for ($i=0; $i<count($subitens); $i++) {
 	$subitem = $subitens[$i];
 	$itemCriador = $subitem['criador'];
 	if ($subitem['tipo'] == 'pasta') {
-		echo "<div class='item item-pasta' onclick='ir(this, \"pasta\")' oncontextmenu='menu(\"pasta\", $itemCriador, event)'>";
+		echo "<a class='item item-pasta' href='" . getHref('pasta', $caminho, $subitem['nome']) . "' oncontextmenu='menu(\"pasta\", $itemCriador, event)'>";
 		imprimir($subitem['nome'], 'span.item-nome');
 		if ($subitem['descricao'])
 			imprimir($subitem['descricao'], 'span.item-descricao');
 		imprimir(visibilidade2str('pasta', $subitem['id'], $subitem['visibilidade']), 'span.item-visibilidade');
-		echo '</div>';
+		echo '</a>';
 	} else if ($subitem['tipo'] == 'post') {
-		echo "<div class='item item-post' onclick='ir(this, \"post\")' oncontextmenu='menu(\"post\", $itemCriador, event)'>";
+		echo "<a class='item item-post' href='" . getHref('post', $caminho, $subitem['nome']) . "' oncontextmenu='menu(\"post\", $itemCriador, event)'>";
 		imprimir($subitem['nome'], 'span.item-nome');
 		imprimir('Postado ' . data2str($subitem['data']), 'span.item-descricao');
 		imprimir(visibilidade2str('post', $subitem['id'], $subitem['visibilidade']), 'span.item-visibilidade');
-		echo '</div>';
+		echo '</a>';
 	} else if ($subitem['tipo'] == 'form') {
-		echo "<div class='item item-form" . ($subitem['ativo'] ? '' : ' inativo') . "' onclick='ir(this, \"form\")' oncontextmenu='menu(\"form\", $itemCriador, event)'>";
+		echo "<a class='item item-form" . ($subitem['ativo'] ? '' : ' inativo') . "' href='" . getHref('form', $caminho, $subitem['nome']) . "' oncontextmenu='menu(\"form\", $itemCriador, event)'>";
 		imprimir($subitem['nome'], 'span.item-nome');
 		imprimir('Criado ' . data2str($subitem['data']), 'span.item-descricao');
-		echo '</div>';
+		echo '</a>';
 	}
 }
 echo '</div>';

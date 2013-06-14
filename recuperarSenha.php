@@ -42,7 +42,7 @@ if (!isset($_GET['passo2'])) {
 	mail($email, $assunto, $mensagem, $cabecalhos);
 	
 	// Retorna para a página inicial
-	redirecionar('index?senhaRecuperada');
+	redirecionar('index', '', '', 'senhaRecuperada');
 } else {
 	// Valida a combinação id/chave
 	$id = (int)@$_GET['id'];
@@ -71,5 +71,5 @@ if (!isset($_GET['passo2'])) {
 	$cabecalhos = "From: ti@fejesp.org.br\r\nContent-type: text/html; charset=UTF-8";
 	mail($dados['email'], $assunto, $mensagem, $cabecalhos);
 	
-	redirecionar('index?senhaRecuperada2');
+	redirecionar('index', '', '', 'senhaRecuperada2');
 }

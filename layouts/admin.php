@@ -1,7 +1,7 @@
 <?php
 // Protege o acesso à página
 if (!$_usuario || !$_usuario['admin'])
-	redirecionar('');
+	redirecionar('index');
 gerarJSVar('_meuId', $_usuario['id']);
 if (isset($_GET['novoUsuario']))
 	gerarJSVar('_novoUsuario', $_GET['novoUsuario']);

@@ -34,4 +34,4 @@ if (substr($novoCaminho, 0, strlen($caminho)) == $caminho)
 // Salva as alterações
 new Query('UPDATE pastas SET pai=? WHERE id=? LIMIT 1', $dados2['id'], $dados['id']);
 
-redirecionar('pasta' . getCaminhoAcima($caminho));
+redirecionar('pasta', getCaminhoAcima($caminho));

@@ -7,3 +7,7 @@ colocar link nas tags dos posts para busca por tag
 sistema de busca
 
 cuidar com o caractere "+" nas URLs
+
+teste de fogo:
+!"#$%&'()*+,-. :;<=>?@[\]^_`{|}~
+não pode \ / : * ? " < > |

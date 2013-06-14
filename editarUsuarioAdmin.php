@@ -28,7 +28,7 @@ try {
 	if ($criar) {
 		$senha = gerarSenha();
 		new Query('INSERT INTO usuarios VALUES (NULL, ?, ?, ?, 0, 1, ?, ?)', $nome, $email, md5($senha), $usoMax, gerarChaveLogin());
-		redirecionar('admin/?novoUsuario=' . $senha);
+		redirecionar('admin', '', '', 'novoUsuario=' . $senha);
 	} else {
 		new Query('UPDATE usuarios SET nome=?, email=?, usoMax=? WHERE id=? LIMIT 1', $nome, $email, $usoMax, $id);
 		redirecionar('admin');

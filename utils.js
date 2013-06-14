@@ -41,7 +41,7 @@ function montarCaminho() {
 	
 	var gerarOnclick = function (caminho) {
 		return function () {
-			window.location.href = "/pasta"+caminho
+			redirecionar("pasta", caminho)
 		}
 	}
 	
@@ -122,16 +122,17 @@ var Menu = (function () {
 })()
 
 // Redireciona para uma outra página
-// Exemplo: redirecionar("pasta", "/um/dois", "tres") => "/pasta/um/dois/tres"
+// Exemplo: redirecionar("pasta", "/um/dois", "tres", "criar") => "/pasta/um/dois/tres?criar"
 // redirecionar("index") => "/index"
-// redirecionar("script.php", "/um", "dois") => "/script.php?caminho=/um/dois"
-function redirecionar(tipo, caminho, nome) {
+// redirecionar("script.php", "/um", "dois", "criar") => "/script.php?caminho=/um/dois&criar"
+function redirecionar(tipo, caminho, nome, query) {
 	caminho = caminho || "/"
 	nome = nome || ""
+	caminho = (caminho=="/" ? "" : caminho)+"/"+nome
 	if (tipo.substr(-4) == ".php")
-		window.location = "/"+tipo+"?caminho="+encodeURIComponent((caminho=="/" ? "" : caminho)+"/"+nome)
+		window.location = "/"+tipo+"?caminho="+encodeURIComponent(caminho)+(query ? "&"+query : "")
 	else
-		window.location = "/"+tipo+((caminho=="/" ? "" : caminho)+"/"+nome).replace(/\+/g, "%252B")
+		window.location = "/"+tipo+escaparUrl(caminho)+(query ? "?"+query : "")
 }
 
 // Mostra ou esconde a janela
@@ -209,4 +210,10 @@ function kiB2str(num) {
 	if (num < 1024000)
 		return round(num/1024)+" MiB"
 	return round(num/(1024*1024), 2)+" GiB"
+}
+
+// Trata uma url, escapando os caracteres necessários
+function escaparUrl(url) {
+	url = encodeURIComponent(url)
+	return url.replace(/%2F/g, "/").replace(/%/g, "%25")
 }

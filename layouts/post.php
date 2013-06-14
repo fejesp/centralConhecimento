@@ -51,7 +51,7 @@ imprimir($dados['conteudo'], 'div.subConteudo');
 <p><?php
 // Exibe as tags
 foreach (Query::query(false, 0, 'SELECT t2.nome FROM tagsEmPosts AS t JOIN tags AS t2 ON t.tag=t2.id WHERE t.post=?', $dados['id']) as $tag)
-	echo '<span class="tag">' . assegurarHTML($tag) . '</span>';
+	echo '<a class="tag" href="' . getHref('tag', '', $tag) . '">' . assegurarHTML($tag) . '</a>';
 ?></p>
 <h2>Anexos</h2>
 <div class="listagem">

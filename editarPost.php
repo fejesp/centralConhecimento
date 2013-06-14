@@ -150,7 +150,7 @@ try {
 	}
 	
 	// Tudo ok, volta para a página anterior
-	redirecionar('pasta' . ($criar ? $caminho : getCaminhoAcima($caminho)));
+	redirecionar('pasta', $criar ? $caminho : getCaminhoAcima($caminho));
 } catch (Exception $e) {
 	Query::$conexao->rollback();
 	morrerComErro('Falha ao gravar os dados: ' . $e->getMessage());

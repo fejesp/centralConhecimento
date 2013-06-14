@@ -57,15 +57,15 @@ function menu(tipo, criador, evento) {
 }
 
 setBotao("criarPasta", function () {
-	redirecionar("editarPasta", caminho, "?criar")
+	redirecionar("editarPasta", caminho, "", "criar")
 })
 
 setBotao("criarPost", function () {
-	redirecionar("editarPost", caminho, "?criar")
+	redirecionar("editarPost", caminho, "", "criar")
 })
 
 setBotao("criarForm", function () {
-	redirecionar("editarForm", caminho, "?criar")
+	redirecionar("editarForm", caminho, "", "criar")
 })
 
 // Abre uma janela para escolher o novo local de um item

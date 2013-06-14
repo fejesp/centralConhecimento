@@ -52,7 +52,7 @@ try {
 	Query::$conexao->commit();
 	
 	// Tudo ok, volta para a página anterior
-	redirecionar('pasta' . ($criar ? $caminho : getCaminhoAcima($caminho)));
+	redirecionar('pasta', $criar ? $caminho : getCaminhoAcima($caminho));
 } catch (Exception $e) {
 	morrerComErro('Falha ao gravar os dados, provavelmente já existe uma pasta com esse nome');
 }

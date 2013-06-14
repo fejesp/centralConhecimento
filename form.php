@@ -117,7 +117,7 @@ try {
 	mail($email, $assunto, $mensagem, $cabecalhos);
 	
 	// Vai para a pasta
-	redirecionar('pasta' . getCaminhoAcima($caminho));
+	redirecionar('pasta', getCaminhoAcima($caminho));
 } catch (Exception $e) {
 	Query::$conexao->rollback();
 	morrerComErro('Falha ao gravar os dados: ' . $e->getMessage());
