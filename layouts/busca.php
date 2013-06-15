@@ -1,58 +1,179 @@
+<?php
+// Pega o termo de busca
+$busca = @$_GET['busca'];
+?>
 <h2>Buscar</h2>
 
-<div class="tags">
-	<h3>Tags</h3>
-	<span class="tag1">Primeira tag</span>
-	<span class="tag2">Segunda tag</span>
-	<span class="tag3">Terceira tag</span>
-	<span class="tag4">Quarta tag</span>
-	<span class="tag5">Quinta tag</span>
-	<span class="tag1">Primeira tag</span>
-	<span class="tag3">Segunda tag</span>
-	<span class="tag5">Terceira tag</span>
-	<span class="tag2">Quarta tag</span>
-	<span class="tag4">Quinta tag</span>
-</div>
+<form>
+<p>Buscar por: <input size="50" autofocus name="busca" value="<?=assegurarHTML($busca)?>">
+<input type="submit" style="display:none" id="submit">
+<span class="botao" onclick="get('submit').click()"><img src="/imgs/enviar.png"> Buscar</span>
+</p>
+</form>
 
-<p>Texto de busca: <input size="50" autofocus></p>
+<?php
+if ($busca) {
+	// Interpreta os termos de busca
+	// A sintaxe aceita é de palavras separadas por espaços
+	// Pode-se reunir palavras numa expressão com aspas duplas
+	// Pode-se negar uma palavra colocando um sinal de menos antes
+	// Exemplo: um "duas palavras" -remover -"isso também não"
+	$len = strlen($busca);
+	$cache = '';
+	$naoIncluir = false;
+	$termos = array();
+	$naoTermos = array();
+	$aspas = false;
+	for ($i=0; $i<$len; $i++) {
+		$c = $busca[$i];
+		if ($c == '-' && $cache == '' && !$aspas)
+			$naoIncluir = true;
+		else if ($c == '"') {
+			if ($aspas)
+				salvarCache();
+			$aspas = !$aspas;
+		} else if ($c == ' ' && !$aspas)
+			salvarCache();
+		else
+			$cache .= $c;
+	}
+	salvarCache();
+	
+	// Montas as querys de busca SQL
+	$queryNome = getQueryBusca('nome');
+	$queryDescricao = getQueryBusca('descricao');
+	$queryConteudo = getQueryBusca('conteudo');
+	
+	// Vai montando toda a árvore de pastas visíveis e separando as pastas da resposta
+	$rPastas = array(); // Irá reunir as pastas que são resposta da busca
+	$nomesPastas = array(0 => ''); // Armazena os nomes completos das pastas associado por id
+	$idPastas = array(0); // Armazena os ids das pastas que não são parte do resultado
+	$nivel = array(0); // Armazena os ids das pastas do nível atual
+	$query = "SELECT id, nome, pai, descricao, visibilidade, ($queryNome OR $queryDescricao) AS resultado FROM pastas WHERE id!=0 AND pai IN ? AND " . getQueryVisibilidade('pasta');
+	while (count($nivel)) {
+		$temp = Query::query(false, NULL, $query, $nivel);
+		$nivel = array();
+		foreach ($temp as $cada) {
+			// Trata os resultados desse nível, separando o que irá continuar a ser buscado 
+			$nomesPastas[$cada['id']] = $nomesPastas[$cada['pai']] . '/' . $cada['nome'];
+			if ($cada['resultado'])
+				$rPastas[] = $cada;
+			else {
+				$nivel[] = $cada['id'];
+				$idPastas[] = $cada['id'];
+			}
+		}
+	}
+	
+	// Busca os posts visíveis nas pastas fora do resultado que se encaixam na busca
+	$nomesPosts = array(); // Armazena os nomes dos posts que serão usados para buscar pelos anexos
+	$idPosts = array(); // Armazena os ids dos posts que não são parte do resultado
+	$rPosts = array(); // Vetor de resultados de posts
+	if (count($idPastas)) {
+		$query = "SELECT id, pasta, nome, data, visibilidade, criador, ($queryNome OR $queryConteudo) AS resultado FROM posts WHERE pasta IN ? AND " . getQueryVisibilidade('post');
+		foreach (Query::query(false, NULL, $query, $idPastas) as $cada) {
+			if ($cada['resultado'])
+				$rPosts[] = $cada;
+			else {
+				$nomesPosts[$cada['id']] = $nomesPastas[$cada['pasta']] . '/' . $cada['nome'];
+				$idPosts[] = $cada['id'];
+			}
+		}
+	}
+	
+	// Busca os anexos visíveis nos posts fora do resultado que se encaixam na busca
+	if (count($idPosts)) {
+		$query = 'SELECT * FROM anexos WHERE post IN ? AND ' . getQueryVisibilidade('anexo') . " AND $queryNome"; // TODO: ver o *
+		$rAnexos = Query::query(false, NULL, $query, $idPosts);
+	} else
+		$rAnexos = array();
+	
+	// Busca os forms visíveis nas pastas fora do resultado que se encaixam na busca
+	if (count($idPastas)) {
+		$query = 'SELECT * FROM forms WHERE pasta IN ? AND ' . getQueryVisibilidade('form') . " AND ($queryNome OR $queryDescricao)"; // TODO: ver o *
+		$rForms = Query::query(false, NULL, $query, $idPastas);
+	} else
+		$rForms = array();
+	
+	imprimir("Resultados", 'h2');
+	$n = count($rPastas)+count($rPosts)+count($rAnexos)+count($rForms);
+	imprimir($n ? ($n==1 ? 'Um resultado' : "$n resultados") : 'Nenhum resultado');
+	
+	echo '<div class="listagem">';
+	foreach ($rForms as $form) {
+		echo '<a class="item item-form' . ($form['ativo'] ? '' : ' inativo') . '" href="' . getHref('form', $nomesPastas[$form['pasta']], $form['nome']) . '">';
+		imprimir($form['nome'], 'span.item-nome');
+		imprimir('Criado ' . data2str($form['data']), 'span.item-descricao');
+		echo '</a>';
+	}
+	foreach ($rPastas as $pasta) {
+		echo '<a class="item item-pasta" href="' . getHref('pasta', $nomesPastas[$pasta['pai']], $pasta['nome']) . '">';
+		imprimir($pasta['nome'], 'span.item-nome');
+		if ($pasta['descricao'])
+			imprimir($pasta['descricao'], 'span.item-descricao');
+		imprimir(visibilidade2str('pasta', $pasta['id'], $pasta['visibilidade']), 'span.item-visibilidade');
+		echo '</a>';
+	}
+	foreach ($rPosts as $post) {
+		echo '<a class="item item-post" href="' . getHref('post', $nomesPastas[$post['pasta']], $post['nome']) . '">';
+		imprimir($post['nome'], 'span.item-nome');
+		imprimir('Postado ' . data2str($post['data']), 'span.item-descricao');
+		imprimir(visibilidade2str('post', $post['id'], $post['visibilidade']), 'span.item-visibilidade');
+		echo '</a>';
+	}
+	foreach ($rAnexos as $anexo) {
+		echo '<a class="item item-anexo" href="' . getHref('anexo', $nomesPosts[$anexo['post']], $anexo['nome']) . '">';
+		imprimir($anexo['nome'], 'span.item-nome');
+		imprimir(kiB2str($anexo['tamanho']), 'span.item-descricao');
+		imprimir(visibilidade2str('anexo', $anexo['id'], $anexo['visibilidade']), 'span.item-visibilidade');
+		echo '</a>';
+	}
+	echo '</div>';
+}
 
-<div class="rotuloEsquerdo"><p>Buscar </p></div>
-<div class="opcoesDireita"><p>
-	<input type="radio"> na pasta [nome da última pasta]<br>
-	<input type="radio"> em todas as pastas
-</p></div>
+// Função auxiliar na interpretação dos termos da busca
+function salvarCache() {
+	global $cache, $naoIncluir, $termos, $naoTermos;
+	if ($cache) {
+		$cache = str_replace('%', '\\%', str_replace('_', '\\_', Query::$conexao->real_escape_string($cache)));
+		if ($naoIncluir)
+			$naoTermos[] = $cache;
+		else
+			$termos[] = $cache;
+		$cache = '';
+	}
+	$naoIncluir = false;
+}
 
-<div class="rotuloEsquerdo"><p>Buscar por </p></div>
-<div class="opcoesDireita"><p>
-	<input type="checkbox"> pastas<br>
-	<input type="checkbox"> posts<br>
-	<input type="checkbox"> formulários<br>
-	<input type="checkbox"> anexos
-</p></div>
+// Retorna a query de busca no campo com o nome dado
+// Exemplo: 'nome' => '(nome LIKE \'%a%\' AND nome NOT LIKE \'%b%\')'
+function getQueryBusca($campo) {
+	global $termos, $naoTermos;
+	$partes = array();
+	foreach ($termos as $cada)
+		$partes[] = "$campo LIKE '%$cada%'";
+	foreach ($naoTermos as $cada)
+		$partes[] = "$campo NOT LIKE '%$cada%'";
+	return '(' . implode(' AND ', $partes) . ')';
+}
 
-<div class="clear"><span class="botao"><img src="/imgs/enviar.png"> Enviar</span></div>
+function visibilidade2str($tipo, $id, $visibilidade) {
+	if ($visibilidade == 'publico')
+		return 'Visível publicamente';
+	else if ($visibilidade == 'geral')
+		return 'Visível para todos os usuários logados';
+	else {
+		$selecionados = Query::query(false, 0, 'SELECT u.nome FROM usuarios AS u JOIN visibilidades AS v ON v.usuario=u.id WHERE v.tipoItem=? AND v.item=? ORDER BY u.nome', $tipo, $id);
+		if (count($selecionados))
+			return 'Visível para somente para ' . implode(', ', $selecionados) . ' e o criador';
+		else
+			return 'Visível somente para o criador';
+	}
+}
+?>
 
-<h2>Resultados</h2>
-<div class="listagem">
-	<div class="item">
-		<img src="/imgs/folder.png">
-		<span class="item-nome">[Item 1]</span>
-		<span class="item-descricao">[descrição]</span>
-		<img src="/imgs/seta-direita.png" style="float:right">
-	</div>
-	<div class="item">
-		<img src="/imgs/post.png">
-		<span class="item-nome">[Item 2]</span>
-		<span class="item-descricao">[descrição]</span>
-	</div>
-	<div class="item">
-		<img src="/imgs/form.png">
-		<span class="item-nome">[Item 3]</span>
-		<span class="item-descricao">[descrição]</span>
-	</div>
-	<div class="item">
-		<img src="/imgs/anexo.png">
-		<span class="item-nome">[Item 4]</span>
-		<span class="item-descricao">[descrição]</span>
-	</div>
-</div>
+<?php
+imprimir('Busca por tag', 'h2');
+imprimir('Escolhe entre as tags mais comuns');
+imprimirNuvemTags(15);
+?>

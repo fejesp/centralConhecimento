@@ -322,3 +322,39 @@ function getHref($tipo, $caminho, $nome) {
 	$href = str_replace('%', '%25', $href);
 	return assegurarHTML($href);
 }
+
+// Imprime uma nuvem de tags (com no o máximo de tags desejado)
+function imprimirNuvemTags($num) {
+	$nuvem = Query::query(false, NULL, 'SELECT t.nome, COUNT(*) AS num FROM tags AS t JOIN tagsEmPosts AS tEP ON tEP.tag=t.id GROUP BY t.id HAVING COUNT(*)>0 ORDER BY COUNT(*) DESC LIMIT ?', $num);
+	if (!count($nuvem))
+		return;
+	echo '<div>';
+	$max = $nuvem[0]['num'];
+	foreach ($nuvem as $cada) {
+		$href = getHref('tag', '', $cada['nome']);
+		echo '<a class="tag' . round(5-4*$cada['num']/$max) . '" href="' . $href . '">' . assegurarHTML($cada['nome']) . '</a>';
+	}
+	echo '</div>';
+}
+
+// Retorna a parte da query que verifica a visibilidade de um item
+// $tipo deve ser 'pasta', 'post', 'anexo' ou 'form'
+function getQueryVisibilidade($tipo) {
+	global $_usuario;
+	if (!$_usuario)
+		return $tipo=='form' ? 'ativo=1' : "visibilidade='publico'";
+	else if ($_usuario['admin'])
+		return "1";
+	else if ($tipo == 'form')
+		return "(ativo=1 OR criador=$_usuario[id])";
+	else if ($tipo != 'anexo')
+		return "(visibilidade='publico'
+		OR visibilidade='geral'
+		OR criador=$_usuario[id]
+		OR EXISTS (SELECT * FROM visibilidades WHERE tipoItem='$tipo' AND item=id AND usuario=$_usuario[id]))";
+	else
+		return "(visibilidade='publico'
+		OR visibilidade='geral'
+		OR EXISTS (SELECT * FROM visibilidades WHERE tipoItem='anexo' AND item=id AND usuario=$_usuario[id]))
+		OR $_usuario[id]=(SELECT criador FROM posts WHERE id=post LIMIT 1)";
+}

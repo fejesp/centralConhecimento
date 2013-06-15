@@ -1,13 +1,9 @@
-﻿usar links <a> na pasta (SEO)
-
-revisar todos os textos de visibilidade deixando mais claro o sistema de visibilidades
-
-colocar link nas tags dos posts para busca por tag
+﻿revisar todos os textos de visibilidade deixando mais claro o sistema de visibilidades
 
 sistema de busca
-
-cuidar com o caractere "+" nas URLs
 
 teste de fogo:
 !"#$%&'()*+,-. :;<=>?@[\]^_`{|}~
 não pode \ / : * ? " < > |
+
+!#$%&'()+,-. ;=@[]^_`{}~

@@ -87,13 +87,7 @@ else
 <h2>Tags</h2>
 <div class="tags">
 <?php
-// Gera a nuvem de tags
-$nuvem = Query::query(false, NULL, 'SELECT t.nome, COUNT(*) AS num FROM tags AS t JOIN tagsEmPosts AS tEP ON tEP.tag=t.id GROUP BY t.id HAVING COUNT(*)>0 ORDER BY COUNT(*) DESC LIMIT 10');
-if (count($nuvem)) {
-	$max = $nuvem[0]['num'];
-	foreach ($nuvem as $cada)
-		echo '<span class="tag' . round(5-4*$cada['num']/$max) . '" onclick="adicionarTagDaNuvem(this)">' . assegurarHTML($cada['nome']) . '</span>';
-}
+imprimirNuvemTags(10);
 ?>
 </div>
 <input type="hidden" name="tags" id="tags" value="<?=assegurarHTML(json_encode($tags))?>">
