@@ -12,7 +12,7 @@ if (!$idTag) {
 }
 
 // Vai montando toda a árvore de pastas visíveis
-$pastas = array(0 => ''); // Armazena as pastas no formato id => nomeCompleto
+$nomesPastas = array(0 => ''); // Armazena os nomes completos das pastas associado por id
 $idPastas = array(0); // Armazena os ids das pastas todas
 $nivel = array(0); // Armazena os ids das pastas do nível atual
 $query = 'SELECT id, nome, pai FROM pastas WHERE id!=0 AND pai IN ? AND ' . getQueryVisibilidade('pasta');
@@ -20,7 +20,7 @@ while (count($nivel)) {
 	$temp = Query::query(false, NULL, $query, $nivel);
 	$nivel = array();
 	foreach ($temp as $cada) {
-		$pastas[$cada['id']] = $pastas[$cada['pai']] . '/' . $cada['nome'];
+		$nomesPastas[$cada['id']] = $nomesPastas[$cada['pai']] . '/' . $cada['nome'];
 		$nivel[] = $cada['id'];
 		$idPastas[] = $cada['id'];
 	}
@@ -40,11 +40,10 @@ imprimir($n ? ($n==1 ? 'Um resultado' : "$n resultados") : 'Nenhum resultado');
 
 echo '<div class="listagem">';
 foreach ($posts as $post) {
-	$href = getHref('post', $pastas[$post['pasta']], $post['nome']);
-	echo "<a class='item item-post' href='$href'>";
+	echo '<a class="item item-post" href="' . getHref('post', $nomesPastas[$post['pasta']], $post['nome']) . '">';
 	imprimir($post['nome'], 'span.item-nome');
 	imprimir('Postado ' . data2str($post['data']), 'span.item-descricao');
-	imprimir(visibilidade2str($post['id'], $post['visibilidade']), 'span.item-visibilidade');
+	imprimir(visibilidade2str('post', $post['id'], $post['visibilidade']), 'span.item-visibilidade');
 	echo '</a>';
 }
 echo '</div>';
@@ -52,18 +51,3 @@ echo '</div>';
 // Gera a nuvem de tags
 imprimir('Nuvem de tags', 'h2');
 imprimirNuvemTags(25);
-
-function visibilidade2str($id, $visibilidade) {
-	if ($visibilidade == 'publico')
-		return 'Visível publicamente';
-	else if ($visibilidade == 'geral')
-		return 'Visível para todos os usuários logados';
-	else {
-		$selecionados = Query::query(false, 0, 'SELECT u.nome FROM usuarios AS u JOIN visibilidades AS v ON v.usuario=u.id WHERE v.tipoItem="post" AND v.item=? ORDER BY u.nome', $id);
-		if (count($selecionados))
-			return 'Visível para somente para ' . implode(', ', $selecionados) . ' e o criador';
-		else
-			return 'Visível somente para o criador';
-	}
-}
-?>

@@ -60,28 +60,12 @@ foreach (Query::query(false, 0, 'SELECT t2.nome FROM tagsEmPosts AS t JOIN tags 
 	$anexos = Query::query(false, NULL, 'SELECT id, nome, visibilidade, tamanho FROM anexos WHERE post=? ORDER BY nome', $dados['id']);
 	foreach ($anexos as $anexo) {
 		if (verificarVisibilidade('anexo', $anexo['id'], $anexo['visibilidade'], $dados['criador'])) {
-			echo '<div class="item item-anexo" onclick="ir(this)">';
+			echo '<a class="item item-anexo" href="' . getHref('anexo', $caminho, $anexo['nome']) . '">';
 			imprimir($anexo['nome'], 'span.item-nome');
 			imprimir(kiB2str($anexo['tamanho']), 'span.item-descricao');
 			imprimir(visibilidade2str('anexo', $anexo['id'], $anexo['visibilidade']), 'span.item-visibilidade');
-			echo '</div>';
+			echo '</a>';
 		}
 	}
 	?>
 </div>
-
-<?php
-function visibilidade2str($tipo, $id, $visibilidade) {
-	if ($visibilidade == 'publico')
-		return 'Visível publicamente';
-	else if ($visibilidade == 'geral')
-		return 'Visível para todos os usuários logados';
-	else {
-		$selecionados = Query::query(false, 0, 'SELECT u.nome FROM usuarios AS u JOIN visibilidades AS v ON v.usuario=u.id WHERE v.tipoItem=? AND v.item=? ORDER BY u.nome', $tipo, $id);
-		if (count($selecionados))
-			return 'Visível para somente para ' . implode(', ', $selecionados) . ' e o criador';
-		else
-			return 'Visível somente para o criador';
-	}
-}
-?>

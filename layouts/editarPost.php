@@ -111,30 +111,16 @@ foreach ($tags as $tag)
 			$idsSelecionados = array();
 			$nomesSelecionados = array();
 			if ($visibilidade == 'seleto') {
-				foreach (Query::query(false, NULL, 'SELECT u.id AS id, u.nome AS nome FROM usuarios AS u JOIN visibilidades AS v ON v.usuario=u.id WHERE v.tipoItem="anexo" AND v.item=?', $anexo['id']) as $cada) {
-					$idsSelecionados[] = $cada['id'];
-					$nomesSelecionados[] = $cada['nome'];
-				}
+				$idsSelecionados = Query::query(false, 0, 'SELECT usuario FROM visibilidades WHERE tipoItem="anexo" AND item=?', $anexo['id']);
 				$info = 'seleto' . json_encode($idsSelecionados);
 			} else
 				$info = $visibilidade;
 			echo '<div class="item item-anexo" oncontextmenu="menu(event)" data-visibilidade="' . $info . '" data-novo="0" data-id="' . $anexo['id'] . '" data-tamanho="' . $anexo['tamanho'] . '">';
 			imprimir($anexo['nome'], 'span.item-nome');
 			imprimir(kiB2str($anexo['tamanho']), 'span.item-descricao');
-			imprimir(visibilidade2str($anexo['visibilidade'], $nomesSelecionados), 'span.item-visibilidade');
+			imprimir(visibilidade2str('anexo', $anexo['id'], $anexo['visibilidade']), 'span.item-visibilidade');
 			echo '</div>';
 		}
-	}
-	
-	function visibilidade2str($visibilidade, $selecionados) {
-		if ($visibilidade == 'publico')
-			return 'Visível publicamente';
-		else if ($visibilidade == 'geral')
-			return 'Visível para todos os usuários logados';
-		else if (count($selecionados))
-			return 'Visível para somente para ' . implode(', ', $selecionados) . ' e o criador';
-		else
-			return 'Visível somente para o criador';
 	}
 	?>
 </div>

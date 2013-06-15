@@ -358,3 +358,18 @@ function getQueryVisibilidade($tipo) {
 		OR EXISTS (SELECT * FROM visibilidades WHERE tipoItem='anexo' AND item=id AND usuario=$_usuario[id]))
 		OR $_usuario[id]=(SELECT criador FROM posts WHERE id=post LIMIT 1)";
 }
+
+// Retorna a configuração de visibilidade de um item num formato legível
+function visibilidade2str($tipo, $id, $visibilidade) {
+	if ($visibilidade == 'publico')
+		return 'Visível publicamente';
+	else if ($visibilidade == 'geral')
+		return 'Visível para todos os usuários logados';
+	else {
+		$selecionados = Query::query(false, 0, 'SELECT u.nome FROM usuarios AS u JOIN visibilidades AS v ON v.usuario=u.id WHERE v.tipoItem=? AND v.item=? ORDER BY u.nome', $tipo, $id);
+		if (count($selecionados))
+			return 'Visível para somente para ' . implode(', ', $selecionados) . ' e o criador';
+		else
+			return 'Visível somente para o criador';
+	}
+}

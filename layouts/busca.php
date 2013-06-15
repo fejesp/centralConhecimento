@@ -49,7 +49,7 @@ if ($busca) {
 	$nomesPastas = array(0 => ''); // Armazena os nomes completos das pastas associado por id
 	$idPastas = array(0); // Armazena os ids das pastas que não são parte do resultado
 	$nivel = array(0); // Armazena os ids das pastas do nível atual
-	$query = "SELECT id, nome, pai, descricao, visibilidade, ($queryNome OR $queryDescricao) AS resultado FROM pastas WHERE id!=0 AND pai IN ? AND " . getQueryVisibilidade('pasta');
+	$query = "SELECT id, nome, descricao, pai, visibilidade, ($queryNome OR $queryDescricao) AS resultado FROM pastas WHERE id!=0 AND pai IN ? AND " . getQueryVisibilidade('pasta');
 	while (count($nivel)) {
 		$temp = Query::query(false, NULL, $query, $nivel);
 		$nivel = array();
@@ -70,7 +70,7 @@ if ($busca) {
 	$idPosts = array(); // Armazena os ids dos posts que não são parte do resultado
 	$rPosts = array(); // Vetor de resultados de posts
 	if (count($idPastas)) {
-		$query = "SELECT id, pasta, nome, data, visibilidade, criador, ($queryNome OR $queryConteudo) AS resultado FROM posts WHERE pasta IN ? AND " . getQueryVisibilidade('post');
+		$query = "SELECT id, pasta, nome, data, visibilidade, ($queryNome OR $queryConteudo) AS resultado FROM posts WHERE pasta IN ? AND " . getQueryVisibilidade('post');
 		foreach (Query::query(false, NULL, $query, $idPastas) as $cada) {
 			if ($cada['resultado'])
 				$rPosts[] = $cada;
@@ -83,14 +83,14 @@ if ($busca) {
 	
 	// Busca os anexos visíveis nos posts fora do resultado que se encaixam na busca
 	if (count($idPosts)) {
-		$query = 'SELECT * FROM anexos WHERE post IN ? AND ' . getQueryVisibilidade('anexo') . " AND $queryNome"; // TODO: ver o *
+		$query = 'SELECT * FROM anexos WHERE post IN ? AND ' . getQueryVisibilidade('anexo') . " AND $queryNome";
 		$rAnexos = Query::query(false, NULL, $query, $idPosts);
 	} else
 		$rAnexos = array();
 	
 	// Busca os forms visíveis nas pastas fora do resultado que se encaixam na busca
 	if (count($idPastas)) {
-		$query = 'SELECT * FROM forms WHERE pasta IN ? AND ' . getQueryVisibilidade('form') . " AND ($queryNome OR $queryDescricao)"; // TODO: ver o *
+		$query = 'SELECT pasta, nome, data, ativo FROM forms WHERE pasta IN ? AND ' . getQueryVisibilidade('form') . " AND ($queryNome OR $queryDescricao)";
 		$rForms = Query::query(false, NULL, $query, $idPastas);
 	} else
 		$rForms = array();
@@ -157,23 +157,6 @@ function getQueryBusca($campo) {
 	return '(' . implode(' AND ', $partes) . ')';
 }
 
-function visibilidade2str($tipo, $id, $visibilidade) {
-	if ($visibilidade == 'publico')
-		return 'Visível publicamente';
-	else if ($visibilidade == 'geral')
-		return 'Visível para todos os usuários logados';
-	else {
-		$selecionados = Query::query(false, 0, 'SELECT u.nome FROM usuarios AS u JOIN visibilidades AS v ON v.usuario=u.id WHERE v.tipoItem=? AND v.item=? ORDER BY u.nome', $tipo, $id);
-		if (count($selecionados))
-			return 'Visível para somente para ' . implode(', ', $selecionados) . ' e o criador';
-		else
-			return 'Visível somente para o criador';
-	}
-}
-?>
-
-<?php
 imprimir('Busca por tag', 'h2');
 imprimir('Escolhe entre as tags mais comuns');
 imprimirNuvemTags(15);
-?>
