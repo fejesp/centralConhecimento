@@ -9,7 +9,7 @@ if (isset($_POST['nome'])) {
 	<p><strong>Email</strong>: $emailHTML</p>
 	<p><strong>Mensagem</strong>: $mensagem</p>";
 	$cabecalhos = "From: ti@fejesp.org.br\r\nReply-to:$email\r\nContent-type: text/html; charset=UTF-8";
-	mail('ti@fejesp.org.br', $assunto, $mensagem, $cabecalhos);
+	mail('ti@fejesp.org.br', $assunto, $mensagem, $cabecalhos, '-r ti@fejesp.org.br');
 	redirecionar('index');
 }
 ?>

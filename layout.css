@@ -158,7 +158,8 @@ footer {
 }
 
 .tag1, .tag2, .tag3, .tag4, .tag5 {
-	margin:10px;
+	display:inline-block;
+	margin:5px 7px;
 	border-bottom:thin #888 solid;
 	cursor:pointer;
 	white-space:nowrap;
@@ -206,7 +207,7 @@ footer {
 	text-decoration:none;
 	border-bottom:thin #888 solid;
 	padding:10px;
-	padding-left:30px;
+	padding-left:35px;
 	cursor:pointer;
 	background-repeat:no-repeat;
 }
@@ -216,6 +217,7 @@ footer {
 }
 
 .item-pasta {
+	padding-right:30px;
 	background-image:url(/imgs/pasta.png), url(/imgs/seta-direita.png);
 	background-position:1% center, 99% center;
 }
@@ -237,7 +239,6 @@ footer {
 
 .item-nome {
 	font-weight:bold;
-	font-size:larger;
 }
 
 .item-descricao {

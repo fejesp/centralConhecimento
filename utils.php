@@ -11,11 +11,10 @@
 // Redireciona o usuário para outra página
 function redirecionar($tipo, $caminho='/', $nome='', $query='') {
 	$caminho = ($caminho=='/' ? '' : $caminho) . '/' . $nome;
-	$caminho = urlencode($caminho);
 	if (substr($tipo, -4) == '.php')
-		$location = '/' . $tipo . '?caminho=' . $caminho . ($query ? '&' . $query : '');
+		$location = '/' . $tipo . '?caminho=' . urlencode($caminho) . ($query ? '&' . $query : '');
 	else {
-		$caminho = str_replace('%2F', '/', $caminho);
+		$caminho = strtr($caminho, array('?' => '%3F', '\\' => '%5C', '#' => '%23', '&' => '%26', '+' => '%2B'));
 		$caminho = str_replace('%', '%25', $caminho);
 		$location = '/' . $tipo . $caminho . ($query ? '?' . $query : '');
 	}
@@ -317,8 +316,7 @@ function unlinkAnexo($id) {
 // Retorna a URL para ser usada num href de um link
 function getHref($tipo, $caminho, $nome) {
 	$href = '/' . $tipo . ($caminho=='/' ? '' : $caminho) . '/' . $nome;
-	$href = urlencode($href);
-	$href = str_replace('%2F', '/', $href);
+	$href = strtr($href, array('?' => '%3F', '\\' => '%5C', '#' => '%23', '&' => '%26', '+' => '%2B'));
 	$href = str_replace('%', '%25', $href);
 	return assegurarHTML($href);
 }

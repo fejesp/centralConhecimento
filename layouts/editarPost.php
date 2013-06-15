@@ -51,7 +51,7 @@ else
 	$tags = array();
 ?>
 <form method="post" action="/editarPost.php<?=$criar ? '?criar' : ''?>" enctype="multipart/form-data" id="form">
-<p><label for="nome">Nome:</label> <input size="30" name="nome" id="nome" required pattern="[^/]+" value="<?=$nomeHTML?>" autofocus></p>
+<p><label for="nome">Nome:</label> <input size="40" maxlength="200" name="nome" id="nome" required pattern="[^/]+" value="<?=$nomeHTML?>" autofocus></p>
 <p><label for="conteudo">Conteúdo:</label><br>
 <textarea name="conteudo" id="conteudo"><?=$conteudoHTML?></textarea></p>
 <p class="rotuloEsquerdo">Visibilidade:</p>

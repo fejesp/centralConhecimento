@@ -39,7 +39,7 @@ if (!isset($_GET['passo2'])) {
 	<p>Att,<br>
 	Núcleo de TI - FEJESP</p>";
 	$cabecalhos = "From: ti@fejesp.org.br\r\nContent-type: text/html; charset=UTF-8";
-	mail($email, $assunto, $mensagem, $cabecalhos);
+	mail($email, $assunto, $mensagem, $cabecalhos, '-r ti@fejesp.org.br');
 	
 	// Retorna para a página inicial
 	redirecionar('index', '', '', 'senhaRecuperada');
@@ -69,7 +69,7 @@ if (!isset($_GET['passo2'])) {
 	<p>Att,<br>
 	Núcleo de TI - FEJESP</p>";
 	$cabecalhos = "From: ti@fejesp.org.br\r\nContent-type: text/html; charset=UTF-8";
-	mail($dados['email'], $assunto, $mensagem, $cabecalhos);
+	mail($dados['email'], $assunto, $mensagem, $cabecalhos, '-r ti@fejesp.org.br');
 	
 	redirecionar('index', '', '', 'senhaRecuperada2');
 }

@@ -63,8 +63,8 @@ function montarJanelaAnexo(visibilidade, selecionados) {
 	checks+
 	"</div>"+
 	"<div class='clear'></div>"+
-	"<span class='botao' onclick='mostrarJanela(false)'><img src='/imgs/voltar.png'> Voltar</span> "+
-	"<span class='botao' onclick='"+(visibilidade ? "salvarEdicaoAnexo" : "adicionarAnexo")+"()'><img src='/imgs/enviar.png'> Salvar</span>"
+	"<p><span class='botao' onclick='mostrarJanela(false)'><img src='/imgs/voltar.png'> Voltar</span> "+
+	"<span class='botao' onclick='"+(visibilidade ? "salvarEdicaoAnexo" : "adicionarAnexo")+"()'><img src='/imgs/enviar.png'> Salvar</span></p>"
 	
 	if (visibilidade) {
 		get("anexo-"+visibilidade).checked = true
@@ -240,6 +240,7 @@ Interface para as tags
 
 // Adiciona os ouvintes
 window.addEventListener("load", function () {
+	var tags, i
 	get("campoTags").onkeydown = function (evento) {
 		if (evento.keyCode == 13) {
 			adicionarTagDoCampo()
@@ -247,6 +248,14 @@ window.addEventListener("load", function () {
 		}
 	}
 	get("adicionarTag").onclick = adicionarTagDoCampo
+	tags = document.querySelectorAll("div.tags a")
+	for (i=0; i<tags.length; i++) {
+		tags.item(i).onclick = function (evento) {
+			// Adiciona uma tag da nuvem de tags
+			evento.preventDefault()
+			adicionarTag(evento.currentTarget.textContent)
+		}
+	}
 })
 
 // Adiciona a tag no campo de entrada
@@ -258,11 +267,6 @@ function adicionarTagDoCampo() {
 		adicionarTag(tag)
 	campo.value = ""
 	campo.focus()
-}
-
-// Adiciona uma tag da nuvem de tags
-function adicionarTagDaNuvem(tag) {
-	adicionarTag(tag.textContent)
 }
 
 // Adiciona uma nova tag à lista
