@@ -13,4 +13,4 @@ RewriteEngine On
 # será enviada para a página index.php com o nome do modelo
 # e o restante da URL enviados como parâmetro GET (p e q)
 # As opções PT (executa index.php e retorna o resultado) e QSA (evita perdas de dados GET) garantem que tudo funcione
-RewriteRule ^(admin|anexo|busca|editarForm|editarPasta|editarPost|editarUsuario|form|index|pasta|post|tag)(/.*)?$ index.php?p=$1&q=$2 [PT,QSA]
+RewriteRule ^(admin|anexo|busca|contato|editarForm|editarPasta|editarPost|editarUsuario|form|index|pasta|post|tag)(/.*)?$ index.php?p=$1&q=$2 [PT,QSA]

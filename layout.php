@@ -52,7 +52,7 @@ require_once "layouts/$_GET[p].php";
 
 <footer class="container">
 	Central de conhecimento da Federação de Empresas Juniores do Estado de São Paulo<br>
-	Desenvolvido por FEJESP/núcleo TI (ti@fejesp.org.br)
+	Desenvolvido por FEJESP/núcleo de TI (<a href="/contato">contato</a>)
 </footer>
 
 <div class="fundoJanela" style="display:none" id="fundoJanela"></div>
