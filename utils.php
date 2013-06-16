@@ -77,9 +77,10 @@ function assegurarHTML($str) {
 // Imprime uma string na forma HTML de forma segura, dentro de uma tag opcional
 // $tags é uma sequência de tags separada por espaço, cada tag pode ter uma classe associada após um ponto
 // Exemplo: echoTag('oi', 'div.painel strong') => '<div class="painel"><strong>oi</strong></p>'
-function imprimir($str, $tags='p') {
+// Se $gerarHTML for true, passa a $str pelo interpretador gerarHTML($str)
+function imprimir($str, $tags='p', $gerarHTML=false) {
 	$tags = explode(' ', $tags);
-	$str = assegurarHTML($str);
+	$str = $gerarHTML ? gerarHTML($str) : assegurarHTML($str);
 	for ($i=count($tags)-1; $i>=0; $i--) {
 		$tag = $tags[$i];
 		if (($pos=strpos($tag, '.')) !== false) {

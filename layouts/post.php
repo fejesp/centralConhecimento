@@ -45,7 +45,7 @@ if ($_usuario && ($_usuario['admin'] || $dados['criador'] == $_usuario['id']))
 
 // Mostra o conteúdo
 imprimir('', 'div.clear');
-imprimir($dados['conteudo'], 'div.subConteudo');
+imprimir($dados['conteudo'], 'div.subConteudo', true);
 ?>
 <h2>Tags</h2>
 <p><?php

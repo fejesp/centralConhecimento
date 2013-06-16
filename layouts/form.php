@@ -42,7 +42,7 @@ gerarJSVar('_maxCada', ini2kiB(ini_get('upload_max_filesize')));
 
 // Mostra o conteúdo
 imprimir('', 'div.clear');
-imprimir($dados['descricao'], 'div.descricaoForm');
+imprimir($dados['descricao'], 'div.descricaoForm', true);
 
 // Monta os campos iniciais do formulário (identificação do post e do usuário)
 echo '<form' . ($dados['ativo'] ? '' : ' class="inativo"') . ' action="/form.php" method="post" enctype="multipart/form-data">';
