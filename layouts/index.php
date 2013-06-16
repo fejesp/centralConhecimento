@@ -14,7 +14,7 @@ if ($_usuario)
 		Email: <input type="email" size="30" autofocus name="email" required><br>
 		Senha: <input type="password" name="senha" required><br>
 		<input type="submit" style="display:none" id="submit">
-		<input type="hidden" name="continuar" value="<?=@$_GET['continuar'];?>">
+		<input type="hidden" name="continuar" value="<?=assegurarHTML(@$_GET['continuar'])?>">
 		<span class="botao" id="comLogin"><img src="/imgs/enviar.png"> Entrar</span>
 	</form>
 	<?php

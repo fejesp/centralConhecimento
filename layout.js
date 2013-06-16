@@ -6,7 +6,7 @@
 */
 
 setBotao("layout-login", function () {
-	redirecionar("index", "", "?continuar="+encodeURIComponent(window.location))
+	redirecionar("index", "", "", "continuar="+encodeURIComponent(window.location))
 })
 
 setBotao("layout-logout", function () {

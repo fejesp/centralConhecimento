@@ -37,7 +37,8 @@ if (!preg_match('@^[^/]+$@', $nome))
 // Monta a definição (conteudo) do formulário
 $campos = array();
 $ajudas = empty($_POST['ajudas']) ? array() : $_POST['ajudas'];
-foreach ($_POST['campos'] as $cada) {
+$postCampos = is_array($_POST['campos']) ? $_POST['campos'] : array();
+foreach ($postCampos as $cada) {
 	list($idCampo, $tipoCampo) = explode(':', $cada);
 	$campo = array('tipo' => $tipoCampo);
 	$campo['nome'] = $_POST['nomes'][$idCampo];
