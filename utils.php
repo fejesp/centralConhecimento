@@ -6,6 +6,8 @@
  * Data: 06/06/2013
 */
 
+require_once 'gerarHTML.php';
+
 // Reúne várias funções úteis
 
 // Redireciona o usuário para outra página

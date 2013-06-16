@@ -32,7 +32,8 @@ $descricaoHTML = assegurarHTML($dados['descricao']);
 <form method="post" action="/editarForm.php<?=$criar ? '?criar' : ''?>" enctype="multipart/form-data" id="form">
 <p><label for="nome">Nome:</label> <input size="30" name="nome" id="nome" required pattern="[^/]+" value="<?=$nomeHTML?>" autofocus></p>
 <p><label for="descricao">Descrição:</label><br>
-<textarea name="descricao" id="descricao"><?=$descricaoHTML?></textarea></p>
+<textarea name="descricao" id="descricao"><?=$descricaoHTML?></textarea><br>
+<span style="font-size:smaller">Você pode usar cabeçalhos, negrito e outros recursos. <a href="/ajudaHTML" target="_blank">Saiba mais</a></span></p>
 <p><input type="checkbox" name="ativo" id="ativo"<?=$dados['ativo'] ? ' checked' : ''?>> <label for="ativo">Formulário ativo (aceitando respostas)</labeL></p>
 <input type="hidden" name="caminho" value="<?=assegurarHTML($caminho)?>">
 

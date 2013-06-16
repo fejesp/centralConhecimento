@@ -42,10 +42,6 @@ function gerarHTML($str) {
 	for ($i=0; $i<count($linhas); $i++) {
 		$tipo = $tiposLinhas[$i];
 		$linha = assegurarHTML($linhas[$i]);
-		if (substr($linha, -2) == '  ')
-			$linha .= "<br>\n";
-		else
-			$linha .= "\n";
 		if (substr($tipo, 0, 1) == 'h') {
 			// Elementos imediatos: hr, h2, h3, h4, h5, h6
 			auxGerarHTML($cache, $html, $tipoAntes);
@@ -54,18 +50,24 @@ function gerarHTML($str) {
 			else
 				$html .= "<$tipo>$linha</$tipo>\n";
 			$tipo = '';
-		} else if ($tipo == 'p') {
-			$cache .= $linha;
-			$tipo = $tipoAntes;
-		} else if ($tipo == 'ul' || $tipo == 'ol') {
-			auxGerarHTML($cache, $html, $tipoAntes);
-			$cache = $linha;
-		} else if ($tipo == 'blockquote') {
-			if ($tipoAntes != $tipo)
+		} else {
+			if (substr($linha, -2) == '  ')
+				$linha .= "<br>\n";
+			else
+				$linha .= "\n";
+			if ($tipo == 'p') {
+				$cache .= $linha;
+				$tipo = $tipoAntes;
+			} else if ($tipo == 'ul' || $tipo == 'ol') {
 				auxGerarHTML($cache, $html, $tipoAntes);
-			$cache .= $linha;
-		} else if ($tipo == '') {
-			auxGerarHTML($cache, $html, $tipoAntes);
+				$cache = $linha;
+			} else if ($tipo == 'blockquote') {
+				if ($tipoAntes != $tipo)
+					auxGerarHTML($cache, $html, $tipoAntes);
+				$cache .= $linha;
+			} else if ($tipo == '') {
+				auxGerarHTML($cache, $html, $tipoAntes);
+			}
 		}
 		$tipoAntes = $tipo;
 	}
@@ -84,6 +86,9 @@ function auxGerarHTML(&$cache, &$html, $tipo) {
 	}
 	if ($cache) {
 		$cache = substr($cache, 0, -1);
+		$cache = preg_replace('@(^|[\s_])\*([^ ][^*]*?)(?<! )\*($|[\s_])@', '$1<strong>$2</strong>$3', $cache);
+		$cache = preg_replace('@(^|[\s*])_([^ ][^*]*?)(?<! )_($|[\s*])@', '$1<em>$2</em>$3', $cache);
+		$cache = preg_replace('@\[([^]]+)\]\(([^)]+)\)@', '<a href="$2">$1</a>', $cache);
 		if ($tipo == 'ul' || $tipo == 'ol') {
 			if ($lista != $tipo)
 				$html .= "<$tipo>\n";

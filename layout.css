@@ -89,7 +89,6 @@ div.conteudo:after {
 .subConteudo {
 	border:thin #CCC dashed;
 	padding:15px;
-	white-space:pre-wrap;
 }
 
 footer {
@@ -269,8 +268,8 @@ footer {
 }
 
 textarea {
-	width:75%;
-	height:100px;
+	width:90%;
+	height:150px;
 }
 
 /* Menu de contexto */

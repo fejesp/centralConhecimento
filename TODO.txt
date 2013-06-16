@@ -7,5 +7,3 @@ não pode \ / : * ? " < > |
 ;<=>?@[\]^_`{|}~
 
 permitir mudar o nome do anexo (?)
-
-aceitar "html" nas descrições

@@ -1,0 +1,27 @@
+.exemplo {
+	border:thin gray dashed;
+	padding:10px;
+}
+
+.exemplo:after {
+	content:"";
+	clear:both;
+	display:block;
+	height:0;
+	width:0;
+	overflow:hidden;
+}
+
+.exemplo > pre {
+	float: left;
+	width:50%;
+	margin:0;
+	padding:0;
+}
+
+.exemplo > div {
+	float: right;
+	width:50%;
+	margin:0;
+	padding:0;
+}

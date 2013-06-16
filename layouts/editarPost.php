@@ -53,7 +53,8 @@ else
 <form method="post" action="/editarPost.php<?=$criar ? '?criar' : ''?>" enctype="multipart/form-data" id="form">
 <p><label for="nome">Nome:</label> <input size="40" maxlength="200" name="nome" id="nome" required pattern="[^/]+" value="<?=$nomeHTML?>" autofocus></p>
 <p><label for="conteudo">Conteúdo:</label><br>
-<textarea name="conteudo" id="conteudo"><?=$conteudoHTML?></textarea></p>
+<textarea name="conteudo" id="conteudo"><?=$conteudoHTML?></textarea><br>
+<span style="font-size:smaller">Você pode usar cabeçalhos, negrito e outros recursos. <a href="/ajudaHTML" target="_blank">Saiba mais</a></span></p>
 <p class="rotuloEsquerdo">Visibilidade:</p>
 <p class="opcoesDireita">
 <input type="radio" name="visibilidade" value="publico" id="publico"<?=$radio1?>> <label for="publico">para qualquer um</label><br>
