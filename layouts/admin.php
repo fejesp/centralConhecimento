@@ -55,17 +55,23 @@ if (isset($_GET['novoUsuario']))
 // Mede o espaço utilizado
 $usoAdmin = Query::getValor('SELECT SUM(a.tamanho) FROM anexos AS a JOIN posts AS p ON a.post=p.id JOIN usuarios AS u ON p.criador=u.id WHERE u.admin=1');
 $usoNaoAdmin = Query::getValor('SELECT SUM(a.tamanho) FROM anexos AS a JOIN posts AS p ON a.post=p.id JOIN usuarios AS u ON p.criador=u.id WHERE u.admin=0');
+$usoComReserva = Query::getValor('SELECT SUM(a.tamanho) FROM anexos AS a JOIN posts AS p ON a.post=p.id JOIN usuarios AS u ON p.criador=u.id WHERE u.usoMax>0');
+$reserva = Query::getValor('SELECT SUM(usoMax) FROM usuarios');
 $total = $_config['espacoTotal'];
 $livre = $total-$usoAdmin-$usoNaoAdmin;
+$usoLivreReservado = $reserva-$usoComReserva;
 $porcemAdmin = round(100*$usoAdmin/$total);
 $porcemNaoAdmin = round(100*$usoNaoAdmin/$total);
+$porcemLivreReservado = round(100*$usoLivreReservado/$total);
 ?>
 <div class="espacoTotal">
 	<div class="espacoUsadoAdmin" style="width:<?=$porcemAdmin?>%"><?=$porcemAdmin?>%</div>
 	<div class="espacoUsado" style="width:<?=$porcemNaoAdmin?>%"><?=$porcemNaoAdmin?>%</div>
+	<div class="espacoLivreReservado" style="width:<?=$porcemLivreReservado?>%"><?=$porcemLivreReservado?>%</div>
 </div>
 <p><span class="legendaUsoAdmin">@</span> Espaço utilizado pelo administrador: <?=kiB2str($usoAdmin)?><br>
 <span class="legendaUso">@</span> Espaço utilizado pelos outros usuários: <?=kiB2str($usoNaoAdmin)?><br>
+<span class="legendaLivreReservado">@</span> Espaço livre reservado para outros usuários: <?=kiB2str($usoLivreReservado)?><br>
 <span class="legendaLivre">@</span> Espaço livre: <?=kiB2str($livre)?></p>
 
 <h3>Estatísticas</h3>

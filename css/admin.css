@@ -16,7 +16,7 @@ tr:hover > td {
 	font-size:0;
 }
 
-.espacoUsadoAdmin, .espacoUsado {
+.espacoUsadoAdmin, .espacoUsado, .espacoLivreReservado {
 	font-size:medium;
 	display:inline-block;
 	text-align:center;
@@ -34,6 +34,10 @@ tr:hover > td {
 	background-color:#D33;
 }
 
+.espacoLivreReservado {
+	background-color:#E99;
+}
+
 .legendaUsoAdmin {
 	color:#222;
 	background-color:#222;
@@ -42,6 +46,11 @@ tr:hover > td {
 .legendaUso {
 	color:#D33;
 	background-color:#D33;
+}
+
+.legendaLivreReservado {
+	color:#E99;
+	background-color:#E99;
 }
 
 .legendaLivre {
