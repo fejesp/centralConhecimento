@@ -1,3 +1,4 @@
+
 <?php
 /*
  * Central de conhecimento FEJESP
@@ -51,10 +52,10 @@ foreach (json_decode($dados['conteudo'], true) as $i=>$campo) {
 	if ($campo['tipo'] == 'checkbox') {
 		$valores = array_keys($campos[$i]);
 		for ($i=0; $i<count($valores); $i++)
-			$valores[$i] = "-\t" . $valores[$i];
-		$conteudo[] = "$campo[nome]:\n" . implode("\n", $valores);
+			$valores[$i] = '* ' . $valores[$i];
+		$conteudo[] = "*$campo[nome]:*  \n" . implode("\n", $valores);
 	} else
-		$conteudo[] = "$campo[nome]:\n" . $campos[$i];
+		$conteudo[] = "*$campo[nome]:*  \n" . $campos[$i];
 }
 $conteudo = implode("\n\n", $conteudo);
 
@@ -93,7 +94,7 @@ try {
 			
 			// Marca para mover depois
 			$novosAnexos[] = array(Query::$conexao->insert_id, $nomeAnexo, $tmp_names[$i]);
-			$resumoAnexos[] = '<li>' . $nomeAnexo . ' (' . kiB2str($tamanho) . ')</li>';
+			$resumoAnexos[] = '<li>' . assegurarHTML($nomeAnexo) . ' (' . kiB2str($tamanho) . ')</li>';
 		}
 	}
 	
@@ -108,13 +109,13 @@ try {
 	$assunto = '[FEJESP][Central de conhecimento] ' . $dados['nome'];
 	$mensagem = '<p>Olá ' . assegurarHTML($EJ) . ',</p>
 	<p>Sua submissão ao formulário ' . assegurarHTML($dados['nome']) . ' foi efetuada com sucesso. Abaixo segue um resumo das suas respostas e dos arquivos anexados:</p>
-	<pre>' . assegurarHTML($conteudo) . '</pre>
-	<p>' . (count($resumoAnexos) ? 'Anexos:<br><ul>' . assegurarHTML(implode('', $resumoAnexos)) : 'Nenhum anexo') . '</ul></p>
+	<div>' . gerarHTML($conteudo) . '</div>
+	<p>' . (count($resumoAnexos) ? 'Anexos:<br><ul>' . implode("\n", $resumoAnexos) . '</ul>' : 'Nenhum anexo') . '</p>
 	<p>Att,<br>
 	Núcleo de TI - FEJESP</p>';
 	$emailCriador = Query::getValor('SELECT email FROM usuarios WHERE id=? LIMIT 1', $dados['criador']);
 	$cabecalhos = "From: ti@fejesp.org.br\r\nCc: $emailCriador\r\nContent-type: text/html; charset=UTF-8";
-	mail($email, $assunto, $mensagem, $cabecalhos);
+	mail($email, $assunto, $mensagem, $cabecalhos, '-r ti@fejesp.org.br');
 	
 	// Vai para a pasta
 	redirecionar('pasta', getCaminhoAcima($caminho));
