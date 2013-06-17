@@ -31,7 +31,7 @@ $anexos = Query::query(false, 0, 'SELECT id FROM anexos WHERE post=?', $dados['i
 new Query('DELETE FROM visibilidades WHERE tipoItem="post" AND item=?', $dados['id']);
 if (count($anexos))
 	new Query('DELETE FROM visibilidades WHERE tipoItem="anexo" AND item IN ?', $anexos);
-new Query('DELETE FROM tagsemposts WHERE post=?', $dados['id']);
+new Query('DELETE FROM tagsEmPosts WHERE post=?', $dados['id']);
 if (count($anexos))
 	new Query('DELETE FROM downloads WHERE anexo IN ?', $anexos);
 
