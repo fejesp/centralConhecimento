@@ -213,7 +213,7 @@ function salvarEdicaoAnexo() {
 		info = visibilidade
 	
 	// Atualiza o item visualmente na lista
-	_editando.querySelectorAll(".item-descricao")[1].textContent = visibilidade2str(visibilidade, selecionados)
+	_editando.querySelector(".item-visibilidade").textContent = visibilidade2str(visibilidade, selecionados)
 	
 	// Coloca os dados no formulário
 	input = _editando.querySelector("input[type=hidden]")
