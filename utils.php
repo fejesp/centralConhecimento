@@ -356,8 +356,8 @@ function getQueryVisibilidade($tipo) {
 	else
 		return "(visibilidade='publico'
 		OR visibilidade='geral'
-		OR EXISTS (SELECT * FROM visibilidades WHERE tipoItem='anexo' AND item=id AND usuario=$_usuario[id]))
-		OR $_usuario[id]=(SELECT criador FROM posts WHERE id=post LIMIT 1)";
+		OR EXISTS (SELECT * FROM visibilidades WHERE tipoItem='anexo' AND item=id AND usuario=$_usuario[id])
+		OR $_usuario[id]=(SELECT criador FROM posts WHERE id=post LIMIT 1))";
 }
 
 // Retorna a configuração de visibilidade de um item num formato legível
