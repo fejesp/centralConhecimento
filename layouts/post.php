@@ -6,8 +6,15 @@ $sucesso = interpretarCaminho($caminho, $dados, 'post');
 
 if (!$sucesso) {
 	// Post invisível ou não encontrado
-	imprimir('Erro', 'h2');
-	imprimir('Post não encontrado', 'p strong');
+	if (!$_usuario && ($dados == 3 || $dados == 5)) {
+		// Como o usuário não está logado e o item está invisível para ele,
+		// redireciona para a página de login
+		redirecionar('index', '', '', 'itemInvisivel&continuar=' . urlencode('/post' . $caminho));
+	} else {
+		// Simplesmente mostra a mensagem de erro
+		imprimir('Erro', 'h2');
+		imprimir('Post não encontrado', 'p strong');
+	}
 	return;
 }
 

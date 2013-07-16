@@ -6,8 +6,15 @@ $sucesso = interpretarCaminho($caminho, $dados);
 
 if (!$sucesso) {
 	// Pasta invisível ou não encontrada
-	imprimir('Erro', 'h2');
-	imprimir('Pasta não encontrada', 'p strong');
+	if (!$_usuario && ($dados == 3 || $dados == 5)) {
+		// Como o usuário não está logado e o item está invisível para ele,
+		// redireciona para a página de login
+		redirecionar('index', '', '', 'itemInvisivel&continuar=' . urlencode('/pasta' . $caminho));
+	} else {
+		// Simplesmente mostra a mensagem de erro
+		imprimir('Erro', 'h2');
+		imprimir('Pasta não encontrada', 'p strong');
+	}
 	return;
 }
 

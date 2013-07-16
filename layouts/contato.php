@@ -14,7 +14,8 @@ if (isset($_POST['nome'])) {
 }
 ?>
 <h2>Contato</h2>
-<p>Entre em contato com a equipe FEJESP. Estamos sempre dispostos a ajudar e abertos a sugestões</p>
+<p>Entre em contato com a equipe FEJESP, estamos sempre dispostos a ajudar e abertos a sugestões</p>
+<p>O código fonte todo está disponível no <a href="https://github.com/fejesp/centralConhecimento">GitHub</a></p>
 <form method="post">
 <div class="rotuloEsquerdo">
 <p>Seu nome:</p>

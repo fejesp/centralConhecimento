@@ -6,8 +6,15 @@ $sucesso = interpretarCaminho($caminho, $anexo, 'anexo');
 
 if (!$sucesso) {
 	// Anexo invisível ou não encontrado
-	imprimir('Erro', 'h2');
-	imprimir('Anexo não encontrado', 'p strong');
+	if (!$_usuario && ($anexo == 3 || $anexo == 5)) {
+		// Como o usuário não está logado e o item está invisível para ele,
+		// redireciona para a página de login
+		redirecionar('index', '', '', 'itemInvisivel&continuar=' . urlencode('/anexo' . $caminho));
+	} else {
+		// Simplesmente mostra a mensagem de erro
+		imprimir('Erro', 'h2');
+		imprimir('Anexo não encontrado', 'p strong');
+	}
 	return;
 }
 

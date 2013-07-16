@@ -11,6 +11,7 @@ require_once 'gerarHTML.php';
 // Reúne várias funções úteis
 
 // Redireciona o usuário para outra página
+// $tipo é o nome de um arquivo php (terminando em '.php') ou um formato de layout (ex: 'index')
 function redirecionar($tipo, $caminho='/', $nome='', $query='') {
 	$caminho = ($caminho=='/' ? '' : $caminho) . '/' . $nome;
 	if (substr($tipo, -4) == '.php')
@@ -133,19 +134,6 @@ function validarLogin() {
 	}
 }
 
-// Retorna o caminho ("a/b/c") até uma dada pasta
-// $pasta é o id de uma pasta que existe
-// TODO: não utilizada, remover
-function getCaminho($pasta) {
-	if (!$pasta)
-		return '';
-	$dados = Query::query(true, NULL, 'SELECT nome, pai FROM pastas WHERE id=? LIMIT 1', $pasta);
-	if ($dados['pai'])
-		return getCaminho($dados['pai']) . '/' . $dados['nome'];
-	else
-		return $dados['nome'];
-}
-
 // Retorna o caminho da pasta pai
 // Exemplo: '/a/b/c' => '/a/b' => '/a' => '/' => '/'
 function getCaminhoAcima($caminho) {
@@ -159,6 +147,8 @@ function getCaminhoAcima($caminho) {
 // Interpreta um caminho, levando em conta a visibilidade das pastas
 // Se houver algum erro, a função irá retornar false (retorna true em caso de sucesso)
 // Em caso de sucesso, $dados irá conter todas as colunas do registro do item no banco de dados
+// Em caso de erro, $dados irá ser um inteiro com o código do erro:
+// (1 = caminho inválido, 2 = caminho não encontrado, 3 = caminho invisível, 4 = item não encontrado, 5 = item invisível)
 // Altera $caminho, deixando-o normalizado na forma "/a/b"
 // $tipo é 'pasta', 'post', 'anexo' ou 'form' e indica o tipo do item apontado pelo caminho
 function interpretarCaminho(&$caminho, &$dados, $tipo='pasta') {
@@ -170,8 +160,10 @@ function interpretarCaminho(&$caminho, &$dados, $tipo='pasta') {
 		if ($tipo == 'pasta') {
 			$dados = Query::query(true, NULL, 'SELECT * FROM pastas WHERE id=0 LIMIT 1');
 			return true;
-		} else
+		} else {
+			$dados = 1;
 			return false;
+		}
 	}
 	
 	// Percorre o caminho, verificando a permissão de acesso
@@ -184,17 +176,22 @@ function interpretarCaminho(&$caminho, &$dados, $tipo='pasta') {
 			$dados = Query::query(true, NULL, 'SELECT id, visibilidade, criador FROM pastas WHERE nome=? AND pai=? LIMIT 1', $pasta, $dados['id']);
 		} catch (Exception $e) {
 			// Pasta não encontrada
+			$dados = 2;
 			return false;
 		}
 		
 		// Verifica se a pasta é visível para esse usuário
-		if (!verificarVisibilidade('pasta', $dados['id'], $dados['visibilidade'], $dados['criador']))
+		if (!verificarVisibilidade('pasta', $dados['id'], $dados['visibilidade'], $dados['criador'])) {
+			$dados = 3;
 			return false;
+		}
 	}
 	
 	// Pega o último item
-	if ($max<0)
+	if ($max<0) {
+		$dados = 1;
 		return false;
+	}
 	$item = $pastas[$max];
 	try {
 		if ($tipo == 'pasta')
@@ -205,19 +202,24 @@ function interpretarCaminho(&$caminho, &$dados, $tipo='pasta') {
 			$dados = Query::query(true, NULL, 'SELECT * FROM posts WHERE nome=? AND pasta=? LIMIT 1', $item, $dados['id']);
 	} catch (Exception $e) {
 		// Item não encontrado
+		$dados = 4;
 		return false;
 	}
 	
 	// Verifica se o item é visível para esse usuário
-	if (!verificarVisibilidade($tipo=='anexo' ? 'post' : $tipo, $dados['id'], $tipo=='form' ? $dados['ativo'] : $dados['visibilidade'], $dados['criador']))
+	if (!verificarVisibilidade($tipo=='anexo' ? 'post' : $tipo, $dados['id'], $tipo=='form' ? $dados['ativo'] : $dados['visibilidade'], $dados['criador'])) {
+		$dados = $tipo == 'anexo' ? 3 : 5;
 		return false;
+	}
 	
 	// Verifica o anexo finalmente
 	if ($tipo == 'anexo') {
 		$criador = $dados['criador'];
 		$dados = Query::query(true, NULL, 'SELECT * FROM anexos WHERE nome=? AND post=? LIMIT 1', $pastas[$max+1], $dados['id']);
-		if (!verificarVisibilidade('anexo', $dados['id'], $dados['visibilidade'], $criador))
+		if (!verificarVisibilidade('anexo', $dados['id'], $dados['visibilidade'], $criador)) {
+			$dados = 5;
 			return false;
+		}
 	}
 	
 	return true;

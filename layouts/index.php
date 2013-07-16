@@ -36,6 +36,8 @@ if ($_usuario)
 		echo '<p>Um link foi enviado para seu email, clique nele para terminar o processo.</p>';
 	if (isset($_GET['senhaRecuperada2']))
 		echo '<p>Sua nova senha foi gerada e enviada por email.</p>';
+	if (isset($_GET['itemInvisivel']))
+		echo '<p>Você tentou acessar um item protegido, faça o login e tente novamente.</p>';
 	?>
 	<p>ou <span class="botao" id="semLogin"><img src="/imgs/enviar.png"> entre sem login</span></p>
 </div>
