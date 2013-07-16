@@ -88,6 +88,14 @@ if ($op == 'getArvoreInicial') {
 	if ($id != $_usuario['id'])
 		new Query('UPDATE usuarios SET senha=? WHERE id=? LIMIT 1', md5($senha), $id);
 	retornar($senha);
+} else if ($op == 'gerarLink') {
+	// Retorna o link para gera uma nova senha para uma conta de usuário
+	if (!$_usuario || !$_usuario['admin'])
+		retornarErro();
+	$id = (int)@$_GET['id'];
+	$chave = md5(Query::getValor('SELECT senha FROM usuarios WHERE id=? LIMIT 1', $id));
+	$link = $_config['urlBase'] . "gerarSenha.php?id=$id&chave=$chave";
+	retornar($link);
 } else if ($op == 'ativarForm') {
 	$caminho = $_GET['caminho'];
 	$dados = NULL;
