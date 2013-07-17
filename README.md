@@ -14,3 +14,6 @@ A central de gestão de conhecimento da Federação das Empresas Juniores do Est
 A central é basicamente um sistema de arquivos, organizados em pastas. Para cada pasta podem ser definidas opções de visibilidade, permitindo o ajuste fino de qual tipo de conteúdo pode ser visto por cada usuário.
 
 Além disso, o sistema permite a criação de formulários para que os usuários possam submeter arquivos de forma mais prática.
+
+## Documentação
+A estrutura do banco de dados está descrita na pasta `/docs`. Outros pontos na wiki desse projeto.
