@@ -24,12 +24,10 @@ if (!$sucesso)
 // Carrega a identificação do usuário
 if ($_usuario) {
 	$email = $_usuario['email'];
-	$criador = $_usuario['id'];
 	$EJ = $_usuario['nome'];
 } else {
 	$email = $_POST['email'];
 	$EJ = $_POST['ej'];
-	$criador = 1; // FEJESP
 }
 
 $nome = @$_POST['nome'];
@@ -65,12 +63,12 @@ $novosAnexos = array();
 $resumoAnexos = array();
 try {
 	// Cria o post
-	new Query('INSERT INTO posts VALUES (NULL, ?, ?, ?, NOW(), "seleto", ?)', $dados['pasta'], $nome, $conteudo, $criador);
+	new Query('INSERT INTO posts VALUES (NULL, ?, ?, ?, NOW(), "seleto", ?)', $dados['pasta'], $nome, $conteudo, $dados['criador']);
 	$idPost = Query::$conexao->insert_id;
 	
-	// Adiciona o criador do post na lista de visibilidades
-	if ($dados['criador'] != $criador)
-		new Query('INSERT INTO visibilidades VALUES ("post", ?, ?)', $idPost, $dados['criador']);
+	// Adiciona o usuário que submeteu o post na lista de visibilidades
+	if ($_usuario && $dados['criador'] != $_usuario['id'])
+		new Query('INSERT INTO visibilidades VALUES ("post", ?, ?)', $idPost, $_usuario['id']);
 	
 	// Trata os novos anexos
 	if (isset($_FILES['arquivos'])) {

@@ -69,32 +69,32 @@ foreach (json_decode($dados['conteudo'], true) as $i=>$campo) {
 	$ajudaHTML = assegurarHTML($campo['ajuda']);
 	$obrigatorio = $campo['obrigatorio'] ? ' required' : '';
 	// Imprime o HTML de cada tipo de campo
+	echo "<p><strong>$nomeHTML</strong>:<br>";
+	if ($ajudaHTML)
+		echo "$ajudaHTML<br>";
 	switch ($campo['tipo']) {
 	case 'input':
-		echo "<p><strong>$nomeHTML</strong>:<br><input size='40'$obrigatorio name='campos[$i]'></p>";
+		echo "<input size='40'$obrigatorio name='campos[$i]'>";
 		break;
 	case 'textarea':
-		echo "<p><strong>$nomeHTML</strong>:<br>$ajudaHTML<br><textarea$obrigatorio name='campos[$i]'></textarea></p>";
+		echo "<textarea$obrigatorio name='campos[$i]'></textarea>";
 		break;
 	case 'radio':
-		echo "<p><strong>$nomeHTML</strong>:<br>";
 		foreach ($campo['valores'] as $valor) {
 			$idCampo = gerarSenha();
 			$valor = assegurarHTML($valor);
 			echo "<input type='radio' id='radio$idCampo'$obrigatorio name='campos[$i]' value='$valor'> <label for='radio$idCampo'>$valor</label><br>";
 		}
-		echo '</p>';
 		break;
 	case 'checkbox':
-		echo "<p><strong>$nomeHTML</strong>:<br>";
 		foreach ($campo['valores'] as $valor) {
 			$idCampo = gerarSenha();
 			$valor = assegurarHTML($valor);
 			echo "<input type='checkbox' id='radio$idCampo'$obrigatorio name='campos[$i][$valor]' value='1'> <label for='radio$idCampo'>$valor</label><br>";
 		}
-		echo '</p>';
 		break;
 	}
+	echo '</p>';
 }
 
 ?>

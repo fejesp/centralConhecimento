@@ -53,7 +53,8 @@ function menu(tipo, criador, evento) {
 				}])
 		}
 		Menu.abrir(evento, botoes)
-	}
+	} else
+		evento.preventDefault()
 }
 
 setBotao("criarPasta", function () {

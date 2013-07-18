@@ -45,6 +45,7 @@ foreach (json_decode($dados['conteudo'], true) as $campo) {
 	$tipoCampo = $campo['tipo'];
 	$tituloCampo = $tipoCampo=='input' ? 'Texto' : ($tipoCampo=='textarea' ? 'Texto longo' : ($tipoCampo=='radio' ? 'Múltipla escolha' : 'Checkboxes'));
 	$nomeCampo = assegurarHTML($campo['nome']);
+	$ajudaCampo = assegurarHTML($campo['ajuda']);
 	$campoObrigatorio = $campo['obrigatorio'] ? ' checked' : '';
 	echo '<div class="campo">
 	<div class="campo-acoes">
@@ -56,6 +57,7 @@ foreach (json_decode($dados['conteudo'], true) as $campo) {
 	echo "<p>Título da questão: <input size='40' name='nomes[$idCampo]' value='$nomeCampo' required> ";
 	echo "<input type='checkbox' id='campo$idCampo' name='obrigatorio[$idCampo]'$campoObrigatorio> <label for='campo$idCampo'>Preenchimento obrigatório</label>";
 	echo "<input type='hidden' name='campos[]' value='$idCampo:$tipoCampo'></p>";
+	echo "<p>Texto de ajuda: <input size='40' name='ajudas[$idCampo]' value='$ajudaCampo'></p>";
 	if ($tipoCampo == 'radio' || $tipoCampo == 'checkbox') {
 		$valoresCampo = assegurarHTML(implode("\n", $campo['valores']));
 		echo "<p>Digite as opções, uma por linha:<br><textarea required name='valores[$idCampo]'>$valoresCampo</textarea></p>";
