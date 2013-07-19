@@ -57,13 +57,21 @@ foreach (json_decode($dados['conteudo'], true) as $i=>$campo) {
 }
 $conteudo = implode("\n\n", $conteudo);
 
+// Evita conflitos de nomes, adicionando "(n)" no fim se necessário
+$i = 1;
+$nome2 = $nome;
+while (Query::existe('SELECT 1 FROM posts WHERE nome=? AND pasta=? LIMIT 1', $nome2, $dados['pasta'])) {
+	$i++;
+	$nome2 = "$nome ($i)";
+}
+
 // Salva no banco de dados
 Query::$conexao->autocommit(false);
 $novosAnexos = array();
 $resumoAnexos = array();
 try {
 	// Cria o post
-	new Query('INSERT INTO posts VALUES (NULL, ?, ?, ?, NOW(), "seleto", ?)', $dados['pasta'], $nome, $conteudo, $dados['criador']);
+	new Query('INSERT INTO posts VALUES (NULL, ?, ?, ?, NOW(), "seleto", ?)', $dados['pasta'], $nome2, $conteudo, $dados['criador']);
 	$idPost = Query::$conexao->insert_id;
 	
 	// Adiciona o usuário que submeteu o post na lista de visibilidades
@@ -103,12 +111,19 @@ try {
 		move_uploaded_file($cada[2], "arquivos/$cada[0]/$cada[1]");
 	}
 	
+	if ($_usuario) {
+		$link = getHref('post', getCaminhoAcima($caminho), $nome2, true);
+		$link = "<p>Você também pode ver suas resposta diretamente na central:<br><a href='$link'>$link</a></p>";
+	} else
+		$link = '';
+	
 	// Envia um e-mail confirmando a submissão do formulário
 	$assunto = '[FEJESP][Central de conhecimento] ' . $dados['nome'];
 	$mensagem = '<p>Olá ' . assegurarHTML($EJ) . ',</p>
-	<p>Sua submissão ao formulário ' . assegurarHTML($dados['nome']) . ' foi efetuada com sucesso. Abaixo segue um resumo das suas respostas e dos arquivos anexados:</p>
+	<p>Sua submissão ao formulário ' . assegurarHTML($dados['nome']) . ' foi efetuada com sucesso. Abaixo segue um resumo das suas respostas e dos arquivos anexados.</p>
 	<div>' . gerarHTML($conteudo) . '</div>
-	<p>' . (count($resumoAnexos) ? 'Anexos:<br><ul>' . implode("\n", $resumoAnexos) . '</ul>' : 'Nenhum anexo') . '</p>
+	<p>' . (count($resumoAnexos) ? '<strong>Anexos</strong>:<br><ul>' . implode("\n", $resumoAnexos) . '</ul>' : '<strong>Nenhum anexo</strong>') . '</p>
+	' . $link . '
 	<p>Att,<br>
 	Núcleo de TI - FEJESP</p>';
 	$emailCriador = Query::getValor('SELECT email FROM usuarios WHERE id=? LIMIT 1', $dados['criador']);
@@ -116,7 +131,8 @@ try {
 	mail($email, $assunto, $mensagem, $cabecalhos, '-r ti@fejesp.org.br');
 	
 	// Vai para a pasta
-	redirecionar('pasta', getCaminhoAcima($caminho));
+	echo $link;
+	//redirecionar('pasta', getCaminhoAcima($caminho));
 } catch (Exception $e) {
 	Query::$conexao->rollback();
 	morrerComErro('Falha ao gravar os dados: ' . $e->getMessage());

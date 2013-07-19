@@ -319,9 +319,12 @@ function unlinkAnexo($id) {
 }
 
 // Retorna a URL para ser usada num href de um link
-function getHref($tipo, $caminho, $nome) {
-	$href = '/' . $tipo . ($caminho=='/' ? '' : $caminho) . '/' . $nome;
-	$href = strtr($href, array('?' => '%3F', '\\' => '%5C', '#' => '%23', '&' => '%26', '+' => '%2B'));
+// $tipo, $caminho e $nome são strings, o resultado será algo como "/tipo/caminho/nome"
+// $absoluto indica se a URL gerada será relativa ("/...") ou absoluta ("http://...") (padrão: false)
+function getHref($tipo, $caminho, $nome, $absoluto=false) {
+	global $_config;
+	$href = ($absoluto ? $_config['urlBase'] : '/') . $tipo . ($caminho=='/' ? '' : $caminho) . '/' . $nome;
+	$href = strtr($href, array('?' => '%3F', '\\' => '%5C', '#' => '%23', '&' => '%26', '+' => '%2B', '`' => '%60'));
 	$href = str_replace('%', '%25', $href);
 	return assegurarHTML($href);
 }
