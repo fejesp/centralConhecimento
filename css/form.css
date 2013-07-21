@@ -14,10 +14,10 @@ form.inativo:after {
 }
 
 .descricaoForm {
-	padding:15px;
+	padding:0 15px;
 }
 
 form {
 	border:thin #CCC dashed;
-	padding:15px;
+	padding:0 15px;
 }

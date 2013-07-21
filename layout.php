@@ -36,14 +36,14 @@ if (file_exists("js/$_GET[p].js"))
 <div class="menuPrincipal">
 	<?php
 	if ($_usuario) {
-		echo 'Olá ' . assegurarHTML($_usuario['nome']) . ', <span class="botao" id="layout-logout"><img src="/imgs/logout.png"> Logout</span> ';
-		echo '<span class="botao" id="layout-editarUsuario"><img src="/imgs/editarUsuario.png"> Alterar conta</span> ';
+		echo 'Olá ' . assegurarHTML($_usuario['nome']) . ', <a class="botao" href="/logout.php"><img src="/imgs/logout.png"> Logout</a> ';
+		echo '<a href="/editarUsuario" class="botao"><img src="/imgs/editarUsuario.png"> Alterar conta</a> ';
 		if ($_usuario['admin'])
-			echo '<span class="botao" id="layout-admin"><img src="/imgs/admin.png"> Administração</span> ';
+			echo '<a class="botao" href="/admin"><img src="/imgs/admin.png"> Administração</a> ';
 	} else
 		echo 'Olá anônimo, <span class="botao" id="layout-login"><img src="/imgs/login.png"> Login</span> ';
 	?>
-	<span class="botao" id="layout-buscar"><img src="/imgs/buscar.png"> Buscar</span>
+	<a class="botao" href="/busca"><img src="/imgs/buscar.png"> Buscar</a>
 </div>
 <?php
 require_once "layouts/$_GET[p].php";

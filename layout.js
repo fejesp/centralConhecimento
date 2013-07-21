@@ -8,19 +8,3 @@
 setBotao("layout-login", function () {
 	redirecionar("index", "", "", "continuar="+encodeURIComponent(window.location))
 })
-
-setBotao("layout-logout", function () {
-	redirecionar("logout.php")
-})
-
-setBotao("layout-buscar", function () {
-	redirecionar("busca")
-})
-
-setBotao("layout-editarUsuario", function () {
-	redirecionar("editarUsuario")
-})
-
-setBotao("layout-admin", function () {
-	redirecionar("admin")
-})

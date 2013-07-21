@@ -89,7 +89,7 @@ div.conteudo:after {
 
 .subConteudo {
 	border:thin #CCC dashed;
-	padding:15px;
+	padding:0 15px;
 }
 
 footer {
@@ -135,6 +135,8 @@ footer {
 	border-radius:7px;
 	cursor:pointer;
 	padding:5px;
+	text-decoration:none;
+	color:inherit;
 }
 
 .botao:hover {
