@@ -79,6 +79,7 @@ try {
 			$id = (int)$id;
 			if (!in_array($id, $meusAnexos))
 				throw new ErrorException('Tentativa inválida de remover um anexo');
+			new Query('DELETE FROM downloads WHERE anexo=?', $id);
 			new Query('DELETE FROM anexos WHERE id=? LIMIT 1', $id);
 			$anexosRemovidos[] = $id;
 		}
