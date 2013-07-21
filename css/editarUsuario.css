@@ -1,0 +1,25 @@
+/* Página do usuário */
+.espacoTotal {
+	background-color:#888;
+	font-size:0;
+}
+
+.espacoUsado {
+	font-size:medium;
+	display:inline-block;
+	text-align:center;
+	padding:3px;
+	overflow:hidden;
+	border-right:thin black solid;
+	background-color:#D33;
+}
+
+.legendaUso {
+	color:#D33;
+	background-color:#D33;
+}
+
+.legendaLivre {
+	color:#888;
+	background-color:#888;
+}

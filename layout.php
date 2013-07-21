@@ -26,10 +26,10 @@ if (file_exists("js/$_GET[p].js"))
 
 <body>
 <header>
-	<div class="container" onclick="window.location='/'" style="cursor:pointer">
+	<a class="container" href="/">
 		<img src="/imgs/logo.png" align="absmiddle">
 		<h1><span class="cinzaEscuro"><span class="preto">C</span>entral de <span class="vermelho">C</span>onhecimento</span></h1>
-	</div>
+	</a>
 </header>
 
 <div class="conteudo container">

@@ -5,8 +5,8 @@ if ($_usuario)
 ?>
 <div class="conteudoEsquerdo">
 	<h2>Bem-vindo</h2>
-	<p>Esta é a central de conhecimento da FEJESP - Federação de Empresas Juniores do Estado de São Paulo</p>
-	<p>A central é o sistema pelo qual a FEJESP irá disponibilizar conteúdos como o banco de cases, informações institucionais, relatórios de projetos e histórico de indicadores</p>
+	<p>Esta é a Central de Conhecimento da FEJESP - Federação das Empresas Juniores do Estado de São Paulo</p>
+	<p>A central é o sistema pelo qual a FEJESP irá disponibilizar conteúdos como o banco de cases, informações institucionais, relatórios dos projetos e histórico de indicadores</p>
 </div>
 <div class="conteudoDireito">
 	<h2>Faça o login</h2>
