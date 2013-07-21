@@ -120,6 +120,9 @@ if ($op == 'getArvoreInicial') {
 		new Query('DELETE FROM forms WHERE id=? LIMIT 1', $dados['id']);
 	} else
 		retornarErro();
+} else if ($op == 'sugerirTags') {
+	// Busca tags que comecem ou contenham $_GET['str']
+	retornar(Query::query(false, 0, 'SELECT nome, (nome LIKE ?) AS ini FROM tags WHERE nome LIKE ? ORDER BY ini DESC, nome LIMIT 5', "$_GET[str]%", "%$_GET[str]%"));
 } else
 	retornarErro();
 

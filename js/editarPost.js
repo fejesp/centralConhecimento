@@ -240,12 +240,18 @@ Interface para as tags
 
 // Adiciona os ouvintes
 window.addEventListener("load", function () {
-	var tags, i
+	var tags, i, intervalo
 	get("campoTags").onkeydown = function (evento) {
 		if (evento.keyCode == 13) {
 			adicionarTagDoCampo()
 			evento.preventDefault()
+		} else {
+			clearInterval(intervalo)
+			intervalo = setTimeout(sugerirTags, 500)
 		}
+	}
+	get("campoTags").onblur = function () {
+		setTimeout(esconderSugestoes, 500)
 	}
 	get("adicionarTag").onclick = adicionarTagDoCampo
 	tags = document.querySelectorAll("div.tags a")
@@ -262,7 +268,7 @@ window.addEventListener("load", function () {
 function adicionarTagDoCampo() {
 	var tag, campo
 	campo = get("campoTags")
-	var tag = campo.value
+	tag = campo.value
 	if (tag)
 		adicionarTag(tag)
 	campo.value = ""
@@ -292,4 +298,59 @@ function removerTag(tag) {
 		tag.parentNode.removeChild(tag)
 		input.value = JSON.stringify(tags)
 	}
+}
+
+// Carrega uma lista de sugestões de tags
+var canal = new CanalAjax
+function sugerirTags() {
+	var str = get("campoTags").value
+	if (str)
+		canal.enviarDireto({url: "/ajax.php", dados: {op: "sugerirTags", str: str}, funcao: function (sugestoes) {
+			montarSugestoes(sugestoes)
+		}, retorno: "json"})
+}
+
+// Monta a lista de sugestões
+var divSugestoes = document.createElement("div")
+divSugestoes.className = "menu"
+function montarSugestoes(sugestoes) {
+	var campo, i, div, gerarOnClick
+	campo = get("campoTags")
+	
+	// Esconde se não houver sugestões
+	if (sugestoes.length == 0) {
+		esconderSugestoes()
+		return
+	}
+	
+	// Posiciona o campo de sugestões
+	divSugestoes.style.top = (campo.offsetTop+campo.offsetHeight)+"px"
+	divSugestoes.style.left = campo.offsetLeft+"px"
+	divSugestoes.style.minWidth = campo.offsetWidth+"px"
+	campo.parentNode.appendChild(divSugestoes)
+	
+	// Factory
+	gerarOnClick = function (str) {
+		return function () {
+			esconderSugestoes()
+			campo.value = ""
+			campo.focus()
+			adicionarTag(str)
+		}
+	}
+	
+	// Monta o conteúdo da div
+	divSugestoes.innerHTML = ""
+	for (i=0; i<sugestoes.length; i++) {
+		div = document.createElement("div")
+		div.textContent = sugestoes[i]
+		div.onclick = gerarOnClick(sugestoes[i])
+		divSugestoes.appendChild(div)
+	}
+}
+
+// Esconde a lista de sugestões
+function esconderSugestoes() {
+	if (divSugestoes.parentNode)
+		divSugestoes.parentNode.removeChild(divSugestoes)
 }
