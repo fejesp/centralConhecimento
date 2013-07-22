@@ -4,8 +4,19 @@ var _numNovos = 0
 // Guarda o tamanho total dos novos anexos
 var _tamanhoNovos = 0
 
-// Cria o visual do caminho
-window.addEventListener("load", montarCaminho)
+window.addEventListener("load", function () {
+	// Cria o visual do caminho
+	montarCaminho()
+	
+	get("form").onsubmit = function () {
+		// Dá o feedback de início de envio
+		get("enviar").textContent = "Enviando..."
+		setTimeout(function () {
+			// Pede um pouco mais de paciência
+			get("enviar").textContent = "Aguarde, fazendo upload dos anexos..."
+		}, 5e3)
+	}
+})
 
 setBotao("editar", function () {
 	redirecionar("editarForm", _caminho)

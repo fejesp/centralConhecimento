@@ -52,7 +52,7 @@ imprimir('', 'div.clear');
 imprimir($dados['descricao'], 'div.descricaoForm', true);
 
 // Monta os campos iniciais do formulário (identificação do post e do usuário)
-echo '<form' . ($dados['ativo'] ? '' : ' class="inativo"') . ' action="/form.php" method="post" enctype="multipart/form-data">';
+echo '<form' . ($dados['ativo'] ? '' : ' class="inativo"') . ' action="/form.php" method="post" enctype="multipart/form-data" id="form">';
 if (!$_usuario)
 	echo '<p>Se você possui cadastro no sistema, por favor faça o login</p>
 	<p>Se não, informe seu email e sua empresa júnior<br>
@@ -103,10 +103,7 @@ foreach (json_decode($dados['conteudo'], true) as $i=>$campo) {
 <div class="acoes"><span class="botao" id="adicionarAnexo"><img src="/imgs/adicionar.png"> Adicionar anexo</span></div>
 <div class="listagem" id="anexos"></div>
 
-<?php
-// Imprime o fim do HTML do form
-echo '<input type="submit" style="display:none" id="submit">
-<span class="botao" id="voltar"><img src="/imgs/voltar.png"> Voltar</span>
-<span class="botao" id="enviar"><img src="/imgs/enviar.png"> Enviar</span>
-</form>';
-?>
+<input type="submit" style="display:none" id="submit">
+<p><span class="botao" id="voltar"><img src="/imgs/voltar.png"> Voltar</span>
+<span class="botao" id="enviar"><img src="/imgs/enviar.png"> Enviar</span></p>
+</form>
