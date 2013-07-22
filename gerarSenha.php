@@ -37,7 +37,7 @@ $assunto = '[FEJESP][Central de conhecimento] Recuperação de senha';
 $link = $_config['urlBase'] . 'editarUsuario';
 $mensagem = "<p>Olá " . assegurarHTML($dados['nome']) . ",</p>
 
-<p>Uma nova senha foi gerada para sua conta: <strong>$nova</strong>.<br>
+<p>Uma nova senha foi gerada para sua conta: <strong>$nova</strong><br>
 Para acessar a central e alterá-la <a href='$link'>clique aqui</a>.</p>
 
 <p>Att,<br>

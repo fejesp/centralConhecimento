@@ -263,11 +263,13 @@ footer {
 .rotuloEsquerdo {
 	float:left;
 	clear:left;
+	line-height:25px;
 }
 
 .opcoesDireita {
 	float:left;
 	margin-left:15px;
+	line-height:25px;
 }
 
 textarea {
