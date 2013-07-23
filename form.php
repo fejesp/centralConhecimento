@@ -113,7 +113,7 @@ try {
 	
 	if ($_usuario) {
 		$link = getHref('post', getCaminhoAcima($caminho), $nome2, true);
-		$link = "<p>Você também pode ver suas resposta diretamente na central:<br><a href='$link'>$link</a></p>";
+		$link = "<p>Você também pode ver sua resposta diretamente na central:<br><a href='$link'>$link</a></p>";
 	} else
 		$link = '';
 	

@@ -26,9 +26,12 @@ $usoMax = 1024*(int)@$_POST['usoMax'];
 // Salva no banco de dados
 try {
 	if ($criar) {
-		$senha = gerarSenha();
-		new Query('INSERT INTO usuarios VALUES (NULL, ?, ?, ?, 0, 1, ?, ?)', $nome, $email, md5($senha), $usoMax, gerarChaveLogin());
-		redirecionar('admin', '', '', 'novoUsuario=' . $senha);
+		$senha = md5(gerarSenha());
+		new Query('INSERT INTO usuarios VALUES (NULL, ?, ?, ?, 0, 1, ?, ?)', $nome, $email, $senha, $usoMax, gerarChaveLogin());
+		$id = Query::$conexao->insert_id;
+		$chave = md5($senha);
+		$link = $_config['urlBase'] . "gerarSenha.php?id=$id&chave=$chave";
+		redirecionar('admin', '', '', 'novoUsuario=' . urlencode($link));
 	} else {
 		new Query('UPDATE usuarios SET nome=?, email=?, usoMax=? WHERE id=? LIMIT 1', $nome, $email, $usoMax, $id);
 		redirecionar('admin');

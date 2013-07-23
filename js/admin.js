@@ -7,7 +7,7 @@ window.addEventListener("load", function () {
 	if (_novoUsuario) {
 		mostrarJanela(true)
 		get("janela").innerHTML = "<h2>Novo usuário</h2>"+
-		"<p>A senha do novo usuário é: <strong>"+_novoUsuario+"</strong><br>Informe o usuário sobre isso</p>"+
+		"<p>Passe o link abaixo ao novo usuário. Ao acessa-lo ele irá receber um e-mail com sua senha aleatória:<br>"+assegurarHTML(_novoUsuario)+"</p>"+
 		"<p><span class='botao' onclick='mostrarJanela(false)'><img src='/imgs/voltar.png'> Voltar</span></p>"
 	}
 })
