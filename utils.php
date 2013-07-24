@@ -366,16 +366,25 @@ function getQueryVisibilidade($tipo) {
 }
 
 // Retorna a configuração de visibilidade de um item num formato legível
-function visibilidade2str($tipo, $id, $visibilidade) {
+// $tipo é uma das strings: 'pasta', 'post', 'anexo'
+function visibilidade2str($tipo, $id, $visibilidade, $idCriador) {
+	// Cache dos nomes de usuários
+	static $nomes = array();
+	
 	if ($visibilidade == 'publico')
 		return 'Visível publicamente';
 	else if ($visibilidade == 'geral')
 		return 'Visível para todos os usuários logados';
 	else {
+		// Pega o nome do criador
+		if (!isset($nomes[$idCriador]))
+			$nomes[$idCriador] = Query::getValor('SELECT nome FROM usuarios WHERE id=? LIMIT 1', $idCriador);
+		$criador = $nomes[$idCriador];
+		
 		$selecionados = Query::query(false, 0, 'SELECT u.nome FROM usuarios AS u JOIN visibilidades AS v ON v.usuario=u.id WHERE v.tipoItem=? AND v.item=? ORDER BY u.nome', $tipo, $id);
 		if (count($selecionados))
-			return 'Visível para somente para ' . implode(', ', $selecionados) . ' e o criador';
+			return 'Visível para somente para ' . implode(', ', $selecionados) . " e $criador";
 		else
-			return 'Visível somente para o criador';
+			return "Visível somente para $criador";
 	}
 }

@@ -177,12 +177,12 @@ function visibilidade2str(visibilidade, selecionados) {
 	if (visibilidade == "geral")
 		return "Visível para todos os usuários logados"
 	if (!selecionados.length)
-		return "Visível somente para o criador"
+		return "Visível somente para "+_nomeCriador
 	nomes = []
 	for (i=0; i<_usuarios.length; i++)
 		if (selecionados.indexOf(_usuarios[i].id) != -1)
 			nomes.push(_usuarios[i].nome)
-	return "Visível para somente para "+nomes.join(", ")+" e o criador"
+	return "Visível para somente para "+nomes.join(", ")+" e "+_nomeCriador
 }
 
 // Abre a janela para editar um anexo

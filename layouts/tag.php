@@ -27,7 +27,7 @@ while (count($nivel)) {
 }
 
 // Busca os posts visíveis nessas pastas com a dada tag
-$query = 'SELECT p.id, p.pasta, p.nome, p.data, p.visibilidade FROM posts AS p JOIN tagsEmPosts AS t ON t.post=p.id WHERE t.tag=? AND p.pasta IN ? AND ' . getQueryVisibilidade('post') . ' ORDER BY p.data DESC';
+$query = 'SELECT p.id, p.pasta, p.nome, p.data, p.visibilidade, p.criador FROM posts AS p JOIN tagsEmPosts AS t ON t.post=p.id WHERE t.tag=? AND p.pasta IN ? AND ' . getQueryVisibilidade('post') . ' ORDER BY p.data DESC';
 if (count($idPastas))
 	$posts = Query::query(false, NULL, $query, $idTag, $idPastas);
 else
@@ -43,7 +43,7 @@ foreach ($posts as $post) {
 	echo '<a class="item item-post" href="' . getHref('post', $nomesPastas[$post['pasta']], $post['nome']) . '">';
 	imprimir($post['nome'], 'span.item-nome');
 	imprimir('Postado ' . data2str($post['data']), 'span.item-descricao');
-	imprimir(visibilidade2str('post', $post['id'], $post['visibilidade']), 'span.item-visibilidade');
+	imprimir(visibilidade2str('post', $post['id'], $post['visibilidade'], $post['criador']), 'span.item-visibilidade');
 	echo '</a>';
 }
 echo '</div>';

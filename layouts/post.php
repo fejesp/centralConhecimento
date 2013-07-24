@@ -20,17 +20,7 @@ if (!$sucesso) {
 
 // Mostra a descrição e informações de visibilidade
 imprimir($dados['nome'], 'h2');
-if ($dados['visibilidade'] == 'publico')
-	imprimir('Post visível publicamente', 'p.detalhe');
-else if ($dados['visibilidade'] == 'geral')
-	imprimir('Post visível para todos os usuários logados', 'p.detalhe');
-else {
-	$selecionados = Query::query(false, 0, 'SELECT u.nome FROM usuarios AS u JOIN visibilidades AS v ON v.usuario=u.id WHERE v.tipoItem="post" AND v.item=?', $dados['id']);
-	if (count($selecionados))
-		imprimir('Post visível somente para ' . implode(', ', $selecionados) . ' e o seu criador', 'p.detalhe');
-	else
-		imprimir('Post visível para somente para o criador', 'p.detalhe');
-}
+imprimir(visibilidade2str('post', $dados['id'], $dados['visibilidade'], $dados['criador']), 'p.detalhe');
 
 // Mostra quem e quando postou
 $criador = Query::getValor('SELECT nome FROM usuarios WHERE id=? LIMIT 1', $dados['criador']);
@@ -71,7 +61,7 @@ foreach (Query::query(false, 0, 'SELECT t2.nome FROM tagsEmPosts AS t JOIN tags 
 			echo '<a class="item item-anexo" href="' . getHref('anexo', $caminho, $anexo['nome']) . '">';
 			imprimir($anexo['nome'], 'span.item-nome');
 			imprimir(kiB2str($anexo['tamanho']), 'span.item-descricao');
-			imprimir(visibilidade2str('anexo', $anexo['id'], $anexo['visibilidade']), 'span.item-visibilidade');
+			imprimir(visibilidade2str('anexo', $anexo['id'], $anexo['visibilidade'], $dados['criador']), 'span.item-visibilidade');
 			echo '</a>';
 		}
 	}

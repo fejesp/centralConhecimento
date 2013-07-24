@@ -20,20 +20,9 @@ if (!$sucesso) {
 
 // Mostra a descrição e informações de visibilidade
 imprimir($dados['nome'], 'h2');
-if ($dados['id']) {
+if ($dados['descricao'])
 	imprimir($dados['descricao']);
-	if ($dados['visibilidade'] == 'publico')
-		imprimir('Pasta visível publicamente', 'p.detalhe');
-	else if ($dados['visibilidade'] == 'geral')
-		imprimir('Pasta visível para todos os usuários logados', 'p.detalhe');
-	else {
-		$selecionados = Query::query(false, 0, 'SELECT u.nome FROM usuarios AS u JOIN visibilidades AS v ON v.usuario=u.id WHERE v.tipoItem="pasta" AND v.item=?', $dados['id']);
-		if (count($selecionados))
-			imprimir('Pasta visível somente para ' . implode(', ', $selecionados) . ' e o seu criador', 'p.detalhe');
-		else
-			imprimir('Pasta visível para somente para o criador', 'p.detalhe');
-	}
-}
+imprimir(visibilidade2str('pasta', $dados['id'], $dados['visibilidade'], $dados['criador']), 'p.detalhe');
 
 // Monta a representação visual do caminho
 imprimir(getCaminhoAcima($caminho), 'div.caminho');
@@ -85,13 +74,13 @@ for ($i=0; $i<count($subitens); $i++) {
 		imprimir($subitem['nome'], 'span.item-nome');
 		if ($subitem['descricao'])
 			imprimir($subitem['descricao'], 'span.item-descricao');
-		imprimir(visibilidade2str('pasta', $subitem['id'], $subitem['visibilidade']), 'span.item-visibilidade');
+		imprimir(visibilidade2str('pasta', $subitem['id'], $subitem['visibilidade'], $itemCriador), 'span.item-visibilidade');
 		echo '</a>';
 	} else if ($subitem['tipo'] == 'post') {
 		echo "<a class='item item-post' href='" . getHref('post', $caminho, $subitem['nome']) . "' oncontextmenu='menu(\"post\", $itemCriador, event)'>";
 		imprimir($subitem['nome'], 'span.item-nome');
 		imprimir('Postado ' . data2str($subitem['data']), 'span.item-descricao');
-		imprimir(visibilidade2str('post', $subitem['id'], $subitem['visibilidade']), 'span.item-visibilidade');
+		imprimir(visibilidade2str('post', $subitem['id'], $subitem['visibilidade'], $itemCriador), 'span.item-visibilidade');
 		echo '</a>';
 	} else if ($subitem['tipo'] == 'form') {
 		echo "<a class='item item-form" . ($subitem['ativo'] ? '' : ' inativo') . "' href='" . getHref('form', $caminho, $subitem['nome']) . "' oncontextmenu='menu(\"form\", $itemCriador, event)'>";

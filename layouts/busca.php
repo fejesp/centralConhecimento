@@ -49,7 +49,7 @@ if ($busca) {
 	$nomesPastas = array(0 => ''); // Armazena os nomes completos das pastas associado por id
 	$idPastas = array(0); // Armazena os ids das pastas que não são parte do resultado
 	$nivel = array(0); // Armazena os ids das pastas do nível atual
-	$query = "SELECT id, nome, descricao, pai, visibilidade, ($queryNome OR $queryDescricao) AS resultado FROM pastas WHERE id!=0 AND pai IN ? AND " . getQueryVisibilidade('pasta');
+	$query = "SELECT id, nome, descricao, pai, visibilidade, criador, ($queryNome OR $queryDescricao) AS resultado FROM pastas WHERE id!=0 AND pai IN ? AND " . getQueryVisibilidade('pasta');
 	while (count($nivel)) {
 		$temp = Query::query(false, NULL, $query, $nivel);
 		$nivel = array();
@@ -69,14 +69,16 @@ if ($busca) {
 	$nomesPosts = array(); // Armazena os nomes dos posts que serão usados para buscar pelos anexos
 	$idPosts = array(); // Armazena os ids dos posts que não são parte do resultado
 	$rPosts = array(); // Vetor de resultados de posts
+	$criadoresPosts = array(); // Armazena os criadores do posts em $idPosts
 	if (count($idPastas)) {
-		$query = "SELECT id, pasta, nome, data, visibilidade, ($queryNome OR $queryConteudo) AS resultado FROM posts WHERE pasta IN ? AND " . getQueryVisibilidade('post');
+		$query = "SELECT id, pasta, nome, data, visibilidade, criador, ($queryNome OR $queryConteudo) AS resultado FROM posts WHERE pasta IN ? AND " . getQueryVisibilidade('post');
 		foreach (Query::query(false, NULL, $query, $idPastas) as $cada) {
 			if ($cada['resultado'])
 				$rPosts[] = $cada;
 			else {
 				$nomesPosts[$cada['id']] = $nomesPastas[$cada['pasta']] . '/' . $cada['nome'];
 				$idPosts[] = $cada['id'];
+				$criadoresPosts[] = $cada['criador'];
 			}
 		}
 	}
@@ -111,21 +113,21 @@ if ($busca) {
 		imprimir($pasta['nome'], 'span.item-nome');
 		if ($pasta['descricao'])
 			imprimir($pasta['descricao'], 'span.item-descricao');
-		imprimir(visibilidade2str('pasta', $pasta['id'], $pasta['visibilidade']), 'span.item-visibilidade');
+		imprimir(visibilidade2str('pasta', $pasta['id'], $pasta['visibilidade'], $pasta['criador']), 'span.item-visibilidade');
 		echo '</a>';
 	}
 	foreach ($rPosts as $post) {
 		echo '<a class="item item-post" href="' . getHref('post', $nomesPastas[$post['pasta']], $post['nome']) . '">';
 		imprimir($post['nome'], 'span.item-nome');
 		imprimir('Postado ' . data2str($post['data']), 'span.item-descricao');
-		imprimir(visibilidade2str('post', $post['id'], $post['visibilidade']), 'span.item-visibilidade');
+		imprimir(visibilidade2str('post', $post['id'], $post['visibilidade'], $post['criador']), 'span.item-visibilidade');
 		echo '</a>';
 	}
 	foreach ($rAnexos as $anexo) {
 		echo '<a class="item item-anexo" href="' . getHref('anexo', $nomesPosts[$anexo['post']], $anexo['nome']) . '">';
 		imprimir($anexo['nome'], 'span.item-nome');
 		imprimir(kiB2str($anexo['tamanho']), 'span.item-descricao');
-		imprimir(visibilidade2str('anexo', $anexo['id'], $anexo['visibilidade']), 'span.item-visibilidade');
+		imprimir(visibilidade2str('anexo', $anexo['id'], $anexo['visibilidade'], $criadoresPosts[$anexo['post']]), 'span.item-visibilidade');
 		echo '</a>';
 	}
 	echo '</div>';
