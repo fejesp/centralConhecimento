@@ -7,6 +7,12 @@ var _numNovos = 0
 // Guarda o tamanho total dos novos anexos
 var _tamanhoNovos = 0
 
+// Guarda a lista de tags já criadas (usada para dar sugestões)
+var _tags = null
+
+// Indica se está carregando as sugestões de tags
+var _carregandoTags = false
+
 // Envia o formulário
 setBotao("salvar", function () {
 	get("submit").click()
@@ -247,7 +253,7 @@ window.addEventListener("load", function () {
 			evento.preventDefault()
 		} else {
 			clearInterval(intervalo)
-			intervalo = setTimeout(sugerirTags, 500)
+			intervalo = setTimeout(sugerirTags, 100)
 		}
 	}
 	get("campoTags").onblur = function () {
@@ -300,21 +306,57 @@ function removerTag(tag) {
 	}
 }
 
-// Carrega uma lista de sugestões de tags
-var canal = new CanalAjax
+// Busca por sugestões de tags (carrega as tags antes)
 function sugerirTags() {
-	var str = get("campoTags").value
-	if (str)
-		canal.enviarDireto({url: "/ajax.php", dados: {op: "sugerirTags", str: str}, funcao: function (sugestoes) {
-			montarSugestoes(sugestoes)
+	if (!_tags && !_carregandoTags) {
+		// Se as tags ainda não foram carregadas, inicia a requisição
+		_carregandoTags = true
+		Ajax({url: "/ajax.php", dados: {op: "getTags"}, funcao: function (tags) {
+			_tags = tags
+			_carregandoTags = false
+			sugerirTags()
 		}, retorno: "json"})
+	}
+	if (_tags)
+		encontrarSugestoes()
+}
+
+// Encontra boas sugestões de tags
+function encontrarSugestoes() {
+	var str, sugestoes, i, pos
+	
+	str = get("campoTags").value.toLowerCase()
+	if (!str) {
+		esconderSugestoes()
+		return
+	}
+	sugestoes = [[], []]
+	
+	// Tags que comecem ou contenham o termo
+	for (i=0; i<_tags.length; i++) {
+		pos = _tags[i].toLowerCase().indexOf(str)
+		if (pos == 0)
+			sugestoes[0].push([_tags[i], 0])
+		else if (pos != -1)
+			sugestoes[1].push([_tags[i], pos])
+	}
+	
+	// Pega parte do resultado
+	if (sugestoes[0].length < 5)
+		sugestoes = sugestoes[0].concat(sugestoes[1]).slice(0, 5)
+	else
+		sugestoes = sugestoes[0].slice(0, 5)
+	
+	// Passa para a montagem
+	montarSugestoes(sugestoes)
 }
 
 // Monta a lista de sugestões
+// sugestoes é uma Array em que cada elemento é uma Array na forma [tag, posInicio]
 var divSugestoes = document.createElement("div")
 divSugestoes.className = "menu"
 function montarSugestoes(sugestoes) {
-	var campo, i, div, gerarOnClick
+	var campo, i, div, gerarOnClick, str, len, pos
 	campo = get("campoTags")
 	
 	// Esconde se não houver sugestões
@@ -341,10 +383,13 @@ function montarSugestoes(sugestoes) {
 	
 	// Monta o conteúdo da div
 	divSugestoes.innerHTML = ""
+	len = campo.value.length
 	for (i=0; i<sugestoes.length; i++) {
 		div = document.createElement("div")
-		div.textContent = sugestoes[i]
-		div.onclick = gerarOnClick(sugestoes[i])
+		str = sugestoes[i][0]
+		pos = sugestoes[i][1]
+		div.innerHTML = assegurarHTML(str.substr(0, pos))+"<b>"+assegurarHTML(str.substr(pos, len))+"</b>"+assegurarHTML(str.substr(pos+len))
+		div.onclick = gerarOnClick(str)
 		divSugestoes.appendChild(div)
 	}
 }

@@ -159,4 +159,4 @@ function getQueryBusca($campo) {
 
 imprimir('Busca por tag', 'h2');
 imprimir('Escolhe entre as tags mais comuns');
-imprimirNuvemTags(15);
+imprimirNuvemTags(25);
