@@ -64,7 +64,7 @@ function montarJanelaAnexo(visibilidade, selecionados) {
 	"<input type='radio' name='anexo-visibilidade' id='anexo-geral' onchange='atualizarLista2()'> <label for='anexo-geral'>para qualquer usuário logado</label><br>"+
 	"<input type='radio' name='anexo-visibilidade' id='anexo-seleto' onchange='atualizarLista2()'> <label for='anexo-seleto'>para um grupo definido de usuários</label><br>"+
 	"</p>"+
-	"<div class='opcoesDireita' id='anexo-lista' style='display:none'>"+
+	"<div class='listaUsuarios' id='anexo-lista' style='display:none'>"+
 	"<p>Usuários permitidos:</p>"+
 	checks+
 	"</div>"+

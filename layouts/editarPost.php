@@ -62,11 +62,11 @@ else
 <input type="radio" name="visibilidade" value="geral" id="geral"<?=$radio2?>> <label for="geral">para qualquer usuário logado</label><br>
 <input type="radio" name="visibilidade" value="seleto" id="seleto"<?=$radio3?>> <label for="seleto">para um grupo definido de usuários</label><br>
 </p>
-<div class="opcoesDireita" id="lista">
+<div class="listaUsuarios" id="lista">
 	<p>Usuários permitidos:</p>
 	<?php
 	// Imprime uma lista dos usuários
-	$usuarios = Query::query(false, NULL, 'SELECT id, nome FROM usuarios ORDER BY nome');
+	$usuarios = Query::query(false, NULL, 'SELECT id, nome FROM usuarios ORDER BY ativo DESC, nome');
 	gerarJSVar('_usuarios', $usuarios);
 	$selecionados = $criar ? array() : Query::query(false, 0, 'SELECT usuario FROM visibilidades WHERE tipoItem="post" AND item=?', $dados['id']);
 	for ($i=0; $i<count($usuarios); $i++) {

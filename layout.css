@@ -272,6 +272,20 @@ footer {
 	line-height:25px;
 }
 
+.listaUsuarios {
+	float:left;
+	margin-left:15px;
+	max-height:300px;
+	overflow-y:auto;
+	overflow-x:hidden;
+	white-space:nowrap;
+}
+
+input:checked + label {
+	text-decoration:underline;
+	font-style:italic;
+}
+
 textarea {
 	width:90%;
 	height:150px;
