@@ -87,19 +87,13 @@ else
 <input type="hidden" name="caminho" value="<?=assegurarHTML($caminho)?>">
 
 <h2>Tags</h2>
-<div class="tags">
-<?php
-imprimirNuvemTags(10);
-?>
-</div>
 <input type="hidden" name="tags" id="tags" value="<?=assegurarHTML(json_encode($tags))?>">
-<p>Adicione tags a este post ou selecione entre as mais usadas</p>
+<p>Adicione tags a este post</p>
 <p><input id="campoTags" size="25"> <span class="botao" id="adicionarTag"><img src="/imgs/adicionar.png"> Adicionar</span></p>
 <p id="tagsSelecionadas"><?php
 foreach ($tags as $tag)
 	echo '<span class="tag" onclick="removerTag(this)">' . assegurarHTML($tag) . '</span>';
 ?></p>
-<div class="clear"></div>
 
 <h2>Anexos</h2>
 <div class="acoes"><span class="botao" id="adicionarAnexo"><img src="/imgs/adicionar.png"> Adicionar anexo</span></div>

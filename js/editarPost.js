@@ -246,7 +246,7 @@ Interface para as tags
 
 // Adiciona os ouvintes
 window.addEventListener("load", function () {
-	var tags, i, intervalo
+	var intervalo
 	get("campoTags").onkeydown = function (evento) {
 		if (evento.keyCode == 13) {
 			adicionarTagDoCampo()
@@ -260,14 +260,6 @@ window.addEventListener("load", function () {
 		setTimeout(esconderSugestoes, 500)
 	}
 	get("adicionarTag").onclick = adicionarTagDoCampo
-	tags = document.querySelectorAll("div.tags a")
-	for (i=0; i<tags.length; i++) {
-		tags.item(i).onclick = function (evento) {
-			// Adiciona uma tag da nuvem de tags
-			evento.preventDefault()
-			adicionarTag(evento.currentTarget.textContent)
-		}
-	}
 })
 
 // Adiciona a tag no campo de entrada
