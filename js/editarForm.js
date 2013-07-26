@@ -89,3 +89,16 @@ function getDivCampo(el) {
 			el = el.parentNode
 	return null
 }
+
+// Carrega a previsão do resultado do conteúdo em HTML
+function visualizar() {
+	var str = get("descricao").value
+	Ajax({url: "/ajax.php?op=preverHTML", dados: {str: str}, funcao: function (html) {
+		var div = get("divPrevisao")
+		if (div)
+			div.innerHTML = html
+	}, retorno: "json", metodo: "post"})
+	mostrarJanela(true)
+	get("janela").innerHTML = "<div id='divPrevisao' class='subConteudo'><em>Carregando...</em></div>"+
+	"<p><span class='botao' onclick='mostrarJanela(false)'><img src='/imgs/voltar.png'> Voltar</span></p>"
+}

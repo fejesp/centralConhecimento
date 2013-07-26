@@ -123,6 +123,10 @@ if ($op == 'getArvoreInicial') {
 } else if ($op == 'getTags') {
 	// Retorna todas as tags para o cliente (JS) sugerir as melhores ao usuário
 	retornar(Query::query(false, 0, 'SELECT nome FROM tags'));
+} else if ($op == 'preverHTML') {
+	// Converte texto simples em HTML com base numa sintaxe parecida com markdown
+	require_once 'gerarHTML.php';
+	retornar(gerarHTML($_POST['str']));
 } else
 	retornarErro();
 

@@ -30,6 +30,14 @@ window.addEventListener("load", function () {
 	get("geral").onchange = atualizarLista
 	get("seleto").onchange = atualizarLista
 	atualizarLista()
+	get("form").onsubmit = function () {
+		// Dá o feedback de início de envio
+		get("salvar").textContent = "Enviando..."
+		setTimeout(function () {
+			// Pede um pouco mais de paciência
+			get("salvar").textContent = "Aguarde, fazendo upload dos anexos..."
+		}, 5e3)
+	}
 })
 
 // Volta para a pasta
@@ -236,6 +244,19 @@ function salvarEdicaoAnexo() {
 	mostrarJanela(false)
 	get("janela").innerHTML = ""
 	_editando = null
+}
+
+// Carrega a previsão do resultado do conteúdo em HTML
+function visualizar() {
+	var str = get("conteudo").value
+	Ajax({url: "/ajax.php?op=preverHTML", dados: {str: str}, funcao: function (html) {
+		var div = get("divPrevisao")
+		if (div)
+			div.innerHTML = html
+	}, retorno: "json", metodo: "post"})
+	mostrarJanela(true)
+	get("janela").innerHTML = "<div id='divPrevisao' class='subConteudo'><em>Carregando...</em></div>"+
+	"<p><span class='botao' onclick='mostrarJanela(false)'><img src='/imgs/voltar.png'> Voltar</span></p>"
 }
 
 /*
