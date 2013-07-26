@@ -44,19 +44,23 @@ if ($_usuario && ($_usuario['admin'] || $dados['criador'] == $_usuario['id']))
 imprimir('', 'div.clear');
 if (strlen($dados['conteudo']))
 	imprimir($dados['conteudo'], 'div.subConteudo', true);
-?>
-<h2>Tags</h2>
-<p><?php
+
 // Exibe as tags
-foreach (Query::query(false, 0, 'SELECT t2.nome FROM tagsEmPosts AS t JOIN tags AS t2 ON t.tag=t2.id WHERE t.post=?', $dados['id']) as $tag)
-	echo '<a class="tag" href="' . getHref('tag', '', $tag) . '">' . assegurarHTML($tag) . '</a>';
-?></p>
-<h2>Anexos</h2>
-<div class="listagem">
-	<?php
-	// Carrega os anexos
-	$anexos = Query::query(false, NULL, 'SELECT id, nome, visibilidade, tamanho FROM anexos WHERE post=? ORDER BY nome', $dados['id']);
-	foreach ($anexos as $anexo) {
+$tags = Query::query(false, 0, 'SELECT t2.nome FROM tagsEmPosts AS t JOIN tags AS t2 ON t.tag=t2.id WHERE t.post=?', $dados['id']);
+if (count($tags)) {
+	imprimir('Tags', 'h2');
+	echo '<p>';
+	foreach ($tags as $tag)
+		echo '<a class="tag" href="' . getHref('tag', '', $tag) . '">' . assegurarHTML($tag) . '</a>';
+	echo '</p>';
+}
+
+// Carrega os anexos
+$anexos = Query::query(false, NULL, 'SELECT id, nome, visibilidade, tamanho FROM anexos WHERE post=? ORDER BY nome', $dados['id']);
+if (count($anexos)) {
+	imprimir('Anexos', 'h2');
+	echo '<div class="listagem">';
+	foreach ($anexos as $anexo)
 		if (verificarVisibilidade('anexo', $anexo['id'], $anexo['visibilidade'], $dados['criador'])) {
 			echo '<a class="item item-anexo" href="' . getHref('anexo', $caminho, $anexo['nome']) . '">';
 			imprimir($anexo['nome'], 'span.item-nome');
@@ -64,6 +68,6 @@ foreach (Query::query(false, 0, 'SELECT t2.nome FROM tagsEmPosts AS t JOIN tags 
 			imprimir(visibilidade2str('anexo', $anexo['id'], $anexo['visibilidade'], $dados['criador']), 'span.item-visibilidade');
 			echo '</a>';
 		}
-	}
-	?>
-</div>
+	echo '</div>';
+}
+?>
