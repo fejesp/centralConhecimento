@@ -291,6 +291,7 @@ textarea {
 	box-shadow:2px 2px 2px 0 rgba(0,0,0,.5);
 	border-radius:5px;
 	overflow:hidden;
+	z-index:3;
 }
 .menu > div {
 	padding:3px 7px;

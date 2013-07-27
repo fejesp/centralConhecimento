@@ -15,7 +15,6 @@ if (isset($_POST['nome'])) {
 ?>
 <h2>Contato</h2>
 <p>Entre em contato com a equipe FEJESP, estamos sempre dispostos a ajudar e abertos a sugestões</p>
-<p>O código fonte todo está disponível no <a href="https://github.com/fejesp/centralConhecimento">GitHub</a></p>
 <form method="post">
 <div class="rotuloEsquerdo">
 <p>Seu nome:</p>
@@ -30,3 +29,4 @@ if (isset($_POST['nome'])) {
 <input type="submit" style="display:none" id="submit">
 <span class="botao" onclick="get('submit').click()"><img src="/imgs/enviar.png"> Enviar</span>
 </form>
+<p>O código fonte está todo disponível no <a href="https://github.com/fejesp/centralConhecimento">GitHub</a>: ajude-nos a melhorar a central!</p>

@@ -127,6 +127,79 @@ if ($op == 'getArvoreInicial') {
 	// Converte texto simples em HTML com base numa sintaxe parecida com markdown
 	require_once 'gerarHTML.php';
 	retornar(gerarHTML($_POST['str']));
+} else if ($op == 'getDownloads') {
+	// Retorna os nomes de quem baixou um anexo (pelo id) na forma de uma array
+	// Cada elemento dessa array tem os índices "usuario", "email", "empresa" e "data"
+	if (!$_usuario || !$_usuario['admin'])
+		retornarErro();
+	$id = (int)$_GET['id'];
+	retornar(Query::query(false, NULL, 'SELECT
+		"" AS usuario, email, empresa, data
+		FROM downloads
+		WHERE anexo=? AND usuario IS NULL
+		UNION ALL SELECT
+		u.nome, NULL, NULL, d.data
+		FROM usuarios AS u
+		JOIN downloads AS d ON d.usuario=u.id
+		WHERE anexo=? AND usuario IS NOT NULL
+		ORDER BY data DESC', $id, $id));
+} else if ($op == 'getLinkPost') {
+	// Retorna o link completo para um post (pelo id)
+	if (!$_usuario || !$_usuario['admin'])
+		retornarErro();
+	
+	// Pega o id da pasta
+	$id = (int)$_GET['id'];
+	$post = Query::query(true, NULL, 'SELECT nome, pasta FROM posts WHERE id=? LIMIT 1', $id);
+	
+	// Monta o caminho (de trás para frente)
+	$caminho = '';
+	$pasta = array('id' => $post['pasta']);
+	while ($pasta['id']) {
+		$pasta = Query::query(true, NULL, 'SELECT nome, pai FROM pastas WHERE id=? LIMIT 1', $pasta['id']);
+		$caminho = $pasta['nome'] . '/' . $caminho;
+		$pasta['id'] = $pasta['pai'];
+	}
+	$caminho = '/' . substr($caminho, 0, -1);
+	
+	// Retorna o caminho relativo a partir da raiz
+	retornar(html_entity_decode(getHref('post', $caminho, $post['nome']), ENT_QUOTES, 'UTF-8'));
+} else if ($op == 'getAnexos') {
+	// Retorna os posts baixados por uma pessoa externa (pelo email+empresa)
+	if (!$_usuario || !$_usuario['admin'])
+		retornarErro();
+	$email = $_GET['email'];
+	$empresa = $_GET['empresa'];
+	retornar(Query::query(false, NULL, 'SELECT
+	p.nome AS post, a.nome AS anexo, d.data AS data, a.id AS id, p.id AS idPost
+	FROM posts AS p
+	JOIN anexos AS a ON a.post=p.id
+	JOIN downloads AS d ON d.anexo=a.id
+	WHERE d.email=? AND d.empresa=?
+	ORDER BY data DESC', $email, $empresa));
+} else if ($op == 'getTodosDownloads') {
+	// Retorna as estatísticas de todos os downloads
+	if (!$_usuario || !$_usuario['admin'])
+		retornarErro();
+	$query = 'SELECT
+		a.id AS id, p.id AS idPost, p.nome AS post, a.nome AS anexo, COUNT(*) AS downloads
+		FROM posts AS p
+		JOIN anexos AS a ON a.post=p.id
+		JOIN downloads AS d ON d.anexo=a.id
+		GROUP BY a.id
+		ORDER BY COUNT(*) DESC';
+	retornar(Query::query(false, NULL, $query));
+} else if ($op == 'getTodosDownloadsExternos') {
+	// Retorna as estatísticas de todos os downloaders externos
+	if (!$_usuario || !$_usuario['admin'])
+		retornarErro();
+	$query = 'SELECT
+		email, empresa, COUNT(*) AS downloads
+		FROM downloads
+		WHERE usuario IS NULL
+		GROUP BY email, empresa
+		ORDER BY COUNT(*) DESC';
+	retornar(Query::query(false, NULL, $query));
 } else
 	retornarErro();
 

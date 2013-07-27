@@ -4,7 +4,7 @@ setBotao("criarUsuario", function () {
 
 // Exibe a senha do usuário criado
 window.addEventListener("load", function () {
-	if (_novoUsuario) {
+	if (window._novoUsuario) {
 		mostrarJanela(true)
 		get("janela").innerHTML = "<h2>Novo usuário</h2>"+
 		"<p>Passe o link abaixo ao novo usuário. Ao acessa-lo ele irá receber um e-mail com sua senha aleatória:<br>"+assegurarHTML(_novoUsuario)+"</p>"+
@@ -83,3 +83,157 @@ function editarUsuario(linha) {
 		"<span class='botao' onclick='get(\"submit\").click()'><img src='/imgs/enviar.png'> Salvar</span></p>"+
 		"</form>"
 }
+
+/*
+
+Tabela de anexos mais baixados
+
+*/
+
+// Coloca o menu em cada linha de downloads
+window.addEventListener("load", function () {
+	var linhas, i
+	linhas = get("tabelaDownloads").rows
+	for (i=1; i<linhas.length; i++)
+		linhas.item(i).oncontextmenu = onContextMenuAnexos
+})
+
+// Mostra o menu de uma linha
+function onContextMenuAnexos(evento) {
+	var id, nome, idPost
+	id = evento.currentTarget.dataset.id
+	idPost = evento.currentTarget.dataset.idPost
+	nome = evento.currentTarget.dataset.nome
+	Menu.abrir(evento, [["<img src='/imgs/buscar.png'> Ver quem baixou", function () {
+		mostrarQuemBaixou(id, nome)
+	}], ["<img src='/imgs/enviar.png'> Ver post", function () {
+		Ajax({url: "/ajax.php", dados: {op: "getLinkPost", id: idPost}, funcao: function (link) {
+			window.open(link, "_blank")
+		}, retorno: "json"})
+	}]])
+}
+
+// Monta a tabela de quem baixou um dado anexo
+function mostrarQuemBaixou(id, nome) {
+	var div
+	div = abrirJanelaCarregando()
+	Ajax({url: "/ajax.php", dados: {op: "getDownloads", id: id}, funcao: function (dados) {
+		var html, i, quem
+		html = "<p>Downloads de "+assegurarHTML(nome)+"</p>"
+		html += "<table><tr><th>Quem</th><th>Quando</th></tr>"
+		for (i=0; i<dados.length; i++) {
+			quem = dados[i].usuario ? dados[i].usuario : dados[i].email+" ("+dados[i].empresa+")"
+			html += "<tr><td>"+assegurarHTML(quem)+"</td><td>"+dados[i].data+"</td></tr>"
+		}
+		html += "</table>"
+		div.innerHTML = html
+	}, retorno: "json"})
+}
+
+// Botão para mostrar todos os downloads feitos
+setBotao("btMaisDownloads", function () {
+	var div
+	
+	// Mostra feedback
+	div = get("btMaisDownloads").parentNode
+	div.innerHTML = "Carregando..."
+	
+	Ajax({url: "/ajax.php", dados: {op: "getTodosDownloads"}, funcao: function (dados) {
+		var tabela, tr, i
+		
+		// Remove todas as linhas atuais
+		tabela = get("tabelaDownloads")
+		while (tabela.rows.length > 1)
+			tabela.deleteRow(1)
+		
+		// Coloca as novas linhas
+		for (i=0; i<dados.length; i++) {
+			tr = document.createElement("tr")
+			tr.appendChild(criarTag("td.nomePost", dados[i].post))
+			tr.appendChild(criarTag("td", dados[i].anexo))
+			tr.appendChild(criarTag("td", dados[i].downloads))
+			tr.dataset.id = dados[i].id
+			tr.dataset.nome = dados[i].anexo
+			tr.dataset.idPost = dados[i].idPost
+			tabela.appendChild(tr)
+			tr.oncontextmenu = onContextMenuAnexos
+		}
+		
+		// Remove o botão
+		div.parentNode.removeChild(div)
+	}, retorno: "json"})
+})
+
+/*
+
+Tabela de downloads externos
+
+*/
+
+// Coloca o menu em cada linha de downloads
+window.addEventListener("load", function () {
+	var linhas, i
+	linhas = get("tabelaDownloadsExternos").rows
+	for (i=1; i<linhas.length; i++)
+		linhas.item(i).oncontextmenu = onContextMenuDownloaders
+})
+
+// Mostra a menu de uma linha
+function onContextMenuDownloaders(evento) {
+	var email, empresa
+	email = evento.currentTarget.dataset.email
+	empresa = evento.currentTarget.dataset.empresa
+	Menu.abrir(evento, [["<img src='/imgs/buscar.png'> Ver o que foi baixado", function () {
+		var div = abrirJanelaCarregando()
+		div.innerHTML = "<p>Downloads de "+assegurarHTML(email)+" ("+assegurarHTML(empresa)+")</p><table>"+
+			"<tr><th>Post</th><th>Anexo</th><th>Data</td></tr></table>"
+		Ajax({url: "/ajax.php", dados: {op: "getAnexos", email: email, empresa: empresa}, funcao: function (dados) {
+			var tabela, i, tr
+			tabela = div.childNodes[1]
+			for (i=0; i<dados.length; i++) {
+				tr = document.createElement("tr")
+				tr.appendChild(criarTag("td.nomePost", dados[i].post))
+				tr.appendChild(criarTag("td", dados[i].anexo))
+				tr.appendChild(criarTag("td", dados[i].data))
+				tr.dataset.id = dados[i].id
+				tr.dataset.nome = dados[i].anexo
+				tr.dataset.idPost = dados[i].idPost
+				tabela.appendChild(tr)
+				tr.oncontextmenu = onContextMenuAnexos
+			}
+		}, retorno: "json"})
+	}]])
+}
+
+// Botão para mostrar todos os downloaders externos
+setBotao("btMaisDownloadsExternos", function () {
+	var div
+	
+	// Mostra feedback
+	div = get("btMaisDownloadsExternos").parentNode
+	div.innerHTML = "Carregando..."
+	
+	Ajax({url: "/ajax.php", dados: {op: "getTodosDownloadsExternos"}, funcao: function (dados) {
+		var tabela, tr, i
+		
+		// Remove todas as linhas atuais
+		tabela = get("tabelaDownloadsExternos")
+		while (tabela.rows.length > 1)
+			tabela.deleteRow(1)
+		
+		// Coloca as novas linhas
+		for (i=0; i<dados.length; i++) {
+			tr = document.createElement("tr")
+			tr.appendChild(criarTag("td", dados[i].email))
+			tr.appendChild(criarTag("td", dados[i].empresa))
+			tr.appendChild(criarTag("td", dados[i].downloads))
+			tr.dataset.email = dados[i].email
+			tr.dataset.empresa = dados[i].empresa
+			tabela.appendChild(tr)
+			tr.oncontextmenu = onContextMenuDownloaders
+		}
+		
+		// Remove o botão
+		div.parentNode.removeChild(div)
+	}, retorno: "json"})
+})

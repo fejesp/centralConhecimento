@@ -10,8 +10,7 @@ if (isset($_GET['novoUsuario']))
 
 <h3>Usuários</h3>
 <p><span class="botao" id="criarUsuario"><img src="/imgs/criarUsuario.png"> Criar usuário</span></p>
-<table class="usuarios" id="tabelaUsuarios">
-<tbody>
+<table id="tabelaUsuarios">
 	<tr><th>Nome</th><th>Email</th><th>Acessos esse ano</th><th>Espaço usado</th></tr>
 	<?php
 	// Carrega os dados
@@ -47,7 +46,6 @@ if (isset($_GET['novoUsuario']))
 		echo '</tr>';
 	}
 	?>
-</tbody>
 </table>
 
 <h3>Uso do espaço</h3>
@@ -74,6 +72,53 @@ $porcemLivreReservado = round(100*$usoLivreReservado/$total);
 <span class="legendaLivreReservado">@</span> Espaço livre reservado para outros usuários: <?=kiB2str($usoLivreReservado)?><br>
 <span class="legendaLivre">@</span> Espaço livre: <?=kiB2str($livre)?></p>
 
-<h3>Estatísticas</h3>
-<p>[Gráfico de acessos]</p>
-<p>[Top10 itens]</p>
+<h3>Anexos mais baixados</h3>
+<table id="tabelaDownloads">
+<tr><th>Post</th><th>Anexo</th><th>Downloads</th></tr>
+<?php
+// Carrega os itens mais acessados
+$query = 'SELECT
+	a.id AS id, p.id AS idPost, p.nome AS post, a.nome AS anexo, COUNT(*) AS downloads
+	FROM posts AS p
+	JOIN anexos AS a ON a.post=p.id
+	JOIN downloads AS d ON d.anexo=a.id
+	GROUP BY a.id
+	ORDER BY COUNT(*) DESC
+	LIMIT 7';
+foreach (Query::query(false, NULL, $query) as $cada) {
+	echo "<tr data-id='$cada[id]' data-id-post='$cada[idPost]' data-nome='" . assegurarHTML($cada['anexo']) . "'>";
+	imprimir($cada['post'], 'td.nomePost');
+	imprimir($cada['anexo'], 'td');
+	imprimir($cada['downloads'], 'td');
+	echo '</tr>';
+}
+?>
+</table>
+<div style="text-align:center">
+	<span class="botao" id="btMaisDownloads"><img src="/imgs/praBaixo.png"> Mostrar tudo</span>
+</div>
+
+<h3>Downloads externos</h3>
+<table id="tabelaDownloadsExternos">
+<tr><th>Email</th><th>Empresa</th><th>Downloads</th></tr>
+<?php
+// Carrega os maiores downloaders externos
+$query = 'SELECT
+	email, empresa, COUNT(*) AS downloads
+	FROM downloads
+	WHERE usuario IS NULL
+	GROUP BY email, empresa
+	ORDER BY COUNT(*) DESC
+	LIMIT 7';
+foreach (Query::query(false, NULL, $query) as $cada) {
+	echo '<tr data-email="' . assegurarHTML($cada['email']) . '" data-empresa="' . assegurarHTML($cada['empresa']) . '">';
+	imprimir($cada['email'], 'td');
+	imprimir($cada['empresa'], 'td');
+	imprimir($cada['downloads'], 'td');
+	echo '</tr>';
+}
+?>
+</table>
+<div style="text-align:center">
+	<span class="botao" id="btMaisDownloadsExternos"><img src="/imgs/praBaixo.png"> Mostrar tudo</span>
+</div>

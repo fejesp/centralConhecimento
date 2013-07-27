@@ -149,6 +149,16 @@ var mostrarJanela = (function () {
 	}
 })()
 
+// Mostra a janela com uma mensagem de "Carregando"
+// Retorna um div dentro da janela onde o conteúdo será colocado depois de carregado
+function abrirJanelaCarregando() {
+	var idDiv = "div"+String(Math.random())
+	mostrarJanela(true)
+	get("janela").innerHTML = "<div id='"+idDiv+"'><em>Carregando...</em></div>"+
+	"<p><span class='botao' onclick='mostrarJanela(false)'><img src='/imgs/voltar.png'> Voltar</span></p>"
+	return get(idDiv)
+}
+
 // Cria um novo elemento com a tag, conteúdo e atributos desejados
 // tag é uma string com o nome da tag. Opcionalmente, pode conter o nome da classe, ex: "span.botao"
 // conteudo é uma string, um nó ou uma array de string/nós

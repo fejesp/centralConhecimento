@@ -1,9 +1,13 @@
 /* Página de administração */
-.usuarios td, .usuarios th {
+td, th {
 	border-bottom:thin #888 dashed;
 	border-right:thin #888 dashed;
 	text-align:center;
 	padding:5px;
+}
+
+td.nomePost {
+	font-size:smaller;
 }
 
 tr:hover > td {
