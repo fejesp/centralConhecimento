@@ -388,3 +388,25 @@ function visibilidade2str($tipo, $id, $visibilidade, $idCriador) {
 			return "Visível somente para $criador";
 	}
 }
+
+// Imprime a representação visual (HTML) de um caminho
+// $caminho deve ser uma string no formato '/a/b/c'
+function imprimirCaminho($caminho) {
+	if ($caminho == '')
+		return;
+	
+	echo '<div class="caminho">';
+	echo '<a href="' . getHref('pasta', '/', '') . '" class="botao">Raiz</a>';
+	
+	if ($caminho != '/') {
+		$partes = explode('/', $caminho);
+		$caminho = '';
+		for ($i=1; $i<count($partes); $i++) {
+			echo '<span class="caminho-divisao"></span>';
+			echo '<a href="' . getHref('pasta', $caminho, $partes[$i]) . '" class="botao">' . assegurarHTML($partes[$i]) . '</a>';
+			$caminho .= '/' . $partes[$i];
+		}
+	}
+	
+	echo '</div>';
+}

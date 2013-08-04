@@ -6,6 +6,9 @@
  * Data: 06/06/2013
 */
 
+// Não exibe os erros para o usuário
+ini_set('display_errors', '0');
+
 // Armazena as configurações da central
 $_config = array();
 

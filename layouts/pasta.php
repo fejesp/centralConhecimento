@@ -25,7 +25,7 @@ if ($dados['descricao'])
 imprimir(visibilidade2str('pasta', $dados['id'], $dados['visibilidade'], $dados['criador']), 'p.detalhe');
 
 // Monta a representação visual do caminho
-imprimir(getCaminhoAcima($caminho), 'div.caminho');
+imprimirCaminho($caminho);
 
 // Envia para o JS as variáveis que ele precisa
 gerarJSVar('caminho', $caminho);

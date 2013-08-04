@@ -27,7 +27,7 @@ $criador = Query::getValor('SELECT nome FROM usuarios WHERE id=? LIMIT 1', $dado
 imprimir('Postado por ' . $criador . ' ' . data2str($dados['data']), 'p.detalhe');
 
 // Coloca a sequência do caminho
-imprimir(getCaminhoAcima($caminho), 'div.caminho');
+imprimirCaminho(getCaminhoAcima($caminho));
 
 // Envia algumas variáveis para o JS
 gerarJSVar('_caminho', $caminho);

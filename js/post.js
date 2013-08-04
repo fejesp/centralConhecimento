@@ -1,6 +1,3 @@
-// Cria o visual do caminho
-window.addEventListener("load", montarCaminho)
-
 setBotao("editar", function () {
 	redirecionar("editarPost", _caminho)
 })

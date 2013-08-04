@@ -1,6 +1,3 @@
-// Cria o visual do caminho
-window.addEventListener("load", montarCaminho)
-
 // Vai para um dado recurso
 // É chamado pela <div class="item"> com o nome do recurso em seu primeiro filho <span>
 // el é o elemento div citado

@@ -34,46 +34,6 @@ var setBotao = (function () {
 	
 })()
 
-// Constroi a representação visual de um caminho
-// O caminho deve estar na forma "/a/b/c" num elemento com classe "caminho"
-function montarCaminho() {
-	var els, el, partes, i, botao, divisao, caminho
-	
-	var gerarOnclick = function (caminho) {
-		return function () {
-			redirecionar("pasta", caminho)
-		}
-	}
-	
-	els = document.getElementsByClassName("caminho")
-	if (!els.length)
-		return
-	el = els[0]
-	if (!el.textContent)
-		return
-	divisao = document.createElement("span")
-	divisao.className = "caminho-divisao"
-	partes = el.textContent.substr(1).split("/")
-	el.innerHTML = ""
-	caminho = ""
-	botao = document.createElement("span")
-	botao.className = "botao"
-	botao.textContent = "Raiz"
-	botao.onclick = gerarOnclick("")
-	el.appendChild(botao)
-	for (i=0; i<partes.length; i++) {
-		if (!partes[i])
-			continue
-		el.appendChild(divisao.cloneNode(false))
-		botao = document.createElement("span")
-		botao.className = "botao"
-		botao.textContent = partes[i]
-		caminho += "/"+partes[i]
-		botao.onclick = gerarOnclick(caminho)
-		el.appendChild(botao)
-	}
-}
-
 // Gerencia o funcionamento dos menus
 // Menu.abrir(evento, botoes) recebe o evento do mouse (a partir do qual o menu será montado) e
 // botoes, que é uma array onde cada elemento é uma array na forma [html, onclick]

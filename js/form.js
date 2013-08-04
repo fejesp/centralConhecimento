@@ -5,9 +5,6 @@ var _numNovos = 0
 var _tamanhoNovos = 0
 
 window.addEventListener("load", function () {
-	// Cria o visual do caminho
-	montarCaminho()
-	
 	get("form").onsubmit = function () {
 		// Dá o feedback de início de envio
 		get("enviar").textContent = "Enviando..."
