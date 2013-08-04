@@ -186,6 +186,7 @@ if ($op == 'getArvoreInicial') {
 		FROM posts AS p
 		JOIN anexos AS a ON a.post=p.id
 		JOIN downloads AS d ON d.anexo=a.id
+		WHERE d.usuario IS NULL OR d.usuario NOT IN (SELECT id FROM usuarios WHERE admin=1)
 		GROUP BY a.id
 		ORDER BY COUNT(*) DESC';
 	retornar(Query::query(false, NULL, $query));
