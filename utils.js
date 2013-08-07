@@ -95,6 +95,12 @@ function redirecionar(tipo, caminho, nome, query) {
 		window.location = "/"+tipo+escaparUrl(caminho)+(query ? "?"+query : "")
 }
 
+// Retorna a URL para ser usada num href de um link
+// tipo, caminho e nome são strings, o resultado será algo como "/tipo/caminho/nome"
+function getHref(tipo, caminho, nome) {
+	return escaparUrl("/"+tipo+(caminho=="/" ? "" : caminho)+"/"+nome)
+}
+
 // Mostra ou esconde a janela
 var mostrarJanela = (function () {
 	var aberta = false
@@ -191,7 +197,7 @@ function escaparUrl(url) {
 // Executa um comando Ajax
 // op é uma string com o nome da operação
 // dados é um objeto com os valores a serem enviados via GET
-// undo é uma função que será executada para desfazer a ação, caso o servidor retorne false
+// undo é uma função que será executada para desfazer a ação, caso o servidor retorne false (ela deve usar alert() para avisar o usuário)
 // funcao será executado com o valor (não false) retornado pelo servidor (opcional)
 function executarAjax(op, dados, undo, funcao) {
 	var evitarFechamento
@@ -212,6 +218,5 @@ function executarAjax(op, dados, undo, funcao) {
 	}, funcaoErro: function () {
 		window.removeEventListener("beforeunload", evitarFechamento)
 		undo()
-		alert("Erro na conexão")
 	}, retorno: "json", metodo: "post"})
 }

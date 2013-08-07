@@ -28,9 +28,9 @@ imprimir(visibilidade2str('pasta', $dados['id'], $dados['visibilidade'], $dados[
 imprimirCaminho($caminho);
 
 // Envia para o JS as variáveis que ele precisa
-gerarJSVar('caminho', $caminho);
-gerarJSVar('admin', $_usuario['admin']);
-gerarJSVar('usuario', $_usuario['id']);
+gerarJSVar('_caminho', $caminho);
+gerarJSVar('_admin', $_usuario['admin']);
+gerarJSVar('_usuario', $_usuario['id']);
 
 // Imprime os botões de ação somente se estiver logado
 if ($_usuario) {
