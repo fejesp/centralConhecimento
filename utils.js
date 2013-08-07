@@ -36,7 +36,7 @@ var setBotao = (function () {
 
 // Gerencia o funcionamento dos menus
 // Menu.abrir(evento, botoes) recebe o evento do mouse (a partir do qual o menu será montado) e
-// botoes, que é uma array onde cada elemento é uma array na forma [html, onclick]
+// botoes, que é uma array onde cada elemento é uma array na forma [nomeImg, textoBotao, onclick]
 // Menu.fechar() fecha imediatamente o menu aberto
 var Menu = (function () {
 	var divMenu = null
@@ -56,8 +56,8 @@ var Menu = (function () {
 		// Insere os botões
 		for (i=0; i<botoes.length; i++) {
 			subdiv = document.createElement("div")
-			subdiv.innerHTML = botoes[i][0]
-			subdiv.onclick = botoes[i][1]
+			subdiv.innerHTML = "<img src='/imgs/"+assegurarHTML(botoes[i][0])+".png' width='16' height='16'> "+assegurarHTML(botoes[i][1])
+			subdiv.onclick = botoes[i][2]
 			divMenu.appendChild(subdiv)
 		}
 		

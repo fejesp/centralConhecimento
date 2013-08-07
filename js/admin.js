@@ -23,20 +23,20 @@ window.addEventListener("load", function () {
 			ativo = !linha.classList.contains("inativo")
 			id = Number(linha.dataset.id)
 			if (id != _meuId)
-				botoes.push([ativo ? "<img src='/imgs/desativar.png'> Desativar" : "<img src='/imgs/ativar.png'> Ativar", function () {
+				botoes.push([ativo ? "desativar" : "ativar", ativo ? "Desativar" : "Ativar", function () {
 					linha.classList[ativo ? "add" : "remove"]("inativo")
 					executarAjax(ativo ? "desativarUsuario" : "ativarUsuario", {id: id}, function () {
 						linha.classList[!ativo ? "add" : "remove"]("inativo")
 					})
 				}])
-			botoes.push(["<img src='/imgs/link.png'> Link de gerar senha", function () {
+			botoes.push(["link", "Link de gerar senha", function () {
 				var janela = abrirJanelaCarregando()
 				executarAjax("gerarLink", {id: id}, mostrarJanela, function (link) {
 					janela.innerHTML = "<h2>Link de alteração de senha</h2>"+
 						"<p>Ao acessar o link abaixo, o usuário irá receber um e-mail com uma nova senha aleatória:<br>"+assegurarHTML(link)+"</p>"
 				})
 			}])
-			botoes.push(["<img src='/imgs/editar.png'> Editar", function () {
+			botoes.push(["editar", "Editar", function () {
 				editarUsuario(linha)
 			}])
 			Menu.abrir(evento, botoes)
@@ -95,9 +95,9 @@ function onContextMenuAnexos(evento) {
 	id = evento.currentTarget.dataset.id
 	idPost = evento.currentTarget.dataset.idPost
 	nome = evento.currentTarget.dataset.nome
-	Menu.abrir(evento, [["<img src='/imgs/buscar.png'> Ver quem baixou", function () {
+	Menu.abrir(evento, [["buscar", "Ver quem baixou", function () {
 		mostrarQuemBaixou(id, nome)
-	}], ["<img src='/imgs/enviar.png'> Ver post", function () {
+	}], ["enviar", "Ver post", function () {
 		Ajax({url: "/ajax.php", dados: {op: "getLinkPost", id: idPost}, funcao: function (link) {
 			window.open(link, "_blank")
 		}, retorno: "json"})
@@ -174,7 +174,7 @@ function onContextMenuDownloaders(evento) {
 	var email, empresa
 	email = evento.currentTarget.dataset.email
 	empresa = evento.currentTarget.dataset.empresa
-	Menu.abrir(evento, [["<img src='/imgs/buscar.png'> Ver o que foi baixado", function () {
+	Menu.abrir(evento, [["buscar", "Ver o que foi baixado", function () {
 		var div = abrirJanelaCarregando()
 		div.innerHTML = "<p>Downloads de "+assegurarHTML(email)+" ("+assegurarHTML(empresa)+")</p><table>"+
 			"<tr><th>Post</th><th>Anexo</th><th>Data</td></tr></table>"

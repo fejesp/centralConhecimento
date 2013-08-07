@@ -93,13 +93,13 @@ function montarJanelaAnexo(visibilidade, selecionados) {
 // Mostra o menu de opções para os anexos
 function menu(evento) {
 	var el = evento.currentTarget
-	var botoes = [["<img src='/imgs/editar.png'> Editar anexo", function () {
+	var botoes = [["editar", "Editar anexo", function () {
 		editarAnexo(el)
-	}], ["<img src='/imgs/remover.png'> Remover anexo", function () {
+	}], ["remover", "Remover anexo", function () {
 		removerAnexo(el)
 	}]]
 	if (el.dataset.novo == "0")
-		botoes.push(["<img src='/imgs/download.png'> Baixar anexo", function () {
+		botoes.push(["download", "Baixar anexo", function () {
 			baixarAnexo(el)
 		}])
 	Menu.abrir(evento, botoes)

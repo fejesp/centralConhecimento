@@ -7,13 +7,13 @@ setBotao("salvar", function () {
 })
 
 setBotao("adicionarCampo", function (evento) {
-	Menu.abrir(evento, [["Texto", function () {
+	Menu.abrir(evento, [["adicionarCampo", "Texto", function () {
 		adicionarCampo("input")
-	}], ["Texto longo", function () {
+	}], ["adicionarCampo", "Texto longo", function () {
 		adicionarCampo("textarea")
-	}], ["Múltipla escolha", function () {
+	}], ["adicionarCampo", "Múltipla escolha", function () {
 		adicionarCampo("radio")
-	}], ["Checkboxes", function () {
+	}], ["adicionarCampo", "Checkboxes", function () {
 		adicionarCampo("checkbox")
 	}]])
 })

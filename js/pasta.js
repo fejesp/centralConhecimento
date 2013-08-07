@@ -14,30 +14,30 @@ function menu(tipo, criador, evento) {
 	el = evento.currentTarget
 	nome = el.querySelector("span").textContent
 	if (admin || usuario == criador) {
-		botoes = [["<img src='/imgs/editar.png'> Editar item", function () {
+		botoes = [["editar", "Editar item", function () {
 			if (tipo == "pasta")
 				redirecionar("editarPasta", caminho, nome)
 			else if (tipo == "post")
 				redirecionar("editarPost", caminho, nome)
 			else if (tipo == "form")
 				redirecionar("editarForm", caminho, nome)
-		}], ["<img src='/imgs/remover.png'> Remover item", function () {
+		}], ["remover", "Remover item", function () {
 			removerItem(tipo, nome, caminho, el)
-		}], ["<img src='/imgs/mover.png'> Mover item", function () {
+		}], ["mover", "Mover item", function () {
 			abrirJanelaMover(tipo, caminho, nome)
 		}]]
 		
 		// Adiciona os botões de ativar/desativar formulário
 		if (tipo == "form") {
 			if (el.classList.contains("inativo"))
-				botoes.unshift(["<img src='/imgs/ativar.png'> Reativar formulário", function () {
+				botoes.unshift(["ativar", "Reativar formulário", function () {
 					el.classList.remove("inativo")
 					executarAjax("ativarForm", {caminho: caminho+"/"+nome}, function () {
 						el.classList.add("inativo")
 					})
 				}])
 			else
-				botoes.unshift(["<img src='/imgs/desativar.png'> Desativar formulário", function () {
+				botoes.unshift(["desativar", "Desativar formulário", function () {
 					el.classList.add("inativo")
 					executarAjax("desativarForm", {caminho: caminho+"/"+nome}, function () {
 						el.classList.remove("inativo")

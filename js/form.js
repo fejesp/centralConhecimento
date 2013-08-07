@@ -105,7 +105,7 @@ function adicionarAnexo() {
 // Mostra o menu de opções para os anexos
 function menu(evento) {
 	var el = evento.currentTarget
-	Menu.abrir(evento, [["<img src='/imgs/remover.png'> Remover anexo", function () {
+	Menu.abrir(evento, [["remover", "Remover anexo", function () {
 		removerAnexo(el)
 	}]])
 }
