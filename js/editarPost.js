@@ -274,11 +274,11 @@ window.addEventListener("load", function () {
 			evento.preventDefault()
 		} else {
 			clearInterval(intervalo)
-			intervalo = setTimeout(sugerirTags, 100)
+			intervalo = setTimeout(sugerirTags, 50)
 		}
 	}
 	get("campoTags").onblur = function () {
-		setTimeout(esconderSugestoes, 500)
+		setTimeout(esconderSugestoes, 250)
 	}
 	get("adicionarTag").onclick = adicionarTagDoCampo
 })
