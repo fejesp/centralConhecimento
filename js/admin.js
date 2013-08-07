@@ -24,26 +24,17 @@ window.addEventListener("load", function () {
 			id = Number(linha.dataset.id)
 			if (id != _meuId)
 				botoes.push([ativo ? "<img src='/imgs/desativar.png'> Desativar" : "<img src='/imgs/ativar.png'> Ativar", function () {
-					Ajax({url: "/ajax.php", dados: {op: ativo ? "desativarUsuario" : "ativarUsuario", id: id}, funcao: function (ativo) {
-						linha.classList[ativo ? "remove" : "add"]("inativo")
-					}, retorno: "json"})
+					linha.classList[ativo ? "add" : "remove"]("inativo")
+					executarAjax(ativo ? "desativarUsuario" : "ativarUsuario", {id: id}, function () {
+						linha.classList[!ativo ? "add" : "remove"]("inativo")
+					})
 				}])
-			botoes.push(["<img src='/imgs/gerarSenha.png'> Gerar senha", function () {
-				if (confirm("Deseja realmente gerar uma nova senha aleatória para esse usuário?"))
-					Ajax({url: "/ajax.php", dados: {op: "gerarSenha", id: id}, funcao: function (senha) {
-						mostrarJanela(true)
-						get("janela").innerHTML = "<h2>Nova senha</h2>"+
-							"<p>A nova senha é: <strong>"+senha+"</strong><br>Informe o usuário sobre essa mudança</p>"+
-							"<p><span class='botao' onclick='mostrarJanela(false)'><img src='/imgs/voltar.png'> Voltar</span></p>"
-					}, retorno: "json"})
-			}])
 			botoes.push(["<img src='/imgs/link.png'> Link de gerar senha", function () {
-				Ajax({url: "/ajax.php", dados: {op: "gerarLink", id: id}, funcao: function (link) {
-					mostrarJanela(true)
-					get("janela").innerHTML = "<h2>Link de alteração de senha</h2>"+
-						"<p>Ao acessar o link abaixo, o usuário irá receber um e-mail com uma nova senha aleatória:<br>"+assegurarHTML(link)+"</p>"+
-						"<p><span class='botao' onclick='mostrarJanela(false)'><img src='/imgs/voltar.png'> Voltar</span></p>"
-				}, retorno: "json"})
+				var janela = abrirJanelaCarregando()
+				executarAjax("gerarLink", {id: id}, mostrarJanela, function (link) {
+					janela.innerHTML = "<h2>Link de alteração de senha</h2>"+
+						"<p>Ao acessar o link abaixo, o usuário irá receber um e-mail com uma nova senha aleatória:<br>"+assegurarHTML(link)+"</p>"
+				})
 			}])
 			botoes.push(["<img src='/imgs/editar.png'> Editar", function () {
 				editarUsuario(linha)

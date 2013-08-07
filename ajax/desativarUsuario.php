@@ -12,4 +12,4 @@ if (!$_usuario || !$_usuario['admin'])
 $id = (int)@$_GET['id'];
 if ($id != $_usuario['id'])
 	new Query('UPDATE usuarios SET ativo=0 WHERE id=? LIMIT 1', $id);
-retornar(false);
+retornar(true);

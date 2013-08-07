@@ -14,3 +14,4 @@ if ($sucesso && $_usuario && ($_usuario['admin'] || $dados['criador']==$_usuario
 	new Query('UPDATE forms SET ativo=1 WHERE id=? LIMIT 1', $dados['id']);
 else
 	retornarErro();
+retornar(true);

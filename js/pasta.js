@@ -22,14 +22,7 @@ function menu(tipo, criador, evento) {
 			else if (tipo == "form")
 				redirecionar("editarForm", caminho, nome)
 		}], ["<img src='/imgs/remover.png'> Remover item", function () {
-			if (tipo == "pasta" && confirm("Você tem certeza que deseja excluir a pasta "+nome+"?\nTodo o seu conteúdo será excluído permanentemente!"))
-				redirecionar("excluirPasta.php", caminho, nome)
-			else if (tipo == "post" && confirm("Você tem certeza que deseja excluir o post "+nome+"?\nTodo o seu conteúdo será excluído permanentemente!"))
-				redirecionar("excluirPost.php", caminho, nome)
-			else if (tipo == "form" && confirm("Você tem certeza que deseja excluir o form "+nome+"?\nTalvez seja melhor desativa-lo"))
-				Ajax({url: "/ajax.php?op=excluirForm", dados: {caminho: caminho+"/"+nome}, funcao: function () {
-					el.parentNode.removeChild(el)
-				}})
+			removerItem(tipo, nome, caminho, el)
 		}], ["<img src='/imgs/mover.png'> Mover item", function () {
 			abrirJanelaMover(tipo, caminho, nome)
 		}]]
@@ -38,20 +31,36 @@ function menu(tipo, criador, evento) {
 		if (tipo == "form") {
 			if (el.classList.contains("inativo"))
 				botoes.unshift(["<img src='/imgs/ativar.png'> Reativar formulário", function () {
-					Ajax({url: "/ajax.php?op=ativarForm", dados: {caminho: caminho+"/"+nome}, funcao: function () {
-						el.classList.remove("inativo")
-					}})
+					el.classList.remove("inativo")
+					executarAjax("ativarForm", {caminho: caminho+"/"+nome}, function () {
+						el.classList.add("inativo")
+					})
 				}])
 			else
 				botoes.unshift(["<img src='/imgs/desativar.png'> Desativar formulário", function () {
-					Ajax({url: "/ajax.php?op=desativarForm", dados: {caminho: caminho+"/"+nome}, funcao: function () {
-						el.classList.add("inativo")
-					}})
+					el.classList.add("inativo")
+					executarAjax("desativarForm", {caminho: caminho+"/"+nome}, function () {
+						el.classList.remove("inativo")
+					})
 				}])
 		}
 		Menu.abrir(evento, botoes)
 	} else
 		evento.preventDefault()
+}
+
+// Remove um item ao clicar no botão remover do menu
+function removerItem(tipo, nome, caminho, el) {
+	if (tipo == "pasta" && confirm("Você tem certeza que deseja excluir a pasta "+nome+"?\nTodo o seu conteúdo será excluído permanentemente!"))
+		redirecionar("excluirPasta.php", caminho, nome)
+	else if (tipo == "post" && confirm("Você tem certeza que deseja excluir o post "+nome+"?\nTodo o seu conteúdo será excluído permanentemente!"))
+		redirecionar("excluirPost.php", caminho, nome)
+	else if (tipo == "form" && confirm("Você tem certeza que deseja excluir o form "+nome+"?\nTalvez seja melhor desativa-lo")) {
+		el.style.display = "none"
+		executarAjax("excluirForm", {caminho: caminho+"/"+nome}, function () {
+			el.style.display = ""
+		})
+	}
 }
 
 setBotao("criarPasta", function () {

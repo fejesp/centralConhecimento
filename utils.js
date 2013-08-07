@@ -187,3 +187,32 @@ function escaparUrl(url) {
 	url = encodeURIComponent(url)
 	return url.replace(/%2F/g, "/").replace(/%/g, "%25")
 }
+
+// Executa um comando Ajax
+// op é uma string com o nome da operação
+// dados é um objeto com os valores a serem enviados via GET
+// undo é uma função que será executada para desfazer a ação, caso o servidor retorne false
+// funcao será executado com o valor (não false) retornado pelo servidor (opcional)
+function executarAjax(op, dados, undo, funcao) {
+	var evitarFechamento
+	
+	// Evita que a página seja fechada antes de obter a resposta do servidor
+	evitarFechamento = function (evento) {
+		evento.preventDefault()
+	}
+	window.addEventListener("beforeunload", evitarFechamento)
+	
+	// Envia o comando para o servidor
+	dados.op = op
+	Ajax({url: "/ajax.php", dados: dados, funcao: function (valor) {
+		window.removeEventListener("beforeunload", evitarFechamento)
+		if (valor === false)
+			undo()
+		else if (funcao)
+			funcao(valor)
+	}, funcaoErro: function () {
+		window.removeEventListener("beforeunload", evitarFechamento)
+		undo()
+		alert("Erro na conexão")
+	}, retorno: "json"})
+}

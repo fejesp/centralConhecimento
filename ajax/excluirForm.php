@@ -14,3 +14,4 @@ if ($sucesso && $_usuario && ($_usuario['admin'] || $dados['criador']==$_usuario
 	new Query('DELETE FROM forms WHERE id=? LIMIT 1', $dados['id']);
 else
 	retornarErro();
+retornar(true);

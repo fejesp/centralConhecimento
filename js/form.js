@@ -27,15 +27,25 @@ setBotao("remover", function () {
 })
 
 setBotao("ativar", function () {
-	Ajax({url: "/ajax.php?op=ativarForm", dados: {caminho: _caminho}, funcao: function () {
-		window.location.reload()
-	}})
+	get("form").classList.remove("inativo")
+	get("ativar").style.display = "none"
+	get("desativar").style.display = ""
+	executarAjax("ativarForm", {caminho: _caminho}, function () {
+		get("form").classList.add("inativo")
+		get("ativar").style.display = ""
+		get("desativar").style.display = "none"
+	})
 })
 
 setBotao("desativar", function () {
-	Ajax({url: "/ajax.php?op=desativarForm", dados: {caminho: _caminho}, funcao: function () {
-		window.location.reload()
-	}})
+	get("form").classList.add("inativo")
+	get("ativar").style.display = ""
+	get("desativar").style.display = "none"
+	executarAjax("desativarForm", {caminho: _caminho}, function () {
+		get("form").classList.remove("inativo")
+		get("ativar").style.display = "none"
+		get("desativar").style.display = ""
+	})
 })
 
 setBotao("enviar", function () {

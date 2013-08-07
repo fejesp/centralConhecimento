@@ -35,10 +35,8 @@ if ($_usuario && ($_usuario['admin'] || $dados['criador'] == $_usuario['id'])) {
 	echo '<div class="acoes">
 	<span class="botao" id="remover"><img src="/imgs/remover.png"> Remover</span>
 	<span class="botao" id="editar"><img src="/imgs/editar.png"> Editar</span> ';
-	if ($dados['ativo'])
-		echo '<span class="botao" id="desativar"><img src="/imgs/desativar.png"> Desativar form</span>';
-	else
-		echo '<span class="botao" id="ativar"><img src="/imgs/ativar.png"> Reativar form</span>';
+	echo '<span class="botao" id="desativar"' . ($dados['ativo'] ? '' : ' style="display:none"') . '><img src="/imgs/desativar.png"> Desativar form</span>';
+	echo '<span class="botao" id="ativar"' . (!$dados['ativo'] ? '' : ' style="display:none"') . '><img src="/imgs/ativar.png"> Reativar form</span>';
 	echo '</div>';
 }
 

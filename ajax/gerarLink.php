@@ -10,6 +10,9 @@
 if (!$_usuario || !$_usuario['admin'])
 	retornarErro();
 $id = (int)@$_GET['id'];
-$chave = md5(Query::getValor('SELECT senha FROM usuarios WHERE id=? LIMIT 1', $id));
+$chave = Query::getValor('SELECT senha FROM usuarios WHERE id=? LIMIT 1', $id);
+if ($chave === NULL)
+	retornar(false);
+$chave = md5($chave);
 $link = $_config['urlBase'] . "gerarSenha.php?id=$id&chave=$chave";
 retornar($link);
