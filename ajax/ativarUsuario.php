@@ -9,7 +9,7 @@
 // Ativa uma conta de usuário
 if (!$_usuario || !$_usuario['admin'])
 	retornarErro();
-$id = (int)@$_GET['id'];
+$id = (int)@$_POST['id'];
 if ($id != $_usuario['id'])
 	new Query('UPDATE usuarios SET ativo=1 WHERE id=? LIMIT 1', $id);
 retornar(true);

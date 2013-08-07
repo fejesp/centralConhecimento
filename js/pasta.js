@@ -24,7 +24,7 @@ function menu(tipo, criador, evento) {
 		}], ["remover", "Remover item", function () {
 			removerItem(tipo, nome, caminho, el)
 		}], ["mover", "Mover item", function () {
-			abrirJanelaMover(tipo, caminho, nome)
+			abrirJanelaMover(el, tipo, caminho, nome)
 		}]]
 		
 		// Adiciona os botões de ativar/desativar formulário
@@ -34,6 +34,7 @@ function menu(tipo, criador, evento) {
 					el.classList.remove("inativo")
 					executarAjax("ativarForm", {caminho: caminho+"/"+nome}, function () {
 						el.classList.add("inativo")
+						alert("Erro ao ativar formulário")
 					})
 				}])
 			else
@@ -41,6 +42,7 @@ function menu(tipo, criador, evento) {
 					el.classList.add("inativo")
 					executarAjax("desativarForm", {caminho: caminho+"/"+nome}, function () {
 						el.classList.remove("inativo")
+						alert("Erro ao desativar formulário")
 					})
 				}])
 		}
@@ -59,6 +61,7 @@ function removerItem(tipo, nome, caminho, el) {
 		el.style.display = "none"
 		executarAjax("excluirForm", {caminho: caminho+"/"+nome}, function () {
 			el.style.display = ""
+			alert("Erro ao excluir formulário")
 		})
 	}
 }
@@ -76,8 +79,11 @@ setBotao("criarForm", function () {
 })
 
 // Abre uma janela para escolher o novo local de um item
+// el é a div clicada
+// tipo é uma string ("form", "post" ou "pasta")
 // caminho é o local atual do item
-function abrirJanelaMover(tipo, caminho, nome) {
+// nome é a string com o nome do item
+function abrirJanelaMover(el, tipo, caminho, nome) {
 	mostrarJanela(true)
 	get("janela").innerHTML = "<p>Carregando</p>"
 	
@@ -156,15 +162,33 @@ function abrirJanelaMover(tipo, caminho, nome) {
 	Ajax({url: "/ajax.php?op=getArvoreInicial", dados: {caminho: caminho}, funcao: function (arvore) {
 		var janela = get("janela"), action
 		action = tipo=="pasta" ? "moverPasta" : (tipo=="post" ? "moverPost" : "moverForm")
-		janela.innerHTML = "<form action='/"+action+".php' method='post'>"+
-		"<h2>Mover "+assegurarHTML(nome)+"</h2>"+
+		janela.innerHTML = "<h2>Mover "+assegurarHTML(nome)+"</h2>"+
 		"<p>Selecione a nova localidade:</p>"+
-		"<input type='hidden' name='caminho' value='"+assegurarHTML((caminho=="/" ? "" : caminho)+"/"+nome)+"'>"+
 		"<div id='arvore'></div>"+
-		"<input type='submit' id='submit' style='display:none'>"+
 		"<p><span class='botao' onclick='mostrarJanela(false)'><img src='/imgs/voltar.png'> Cancelar</span> "+
-		"<span class='botao' onclick='get(\"submit\").click()'><img src='/imgs/enviar.png'> Salvar</span></p>"+
-		"</form>"
+		"<span class='botao' id='btMover'><img src='/imgs/enviar.png'> Mover</span></p>"
 		gerarSubArvore("", get("arvore"), arvore)
+		get("btMover").onclick = function () {
+			var op, dados, radios, i
+			
+			// Pega os valores
+			op = tipo=="pasta" ? "moverPasta" : (tipo=="post" ? "moverPost" : "moverForm")
+			dados = {}
+			dados.caminho = (caminho=="/" ? "" : caminho)+"/"+nome
+			radios = janela.querySelectorAll("input[type=radio]")
+			for (i=0; i<radios.length; i++)
+				if (radios.item(i).checked) {
+					dados.novoCaminho = radios.item(i).value
+					break
+				}
+			
+			// Executa a ação no cliente e no servidor
+			el.style.display = "none"
+			executarAjax(op, dados, function () {
+				el.style.display = ""
+				alert("Erro ao mover item")
+			})
+			mostrarJanela(false)
+		}
 	}, retorno: "json"})
 }

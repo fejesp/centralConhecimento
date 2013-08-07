@@ -7,7 +7,7 @@
 */
 
 // Exclui um formulário
-$caminho = $_GET['caminho'];
+$caminho = $_POST['caminho'];
 $dados = NULL;
 $sucesso = interpretarCaminho($caminho, $dados, 'form');
 if ($sucesso && $_usuario && ($_usuario['admin'] || $dados['criador']==$_usuario['id']))

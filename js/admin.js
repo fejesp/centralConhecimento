@@ -26,12 +26,16 @@ window.addEventListener("load", function () {
 				botoes.push([ativo ? "desativar" : "ativar", ativo ? "Desativar" : "Ativar", function () {
 					linha.classList[ativo ? "add" : "remove"]("inativo")
 					executarAjax(ativo ? "desativarUsuario" : "ativarUsuario", {id: id}, function () {
+						alert("Erro ao alterar usuário")
 						linha.classList[!ativo ? "add" : "remove"]("inativo")
 					})
 				}])
 			botoes.push(["link", "Link de gerar senha", function () {
 				var janela = abrirJanelaCarregando()
-				executarAjax("gerarLink", {id: id}, mostrarJanela, function (link) {
+				executarAjax("gerarLink", {id: id}, function () {
+					mostrarJanela(false)
+					alert("Erro ao gerar link")
+				}, function (link) {
 					janela.innerHTML = "<h2>Link de alteração de senha</h2>"+
 						"<p>Ao acessar o link abaixo, o usuário irá receber um e-mail com uma nova senha aleatória:<br>"+assegurarHTML(link)+"</p>"
 				})

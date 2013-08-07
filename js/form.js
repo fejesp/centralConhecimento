@@ -34,6 +34,7 @@ setBotao("ativar", function () {
 		get("form").classList.add("inativo")
 		get("ativar").style.display = ""
 		get("desativar").style.display = "none"
+		alert("Erro ao ativar formulário")
 	})
 })
 
@@ -45,6 +46,7 @@ setBotao("desativar", function () {
 		get("form").classList.remove("inativo")
 		get("ativar").style.display = "none"
 		get("desativar").style.display = ""
+		alert("Erro ao desativar formulário")
 	})
 })
 

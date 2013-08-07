@@ -9,7 +9,7 @@
 // Retorna o link para gera uma nova senha para uma conta de usuário
 if (!$_usuario || !$_usuario['admin'])
 	retornarErro();
-$id = (int)@$_GET['id'];
+$id = (int)@$_POST['id'];
 $chave = Query::getValor('SELECT senha FROM usuarios WHERE id=? LIMIT 1', $id);
 if ($chave === NULL)
 	retornar(false);

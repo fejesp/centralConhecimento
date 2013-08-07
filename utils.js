@@ -203,8 +203,7 @@ function executarAjax(op, dados, undo, funcao) {
 	window.addEventListener("beforeunload", evitarFechamento)
 	
 	// Envia o comando para o servidor
-	dados.op = op
-	Ajax({url: "/ajax.php", dados: dados, funcao: function (valor) {
+	Ajax({url: "/ajax.php?op="+encodeURIComponent(op), dados: dados, funcao: function (valor) {
 		window.removeEventListener("beforeunload", evitarFechamento)
 		if (valor === false)
 			undo()
@@ -214,5 +213,5 @@ function executarAjax(op, dados, undo, funcao) {
 		window.removeEventListener("beforeunload", evitarFechamento)
 		undo()
 		alert("Erro na conexão")
-	}, retorno: "json"})
+	}, retorno: "json", metodo: "post"})
 }
