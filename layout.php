@@ -43,7 +43,7 @@ if (file_exists("js/$_GET[p].js"))
 	} else
 		echo 'Olá anônimo, <span class="botao" id="layout-login"><img src="/imgs/login.png"> Login</span> ';
 	?>
-	<a class="botao" href="/busca"><img src="/imgs/buscar.png"> Buscar</a>
+	<a class="botao" href="/busca" id="layout-buscar"><img src="/imgs/buscar.png"> Buscar</a>
 </div>
 <?php
 require_once "layouts/$_GET[p].php";

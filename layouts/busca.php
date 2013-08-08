@@ -1,6 +1,7 @@
 <?php
 // Pega o termo de busca
 $busca = @$_GET['busca'];
+$pasta = @$_GET['pasta'];
 ?>
 <h2>Buscar</h2>
 
@@ -9,6 +10,16 @@ $busca = @$_GET['busca'];
 <input type="submit" style="display:none" id="submit">
 <span class="botao" onclick="get('submit').click()"><img src="/imgs/enviar.png"> Buscar</span>
 </p>
+<p>Você pode aspas para agrupar palavras numa expressão, como em <em>"processo seletivo"</em><br>
+Para não retornar resultados relacionados a uma palavra coloque um traço antes dela, como em <em>projeto -interno</em></p>
+<?php
+if ($pasta != '' && $pasta != '/') {
+	echo '<p>
+	<input type="radio" name="pasta" value="' . assegurarHTML($pasta) . '" id="radioPasta" checked> <label for="radioPasta">Buscar somente na pasta <strong>' . assegurarHTML($pasta) . '</strong></label><br>
+	<input type="radio" name="pasta" value="" id="radioPasta2"> <label for="radioPasta2">Buscar em toda a central</label>
+	</p>';
+}
+?>
 </form>
 
 <?php
@@ -39,16 +50,37 @@ if ($busca) {
 	}
 	salvarCache();
 	
+	// Limita o tamanho máximo da busca
+	if (count($termos)+count($naoTermos)>16)
+		morrerComErro('A busca tem muitos termos');
+	
 	// Montas as querys de busca SQL
-	$queryNome = getQueryBusca('nome');
-	$queryDescricao = getQueryBusca('descricao');
-	$queryConteudo = getQueryBusca('conteudo');
+	$queryNome = getQueryBusca($termos, $naoTermos, 'nome');
+	$queryDescricao = getQueryBusca($termos, $naoTermos, 'descricao');
+	$queryConteudo = getQueryBusca($termos, $naoTermos, 'conteudo');
+	
+	// Pega os dados da pasta inicial
+	$dados = NULL;
+	$sucesso = interpretarCaminho($pasta, $dados, 'pasta');
+	if (!$sucesso)
+		morrerComErro('Pasta não encontrada');
+	
+	// Monta os dados do caminho da pasta inicial até a raiz
+	$idPastas = array($dados['id']); // Armazena os ids das pastas que não são parte do resultado
+	$nivel = array($dados['id']); // Armazena os ids das pastas do nível atual
+	$nomesPastas = array(); // Armazena os nomes completos das pastas associado por id
+	while ($dados['id'] != 0) {
+		foreach ($nomesPastas as $id=>$valor)
+			$nomesPastas[$id] = $dados['nome'] . '/' . $valor;
+		$nomesPastas[$dados['id']] = $dados['nome'];
+		$dados = Query::query(true, NULL, 'SELECT id, nome, pai FROM pastas WHERE id=? LIMIT 1', $dados['pai']);
+	}
+	$nomesPastas[0] = ''; // Pasta raiz
+	foreach ($nomesPastas as $id=>$valor)
+		$nomesPastas[$id] = '/' . $valor;
 	
 	// Vai montando toda a árvore de pastas visíveis e separando as pastas da resposta
 	$rPastas = array(); // Irá reunir as pastas que são resposta da busca
-	$nomesPastas = array(0 => ''); // Armazena os nomes completos das pastas associado por id
-	$idPastas = array(0); // Armazena os ids das pastas que não são parte do resultado
-	$nivel = array(0); // Armazena os ids das pastas do nível atual
 	$query = "SELECT id, nome, descricao, pai, visibilidade, criador, ($queryNome OR $queryDescricao) AS resultado FROM pastas WHERE id!=0 AND pai IN ? AND " . getQueryVisibilidade('pasta');
 	while (count($nivel)) {
 		$temp = Query::query(false, NULL, $query, $nivel);
@@ -149,8 +181,7 @@ function salvarCache() {
 
 // Retorna a query de busca no campo com o nome dado
 // Exemplo: 'nome' => '(nome LIKE \'%a%\' AND nome NOT LIKE \'%b%\')'
-function getQueryBusca($campo) {
-	global $termos, $naoTermos;
+function getQueryBusca($termos, $naoTermos, $campo) {
 	$partes = array();
 	foreach ($termos as $cada)
 		$partes[] = "$campo LIKE '%$cada%'";
