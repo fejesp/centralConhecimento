@@ -221,11 +221,25 @@ function getQueryBuscaPasta($termos, $naoTermos) {
 
 // Retorna a query de busca para posts
 function getQueryBuscaPost($termos, $naoTermos) {
+	static $tags = NULL;
+	
+	// Pega os posts que, olhando somente pelas suas tags, seriam resultados para cada critério
+	if (!$tags) {
+		$tags = array();
+		foreach ($termos as $termo) {
+			$ids = Query::query(false, 0, "SELECT DISTINCT p.id FROM posts AS p JOIN tagsEmPosts AS tEP ON tEP.post=p.id JOIN tags AS t ON t.id=tEP.tag WHERE t.nome LIKE '%$termo%'");
+			if (count($ids))
+				$tags[] = ' OR id IN (' . implode(',', $ids) . ')';
+			else
+				$tags[] = '';
+		}
+	}
+	
 	$valor = 1;
 	$partes = array();
 	for ($i=0; $i<count($termos); $i++) {
 		$termo = $termos[$i];
-		$partes[] = "$valor*(nome LIKE '%$termo%' OR conteudo LIKE '%$termo%')";
+		$partes[] = "$valor*(nome LIKE '%$termo%' OR conteudo LIKE '%$termo%'" . $tags[$i] . ")";
 		$valor *= 2;
 	}
 	for ($i=0; $i<count($naoTermos); $i++) {

@@ -11,7 +11,7 @@ Abaixo algumas ideias, não necessariamente todas serão implementadas.
 * (feito) Melhor explicação da sintaxe de busca (expressões com "" e evitar termos com -)
 
 ## Algoritmo
-* Leva em conta as tags dos posts
+* (feito) Leva em conta as tags dos posts
 * (feito) Leva em conta todo o caminho do item (exemplo: o post "B" na pasta "A" é um resultado para "A B"). Veja a imagem busca.jpg
 * (feito) Pode começar a partir de qualquer pasta, não somente da raiz
 
