@@ -54,11 +54,6 @@ if ($busca) {
 	if (count($termos)+count($naoTermos)>16)
 		morrerComErro('A busca tem muitos termos');
 	
-	// Montas as querys de busca SQL
-	$queryNome = getQueryBusca($termos, $naoTermos, 'nome');
-	$queryDescricao = getQueryBusca($termos, $naoTermos, 'descricao');
-	$queryConteudo = getQueryBusca($termos, $naoTermos, 'conteudo');
-	
 	// Pega os dados da pasta inicial
 	$dados = NULL;
 	$sucesso = interpretarCaminho($pasta, $dados, 'pasta');
@@ -69,6 +64,9 @@ if ($busca) {
 	$idPastas = array($dados['id']); // Armazena os ids das pastas que não são parte do resultado
 	$nivel = array($dados['id']); // Armazena os ids das pastas do nível atual
 	$nomesPastas = array(); // Armazena os nomes completos das pastas associado por id
+	$rPastas = array(); // Irá reunir as pastas que são resposta da busca
+	$scoresPastas = array(); // Armazena os scores finais das pastas fora do resultado, associado por id
+	$scoresPastas[$dados['id']] = 0;
 	while ($dados['id'] != 0) {
 		foreach ($nomesPastas as $id=>$valor)
 			$nomesPastas[$id] = $dados['nome'] . '/' . $valor;
@@ -80,19 +78,21 @@ if ($busca) {
 		$nomesPastas[$id] = '/' . $valor;
 	
 	// Vai montando toda a árvore de pastas visíveis e separando as pastas da resposta
-	$rPastas = array(); // Irá reunir as pastas que são resposta da busca
-	$query = "SELECT id, nome, descricao, pai, visibilidade, criador, ($queryNome OR $queryDescricao) AS resultado FROM pastas WHERE id!=0 AND pai IN ? AND " . getQueryVisibilidade('pasta');
+	$query = getQueryBuscaPasta($termos, $naoTermos);
+	$scoreMax = (1 << (count($termos)+count($naoTermos)))-1;
 	while (count($nivel)) {
 		$temp = Query::query(false, NULL, $query, $nivel);
 		$nivel = array();
 		foreach ($temp as $cada) {
 			// Trata os resultados desse nível, separando o que irá continuar a ser buscado 
 			$nomesPastas[$cada['id']] = $nomesPastas[$cada['pai']] . '/' . $cada['nome'];
-			if ($cada['resultado'])
+			$score = $cada['resultado'] | $scoresPastas[$cada['pai']];
+			if ($score == $scoreMax)
 				$rPastas[] = $cada;
 			else {
 				$nivel[] = $cada['id'];
 				$idPastas[] = $cada['id'];
+				$scoresPastas[$cada['id']] = $score;
 			}
 		}
 	}
@@ -102,32 +102,43 @@ if ($busca) {
 	$idPosts = array(); // Armazena os ids dos posts que não são parte do resultado
 	$rPosts = array(); // Vetor de resultados de posts
 	$criadoresPosts = array(); // Armazena os criadores do posts em $idPosts
+	$scoresPosts = array(); // Armazena os scores finais dos posts fora do resultado, associado por id
 	if (count($idPastas)) {
-		$query = "SELECT id, pasta, nome, data, visibilidade, criador, ($queryNome OR $queryConteudo) AS resultado FROM posts WHERE pasta IN ? AND " . getQueryVisibilidade('post');
+		$query = getQueryBuscaPost($termos, $naoTermos);
 		foreach (Query::query(false, NULL, $query, $idPastas) as $cada) {
-			if ($cada['resultado'])
+			$score = $cada['resultado'] | $scoresPastas[$cada['pasta']];
+			if ($score == $scoreMax)
 				$rPosts[] = $cada;
 			else {
 				$nomesPosts[$cada['id']] = $nomesPastas[$cada['pasta']] . '/' . $cada['nome'];
 				$idPosts[] = $cada['id'];
 				$criadoresPosts[] = $cada['criador'];
+				$scoresPosts[$cada['id']] = $score;
 			}
 		}
 	}
 	
 	// Busca os anexos visíveis nos posts fora do resultado que se encaixam na busca
+	$rAnexos = array();
 	if (count($idPosts)) {
-		$query = 'SELECT * FROM anexos WHERE post IN ? AND ' . getQueryVisibilidade('anexo') . " AND $queryNome";
-		$rAnexos = Query::query(false, NULL, $query, $idPosts);
-	} else
-		$rAnexos = array();
+		$query = getQueryBuscaAnexo($termos, $naoTermos);
+		foreach (Query::query(false, NULL, $query, $idPosts) as $cada) {
+			$score = $cada['resultado'] | $scoresPosts[$cada['post']];
+			if ($score == $scoreMax)
+				$rAnexos[] = $cada;
+		}
+	}
 	
 	// Busca os forms visíveis nas pastas fora do resultado que se encaixam na busca
+	$rForms = array();
 	if (count($idPastas)) {
-		$query = 'SELECT pasta, nome, data, ativo FROM forms WHERE pasta IN ? AND ' . getQueryVisibilidade('form') . " AND ($queryNome OR $queryDescricao)";
-		$rForms = Query::query(false, NULL, $query, $idPastas);
-	} else
-		$rForms = array();
+		$query = getQueryBuscaForm($termos, $naoTermos);
+		foreach (Query::query(false, NULL, $query, $idPastas) as $cada) {
+			$score = $cada['resultado'] | $scoresPastas[$cada['pasta']];
+			if ($score == $scoreMax)
+				$rForms[] = $cada;
+		}
+	}
 	
 	imprimir("Resultados", 'h2');
 	$n = count($rPastas)+count($rPosts)+count($rAnexos)+count($rForms);
@@ -179,15 +190,80 @@ function salvarCache() {
 	$naoIncluir = false;
 }
 
-// Retorna a query de busca no campo com o nome dado
-// Exemplo: 'nome' => '(nome LIKE \'%a%\' AND nome NOT LIKE \'%b%\')'
-function getQueryBusca($termos, $naoTermos, $campo) {
+// Retorna a query de busca para pastas
+function getQueryBuscaPasta($termos, $naoTermos) {
+	$valor = 1;
 	$partes = array();
-	foreach ($termos as $cada)
-		$partes[] = "$campo LIKE '%$cada%'";
-	foreach ($naoTermos as $cada)
-		$partes[] = "$campo NOT LIKE '%$cada%'";
-	return '(' . implode(' AND ', $partes) . ')';
+	for ($i=0; $i<count($termos); $i++) {
+		$termo = $termos[$i];
+		$partes[] = "$valor*(nome LIKE '%$termo%' OR descricao LIKE '%$termo%')";
+		$valor *= 2;
+	}
+	for ($i=0; $i<count($naoTermos); $i++) {
+		$termo = $naoTermos[$i];
+		$partes[] = "$valor*(nome NOT LIKE '%$termo%' AND descricao NOT LIKE '%$termo%')";
+		$valor *= 2;
+	}
+	$query = implode('+', $partes);
+	
+	return "SELECT id, nome, descricao, pai, visibilidade, criador, $query AS resultado FROM pastas WHERE id!=0 AND pai IN ? AND " . getQueryVisibilidade('pasta');
+}
+
+// Retorna a query de busca para posts
+function getQueryBuscaPost($termos, $naoTermos) {
+	$valor = 1;
+	$partes = array();
+	for ($i=0; $i<count($termos); $i++) {
+		$termo = $termos[$i];
+		$partes[] = "$valor*(nome LIKE '%$termo%' OR conteudo LIKE '%$termo%')";
+		$valor *= 2;
+	}
+	for ($i=0; $i<count($naoTermos); $i++) {
+		$termo = $naoTermos[$i];
+		$partes[] = "$valor*(nome NOT LIKE '%$termo%' AND conteudo NOT LIKE '%$termo%')";
+		$valor *= 2;
+	}
+	$query = implode('+', $partes);
+	
+	return "SELECT id, pasta, nome, data, visibilidade, criador, $query AS resultado FROM posts WHERE pasta IN ? AND " . getQueryVisibilidade('post');
+}
+
+// Retorna a query de busca para anexos
+function getQueryBuscaAnexo($termos, $naoTermos) {
+	$valor = 1;
+	$partes = array();
+	for ($i=0; $i<count($termos); $i++) {
+		$termo = $termos[$i];
+		$partes[] = "$valor*(nome LIKE '%$termo%')";
+		$valor *= 2;
+	}
+	for ($i=0; $i<count($naoTermos); $i++) {
+		$termo = $naoTermos[$i];
+		$partes[] = "$valor*(nome NOT LIKE '%$termo%')";
+		$valor *= 2;
+	}
+	$query = implode('+', $partes);
+	
+	return "SELECT *, $query AS resultado FROM anexos WHERE post IN ? AND " . getQueryVisibilidade('anexo');
+}
+
+// Retorna a query de busca para forms
+function getQueryBuscaForm($termos, $naoTermos) {
+	$valor = 1;
+	$partes = array();
+	for ($i=0; $i<count($termos); $i++) {
+		$termo = $termos[$i];
+		$partes[] = "$valor*(nome LIKE '%$termo%' OR descricao LIKE '%$termo%')";
+		$valor *= 2;
+	}
+	for ($i=0; $i<count($naoTermos); $i++) {
+		$termo = $naoTermos[$i];
+		$partes[] = "$valor*(nome NOT LIKE '%$termo%' AND descricao NOT LIKE '%$termo%')";
+		$valor *= 2;
+	}
+	$query = implode('+', $partes);
+	
+	return "SELECT pasta, nome, data, ativo, $query AS resultado FROM forms WHERE pasta IN ? AND " . getQueryVisibilidade('form');
 }
 
 imprimir('Busca por tag', 'h2');
