@@ -16,4 +16,4 @@ Abaixo algumas ideias, não necessariamente todas serão implementadas.
 * (feito) Pode começar a partir de qualquer pasta, não somente da raiz
 
 ## Resultados
-* Agrupar resultados por pasta
+* (feito) Agrupar resultados por pasta
