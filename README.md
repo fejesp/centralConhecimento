@@ -1,19 +1,19 @@
-# Central de Conhecimento
+# Central de Conhecimento - melhorBusca
 
 ## Descrição
-A central de gestão de conhecimento da Federação das Empresas Juniores do Estado de São Paulo é sistema pelo qual a FEJESP irá disponibilizar conteúdos como os cases recebidos, informações institucionais, relatórios de projetos e histórico de indicadores.
+Este branch implementa um novo sistema de busca, melhorando a interface, o algoritmo e a exibição dos resultados.
 
-## Instalação
-0. Envie todos os arquivos para seu servidor.
-1. Criar um novo banco de dados em seu servidor.
-2. Importe o arquivo "docs/sql.sql" para seu banco de dados recém criado.
-3. Modifique "config.php" adicionando a url do servidor, usuário, senha e nome do banco de dados nos campos correspondentes.
-4. E pronto! Logue no site com admin@email.com e senha 12345.
+Abaixo algumas ideias, não necessariamente todas serão implementadas.
 
-## Sobre
-A central é basicamente um sistema de arquivos, organizados em pastas. Para cada pasta podem ser definidas opções de visibilidade, permitindo o ajuste fino de qual tipo de conteúdo pode ser visto por cada usuário.
+## Interface
+* Dicas com base em tags ou expressões comuns (análise automática dos textos)
+* (feito) Ao clicar no botão buscar numa página de pasta, a busca começa por aquela pasta (mas pode-se buscar no sistema todo, como antes)
+* (feito) Melhor explicação da sintaxe de busca (expressões com "" e evitar termos com -)
 
-Além disso, o sistema permite a criação de formulários para que os usuários possam submeter arquivos de forma mais prática.
+## Algoritmo
+* (feito) Leva em conta as tags dos posts
+* (feito) Leva em conta todo o caminho do item (exemplo: o post "B" na pasta "A" é um resultado para "A B"). Veja a imagem busca.jpg
+* (feito) Pode começar a partir de qualquer pasta, não somente da raiz
 
-## Documentação
-A estrutura do banco de dados está descrita na pasta `/docs`. Outros pontos na wiki desse projeto.
+## Resultados
+* (feito) Agrupar resultados por pasta

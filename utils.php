@@ -232,8 +232,9 @@ function morrerComErro($erro) {
 	$_GET['p'] = 'erro';
 	$_usuario = NULL;
 	$_erro = $erro;
+	ob_end_clean();
 	header('HTTP/1.1 400 Bad Request');
-	require_once 'layout.php';
+	require 'layout.php';
 	exit;
 }
 

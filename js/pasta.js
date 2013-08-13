@@ -1,3 +1,8 @@
+// Faz o botão de busca iniciar uma busca na pasta atual
+window.addEventListener("load", function () {
+	get("layout-buscar").href = "/busca?pasta="+encodeURIComponent(_caminho)
+})
+
 // Vai para um dado recurso
 // É chamado pela <div class="item"> com o nome do recurso em seu primeiro filho <span>
 // el é o elemento div citado
