@@ -11,7 +11,12 @@ if (isset($_GET['novoUsuario']))
 <h3>Usuários</h3>
 <p><span class="botao" id="criarUsuario"><img src="/imgs/criarUsuario.png"> Criar usuário</span></p>
 <table id="tabelaUsuarios">
-	<tr><th>Nome</th><th>Email</th><th>Acessos esse ano</th><th>Espaço usado</th></tr>
+	<tr title="Clique para ordenar">
+		<th onClick="ordenarUsuarios(0)">Nome</th>
+		<th onClick="ordenarUsuarios(1)">Email</th>
+		<th onClick="ordenarUsuarios(2)">Acessos esse ano</th>
+		<th onClick="ordenarUsuarios(3)">Espaço usado</th>
+	</tr>
 	<?php
 	// Carrega os dados
 	$usuarios = Query::query(false, NULL, 'SELECT id, nome, email, ativo, usoMax FROM usuarios ORDER BY nome');

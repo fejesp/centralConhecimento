@@ -47,6 +47,47 @@ window.addEventListener("load", function () {
 		}
 })
 
+// Ordena as linhas pela coluna clicada
+function ordenarUsuarios(coluna) {
+	var lista, linhas, i, linha, tabela, funcao
+	
+	// Monta a tabela com os valores
+	tabela = get("tabelaUsuarios")
+	linhas = tabela.rows
+	lista = []
+	while (linhas.length > 1) {
+		linha = linhas.item(1)
+		lista.push({valor: linha.cells.item(coluna).textContent, linha: linha})
+		console.log(linhas.length)
+		tabela.deleteRow(1)
+	}
+	
+	// Ordena
+	if (ordenarUsuarios.ultimo == coluna) {
+		funcao = function (a, b) {
+			if (coluna == 2)
+				return b.valor-a.valor
+			return b.valor>a.valor
+		}
+		ordenarUsuarios.ultimo = null
+	} else {
+		funcao = function (a, b) {
+			if (coluna == 2)
+				return a.valor-b.valor
+			return b.valor<a.valor
+		}
+		ordenarUsuarios.ultimo = coluna
+	}
+	lista.sort(funcao)
+	
+	// Monta a tabela HTML
+	for (i=0; i<lista.length; i++) {
+		console.log(lista[i].valor)
+		tabela.appendChild(lista[i].linha)
+	}
+}
+ordenarUsuarios.ultimo = null
+
 // Abre a janela de edição de um usuário
 // Recebe o elemento TR do usuário na tabela
 function editarUsuario(linha) {

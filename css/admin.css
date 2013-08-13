@@ -6,6 +6,10 @@ td, th {
 	padding:5px;
 }
 
+th[onclick] {
+	cursor:pointer;
+}
+
 td.nomePost {
 	font-size:smaller;
 }
