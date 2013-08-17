@@ -70,20 +70,20 @@ for ($i=0; $i<count($subitens); $i++) {
 	$subitem = $subitens[$i];
 	$itemCriador = $subitem['criador'];
 	if ($subitem['tipo'] == 'pasta') {
-		echo "<a class='item item-pasta' href='" . getHref('pasta', $caminho, $subitem['nome']) . "' oncontextmenu='menu(\"pasta\", $itemCriador, event)'>";
+		echo "<a draggable='false' class='item item-pasta' href='" . getHref('pasta', $caminho, $subitem['nome']) . "' oncontextmenu='menu(\"pasta\", $itemCriador, event)'>";
 		imprimir($subitem['nome'], 'span.item-nome');
 		if ($subitem['descricao'])
 			imprimir($subitem['descricao'], 'span.item-descricao');
 		imprimir(visibilidade2str('pasta', $subitem['id'], $subitem['visibilidade'], $itemCriador), 'span.item-visibilidade');
 		echo '</a>';
 	} else if ($subitem['tipo'] == 'post') {
-		echo "<a class='item item-post' href='" . getHref('post', $caminho, $subitem['nome']) . "' oncontextmenu='menu(\"post\", $itemCriador, event)'>";
+		echo "<a draggable='false' class='item item-post' href='" . getHref('post', $caminho, $subitem['nome']) . "' oncontextmenu='menu(\"post\", $itemCriador, event)'>";
 		imprimir($subitem['nome'], 'span.item-nome');
 		imprimir('Postado ' . data2str($subitem['data']), 'span.item-descricao');
 		imprimir(visibilidade2str('post', $subitem['id'], $subitem['visibilidade'], $itemCriador), 'span.item-visibilidade');
 		echo '</a>';
 	} else if ($subitem['tipo'] == 'form') {
-		echo "<a class='item item-form" . ($subitem['ativo'] ? '' : ' inativo') . "' href='" . getHref('form', $caminho, $subitem['nome']) . "' oncontextmenu='menu(\"form\", $itemCriador, event)'>";
+		echo "<a draggable='false' class='item item-form" . ($subitem['ativo'] ? '' : ' inativo') . "' href='" . getHref('form', $caminho, $subitem['nome']) . "' oncontextmenu='menu(\"form\", $itemCriador, event)'>";
 		imprimir($subitem['nome'], 'span.item-nome');
 		imprimir('Criado ' . data2str($subitem['data']), 'span.item-descricao');
 		echo '</a>';
@@ -94,3 +94,4 @@ echo '</div>';
 // Diz que não tem nada
 if (!count($subitens))
 	imprimir('Pasta vazia');
+?>

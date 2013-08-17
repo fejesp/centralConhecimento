@@ -1,0 +1,15 @@
+.rotuloArrasto {
+	position:fixed;
+	cursor:default;
+	border:thin gray solid;
+	background-color:#CCC;
+	box-shadow:5px 5px 5px rgba(0, 0, 0, .5);
+	border-radius:7px;
+	padding:5px;
+	font-size:smaller;
+}
+
+.alvoArrasto {
+	transition:background-color .2s ease;
+	background-color:#E99;
+}

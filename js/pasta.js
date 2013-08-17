@@ -9,7 +9,7 @@ window.addEventListener("load", function () {
 // tipo é 'pasta', 'post' ou 'form'
 function ir(el, tipo) {
 	var nome
-	nome = el.querySelector("span").textContent
+	nome = el.querySelector(".item-nome").textContent
 	redirecionar(tipo, _caminho, nome)
 }
 
@@ -233,3 +233,94 @@ function abrirJanelaMover(el, tipo, nome) {
 		}
 	}, retorno: "json"})
 }
+
+/*
+
+Arrastar e soltar pastas
+
+*/
+
+window.addEventListener("load", function () {
+	var els, i
+	
+	// Define os ouvintes de arrasto
+	els = document.querySelectorAll(".item")
+	for (i=0; i<els.length; i++)
+		els.item(i).onmousedown = function (evento) {
+			var passoArrastar, terminarArrastar, el, rotulo, arrastando, alvo
+			
+			arrastando = false
+			el = evento.currentTarget
+			alvo = null
+			
+			// Executa cada passo do arrasto
+			passoArrastar = function (evento) {
+				var i, bordas, alvoAntigo, elsPastas
+				
+				if (!arrastando) {
+					// Cria o rótulo de arrasto
+					rotulo = document.createElement("div")
+					rotulo.className = "rotuloArrasto"
+					rotulo.textContent = "Mover "+el.querySelector(".item-nome").textContent
+					document.body.appendChild(rotulo)
+					arrastando = true
+				}
+				rotulo.style.left = (evento.clientX-rotulo.clientWidth/2)+"px"
+				rotulo.style.top = (evento.clientY-rotulo.clientHeight/2)+"px"
+				
+				// Verifica sobre qual pasta está
+				alvoAntigo = alvo
+				alvo = null
+				elsPastas = document.querySelectorAll(".item-pasta")
+				for (i=0; i<elsPastas.length; i++) {
+					bordas = elsPastas.item(i).getBoundingClientRect()
+					if (evento.clientX > bordas.left
+						&& evento.clientX < bordas.right
+						&& evento.clientY > bordas.top
+						&& evento.clientY < bordas.bottom
+						&& elsPastas.item(i) != el) {
+						alvo = elsPastas.item(i)
+						alvo.classList.add("alvoArrasto")
+						break
+					}
+				}
+				if (alvoAntigo && alvoAntigo != alvo)
+					alvoAntigo.classList.remove("alvoArrasto")
+			}
+			
+			// Termina o arrasto
+			terminarArrastar = function () {
+				var op, dados, nome, novoNome
+				
+				window.removeEventListener("mousemove", passoArrastar)
+				window.removeEventListener("mouseup", terminarArrastar)
+				
+				if (arrastando)
+					document.body.removeChild(rotulo)
+				if (alvo) {
+					// Executa a ação de mover
+					
+					// Pega os valores
+					op = el.classList.contains("item-pasta") ? "moverPasta" : (el.classList.contains("item-post") ? "moverPost" : "moverForm")
+					nome = el.querySelector(".item-nome").textContent
+					novoNome = alvo.querySelector(".item-nome").textContent
+					dados = {}
+					dados.caminho = (_caminho=="/" ? "" : _caminho)+"/"+nome
+					dados.novoCaminho = (_caminho=="/" ? "" : _caminho)+"/"+novoNome
+					
+					// Executa a ação no cliente e no servidor
+					el.style.display = "none"
+					executarAjax(op, dados, function () {
+						el.style.display = ""
+						alert("Erro ao mover item")
+					})
+					
+					alvo.classList.remove("alvoArrasto")
+				}
+			}
+			
+			window.addEventListener("mousemove", passoArrastar)
+			window.addEventListener("mouseup", terminarArrastar)
+			evento.preventDefault()
+		}
+})
