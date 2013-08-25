@@ -23,6 +23,9 @@ $nome = @$_POST['nome'];
 $email = @$_POST['email'];
 $usoMax = 1024*(int)@$_POST['usoMax'];
 
+if (!validarEmail($email))
+	morrerComErro('O email informado não parece ser válido');
+
 // Salva no banco de dados
 try {
 	if ($criar) {

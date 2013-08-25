@@ -28,6 +28,8 @@ if ($_usuario) {
 } else {
 	$email = $_POST['email'];
 	$EJ = $_POST['ej'];
+	if (!validarEmail($email))
+		morrerComErro('O email informado não parece ser válido');
 }
 
 $nome = @$_POST['nome'];

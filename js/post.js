@@ -101,7 +101,7 @@ function confirmarEdicaoComentario() {
 		conteudo.innerHTML = dados.conteudo
 		if (novo) {
 			div.dataset.id = dados.id
-			acoes.innerHTML = "<span class='botao' onclick='excluirComentario("+dados.id+")'><img src='/imgs/excluirComentario.png'> Excluir</span>"+
+			acoes.innerHTML = "<span class='botao' onclick='excluirComentario("+dados.id+")'><img src='/imgs/excluirComentario.png'> Excluir</span> "+
 			"<span class='botao' onclick='editarComentario("+dados.id+")'><img src='/imgs/editarComentario.png'> Editar</span>"
 		}
 	})

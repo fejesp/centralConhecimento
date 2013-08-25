@@ -28,6 +28,8 @@ if (md5($senha) != $_usuario['senha'])
 	morrerComErro('Senha incorreta');
 if ($novaSenha && $novaSenha != $novaSenha2)
 	morrerComErro('A mesma senha deve ser digitada duas vezes');
+if (!validarEmail($email))
+	morrerComErro('O email informado não parece ser válido');
 
 // Salva os novos dados
 $dados = array();

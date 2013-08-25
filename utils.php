@@ -411,3 +411,8 @@ function imprimirCaminho($caminho) {
 	
 	echo '</div>';
 }
+
+// Retorna true caso a string seja um email válido sintaticamente
+function validarEmail($str) {
+	return (bool)filter_var($str, FILTER_VALIDATE_EMAIL);
+}
