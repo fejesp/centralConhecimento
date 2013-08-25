@@ -18,3 +18,24 @@
 .tag:hover {
 	background-color:#E99;
 }
+
+.comentarios {
+	margin:10px;
+}
+
+.comentario {
+	padding:3px;
+	margin:7px;
+	position:relative;
+}
+
+.comentario > .acoes {
+	position:absolute;
+	top:5px;
+	right:5px;
+	display:none;
+}
+
+.comentario:hover > .acoes {
+	display:block;
+}

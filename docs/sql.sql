@@ -226,12 +226,31 @@ COMMENT = 'Armazena as tentativas de login';
 
 
 -- -----------------------------------------------------
--- Data for table `pastas`
+-- Table `comentarios`
 -- -----------------------------------------------------
-START TRANSACTION;
-INSERT INTO `pastas` (`id`, `nome`, `descricao`, `pai`, `visibilidade`, `criador`) VALUES (0, 'Diretório raiz', '', 0, 'publico', 0);
+CREATE  TABLE IF NOT EXISTS `comentarios` (
+  `id` INT NOT NULL AUTO_INCREMENT COMMENT 'Identificador interno do comentário' ,
+  `post` INT NOT NULL COMMENT 'Referencia o post no qual o comentário foi feito' ,
+  `conteudo` TEXT NOT NULL COMMENT 'Conteúdo do comentário' ,
+  `data` DATETIME NOT NULL COMMENT 'Data da criação do comentário' ,
+  `modificacao` DATETIME NOT NULL COMMENT 'Data da última modificação do comentário' ,
+  `criador` INT NOT NULL COMMENT 'Referencia o usuário que criou o comentário' ,
+  PRIMARY KEY (`id`) ,
+  INDEX `comentarios_post` (`post` ASC) ,
+  INDEX `comentarios_criador` (`criador` ASC) ,
+  CONSTRAINT `comentarios_post`
+    FOREIGN KEY (`post` )
+    REFERENCES `posts` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `comentarios_criador`
+    FOREIGN KEY (`criador` )
+    REFERENCES `usuarios` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+COMMENT = 'Comentários nos posts';
 
-COMMIT;
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
@@ -244,5 +263,13 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 START TRANSACTION;
 INSERT INTO `usuarios` (`id`, `nome`, `email`, `senha`, `admin`, `ativo`, `usoMax`, `cookie`) VALUES (1, 'FEJESP', 'admin@email.com', '827ccb0eea8a706c4c34a16891f84e7b', 1, 1, 0, 'x');
 INSERT INTO `usuarios` (`id`, `nome`, `email`, `senha`, `admin`, `ativo`, `usoMax`, `cookie`) VALUES (2, 'Usuário', 'user@email.com', '827ccb0eea8a706c4c34a16891f84e7b', 0, 1, 10240, 'y');
+
+COMMIT;
+
+-- -----------------------------------------------------
+-- Data for table `pastas`
+-- -----------------------------------------------------
+START TRANSACTION;
+INSERT INTO `pastas` (`id`, `nome`, `descricao`, `pai`, `visibilidade`, `criador`) VALUES (0, 'Diretório raiz', '', 0, 'publico', 0);
 
 COMMIT;

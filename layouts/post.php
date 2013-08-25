@@ -32,6 +32,7 @@ imprimirCaminho(getCaminhoAcima($caminho));
 // Envia algumas variáveis para o JS
 gerarJSVar('_caminho', $caminho);
 gerarJSVar('_nome', $dados['nome']);
+gerarJSVar('_nomeUsuario', $_usuario ? $_usuario['nome'] : NULL);
 
 // Mostra as opções de edição
 if ($_usuario && ($_usuario['admin'] || $dados['criador'] == $_usuario['id']))
@@ -70,4 +71,40 @@ if (count($anexos)) {
 		}
 	echo '</div>';
 }
+
+// Mostra a seção de comentários
+imprimir('Comentários', 'h2');
+if ($_usuario)
+	echo '<div class="acoes"><span class="botao" id="comentar"><img src="/imgs/comentar.png"> Adicionar comentário</span></div>';
+
+$comentarios = Query::query(false, NULL, 'SELECT
+	c.id, c.conteudo, c.data, c.modificacao, c.criador, u.nome
+	FROM comentarios AS c
+	JOIN usuarios AS u ON c.criador=u.id
+	WHERE post=? ORDER BY id', $dados['id']);
+echo '<div class="comentarios" id="comentarios">';
+if (count($comentarios)) {
+	// Mostra os comentários
+	foreach ($comentarios as $comentario) {
+		echo '<div class="comentario" data-id="' . $comentario['id'] . '" data-conteudo="' . assegurarHTML($comentario['conteudo']) . '">';
+		$ultimaEdicao = $comentario['data'] != $comentario['modificacao'] ? ' (editado ' . data2str($comentario['modificacao']) . ')' : '';
+		imprimir($comentario['nome'] . ' disse ' . data2str($comentario['data']) . $ultimaEdicao, 'p.detalhe');
+		if ($_usuario && ($_usuario['admin'] || $comentario['criador'] == $_usuario['id']))
+			echo '<div class="acoes">
+			<span class="botao" onclick="excluirComentario(' . $comentario['id'] . ')"><img src="/imgs/excluirComentario.png"> Excluir</span>
+			<span class="botao" onclick="editarComentario(' . $comentario['id'] . ')"><img src="/imgs/editarComentario.png"> Editar</span>
+			</div>';
+		imprimir($comentario['conteudo'], 'div.subConteudo', true);
+		echo '</div>';
+	}
+}
+echo '</div>';
 ?>
+
+<div id="editarComentario" style="display:none" class="comentario">
+<p><label for="conteudo">Conteúdo [<a href="#" style="font-size:smaller" onClick="visualizar();return false">visualizar resultado</a>]:</label><br>
+<textarea name="conteudo" id="conteudo"></textarea><br>
+<span style="font-size:smaller">Você pode usar cabeçalhos, negrito e outros recursos. <a href="/ajudaHTML" target="_blank">Saiba mais</a></span></p>
+<span class="botao" id="cancelar"><img src="/imgs/voltar.png"> Cancelar</span>
+<span class="botao" id="salvar"><img src="/imgs/enviar.png"> Salvar</span>
+</div>

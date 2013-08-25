@@ -80,8 +80,10 @@ if (count($anexos)) {
 }
 if (count($forms))
 	new Query('DELETE FROM forms WHERE id IN ?', $forms);
-if (count($posts))
+if (count($posts)) {
+	new Query('DELETE FROM comentarios WHERE post IN ?', $posts);
 	new Query('DELETE FROM posts WHERE id IN ?', $posts);
+}
 
 // Delete a pasta (o banco de dados cuida da recursão)
 new Query('DELETE FROM pastas WHERE id=?', $dados['id']);

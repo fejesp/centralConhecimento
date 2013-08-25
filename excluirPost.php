@@ -41,6 +41,7 @@ if (count($anexos)) {
 		unlinkAnexo($cada);
 	new Query('DELETE FROM anexos WHERE id IN ?', $anexos);
 }
+new Query('DELETE FROM comentarios WHERE post=?', $dados['id']);
 new Query('DELETE FROM posts WHERE id=?', $dados['id']);
 
 redirecionar('pasta', getCaminhoAcima($caminho));
