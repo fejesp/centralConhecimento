@@ -21,6 +21,7 @@ var comentando = {
 // Monta a interface para criar um novo comentário
 function criarComentario() {
 	var form = get("editarComentario")
+	cancelarEdicaoComentario()
 	get("conteudo").value = ""
 	get("comentarios").appendChild(form)
 	form.style.display = ""
@@ -32,6 +33,7 @@ function criarComentario() {
 // Inicia a edição de um comentário
 function editarComentario(id) {
 	var div, form
+	cancelarEdicaoComentario()
 	div = getDivComentario(id)
 	form = get("editarComentario")
 	get("conteudo").value = div.dataset.conteudo
