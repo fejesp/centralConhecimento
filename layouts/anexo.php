@@ -1,3 +1,4 @@
+
 <?php
 // Busca os dados do anexo
 $caminho = $_GET['q'];
@@ -48,7 +49,7 @@ if ($_usuario || $info) {
 	
 	// Gera o download do anexo
 	ob_end_clean();
-	header('Content-Disposition: attachment; filename="' . $anexo['nome'] . '"');
+	header('Content-Disposition: attachment; filename="' . str_replace('"', '\\"', $anexo['nome']) . '"');
 	header('Content-Type: application/octet-stream'); // Deixa o MIME para o navegador decidir
 	readfile($arquivo);
 	exit;

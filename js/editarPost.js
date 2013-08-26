@@ -54,8 +54,8 @@ setBotao("adicionarAnexo", function () {
 })
 
 // Monta a janela de opções de anexo
-// Se visibilidade não for enviado, cria a janela de novo anexo
-function montarJanelaAnexo(visibilidade, selecionados) {
+// Se os argumentos não forem enviados, cria a janela para um novo anexo
+function montarJanelaAnexo(visibilidade, selecionados, nome) {
 	var janela = get("janela"), checks = "", i
 	mostrarJanela(true)
 	
@@ -66,6 +66,7 @@ function montarJanelaAnexo(visibilidade, selecionados) {
 	
 	janela.innerHTML = (visibilidade ? "<h2>Editando anexo</h2>" : "<h2>Novo anexo</h2>")+
 	(visibilidade ? "" : "<p>Arquivo: <input type='file' id='anexo-file'> (máx "+kiB2str(_maxCada)+")</p>")+
+	"<p>Nome: <input size='50' id='anexo-nome'"+(nome ? " value='"+assegurarHTML(nome)+"'" : "")+"></p>"+
 	"<p class='rotuloEsquerdo'>Visibilidade: </p>"+
 	"<p class='opcoesDireita'>"+
 	"<input type='radio' name='anexo-visibilidade' id='anexo-publico' onchange='atualizarLista2()' checked> <label for='anexo-publico'>para qualquer um</label><br>"+
@@ -86,8 +87,12 @@ function montarJanelaAnexo(visibilidade, selecionados) {
 		if (selecionados)
 			for (i=0; i<selecionados.length; i++)
 				get("anexo-usuario"+selecionados[i]).checked = true
-	} else
+	} else {
 		get("anexo-file").click()
+		get("anexo-file").onchange = function () {
+			get("anexo-nome").value = get("anexo-file").files[0].name
+		}
+	}
 }
 
 // Mostra o menu de opções para os anexos
@@ -105,10 +110,10 @@ function menu(evento) {
 	Menu.abrir(evento, botoes)
 }
 
-// Permite baixa o anexo
+// Permite baixar o anexo
 // Recebe a <div> do anexo clicado
 function baixarAnexo(el) {
-	var src = "/anexo"+_caminhoPost+"/"+el.querySelector("span.item-nome").textContent
+	var src = getHref("anexo", _caminhoPost, el.querySelector("span.item-nome").textContent)
 	document.body.appendChild(criarTag("iframe", "", {src: src, style: "display:none"}))
 }
 
@@ -130,7 +135,7 @@ function removerAnexo(el) {
 
 // Coloca o novo anexo na lista
 function adicionarAnexo() {
-	var file, visibilidade, selecionados, els, i, anexos, id, info, div, tamanho
+	var file, visibilidade, selecionados, els, i, anexos, id, info, div, tamanho, nome
 	
 	// Valida as restrições de número e tamanho
 	file = get("anexo-file")
@@ -155,11 +160,12 @@ function adicionarAnexo() {
 		info = "seleto"+JSON.stringify(selecionados)
 	} else
 		info = visibilidade
+	nome = get("anexo-nome").value
 	
 	// Coloca o item visualmente na lista
 	anexos = get("anexos")
-	div = criarTag("div", "", {class: "item item-anexo", oncontextmenu: "menu(event)", "data-novo": "1", "data-tamanho": tamanho})
-	div.innerHTML = "<span class='item-nome'>"+file.files[0].name+"</span>"+
+	div = criarTag("div", "", {class: "item item-anexo", oncontextmenu: "menu(event)", "data-novo": "1", "data-tamanho": tamanho, "data-visibilidade": info, "data-nome": nome})
+	div.innerHTML = "<span class='item-nome'>"+assegurarHTML(nome)+"</span>"+
 	"<span class='item-descricao'>"+kiB2str(tamanho)+
 	"</span><span class='item-visibilidade'>"+visibilidade2str(visibilidade, selecionados)+"</span>"
 	anexos.appendChild(div)
@@ -169,8 +175,10 @@ function adicionarAnexo() {
 	file.style.display = "none"
 	file.name = "arquivos["+id+"]"
 	file.id = ""
+	file.onchange = null
 	div.appendChild(file)
 	div.appendChild(criarTag("input", "", {type: "hidden", name: "infos["+id+"]", value: info}))
+	div.appendChild(criarTag("input", "", {type: "hidden", name: "nomes["+id+"]", value: nome}))
 	mostrarJanela(false)
 	get("janela").innerHTML = ""
 	_numNovos++
@@ -199,20 +207,20 @@ function editarAnexo(el) {
 	var visibilidade, selecionados
 	
 	// Carrega os dados atuais
-	visibilidade = el.dataset.novo == "1" ? el.querySelector("input[type=hidden]").value : el.dataset.visibilidade
+	visibilidade = el.dataset.visibilidade
 	if (visibilidade.substr(0, 6) == "seleto") {
 		selecionados = JSON.parse(visibilidade.substr(6))
 		visibilidade = "seleto"
 	}
 	
 	// Abre a janela
-	montarJanelaAnexo(visibilidade, selecionados)
+	montarJanelaAnexo(visibilidade, selecionados, el.dataset.nome)
 	_editando = el
 }
 
 // Atualiza o anexo da lista
 function salvarEdicaoAnexo() {
-	var visibilidade, selecionados, els, i, info, input
+	var visibilidade, selecionados, els, i, info, input, nome
 	
 	// Pega os dados da janela
 	visibilidade = get("anexo-publico").checked ? "publico" : (get("anexo-geral").checked ? "geral" : "seleto")
@@ -225,20 +233,37 @@ function salvarEdicaoAnexo() {
 		info = "seleto"+JSON.stringify(selecionados)
 	} else
 		info = visibilidade
+	nome = get("anexo-nome").value
 	
 	// Atualiza o item visualmente na lista
 	_editando.querySelector(".item-visibilidade").textContent = visibilidade2str(visibilidade, selecionados)
+	_editando.querySelector(".item-nome").textContent = nome
 	
 	// Coloca os dados no formulário
 	input = _editando.querySelector("input[type=hidden]")
-	if (_editando.dataset.novo == "1")
-		input.value = info
-	else {
+	if (info != _editando.dataset.visibilidade) {
+		if (_editando.dataset.novo == "1")
+			_editando.querySelector("input[type=hidden][name^=infos]").value = info
+		else {
+			input = _editando.querySelector("input[type=hidden][name^=mudancas]")
+			if (input)
+				input.value = info
+			else
+				_editando.appendChild(criarTag("input", "", {type: "hidden", name: "mudancas["+_editando.dataset.id+"]", value: info}))
+		}
 		_editando.dataset.visibilidade = info
-		if (input)
-			input.value = info
-		else
-			_editando.appendChild(criarTag("input", "", {type: "hidden", name: "mudancas["+_editando.dataset.id+"]", value: info}))
+	}
+	if (nome != _editando.dataset.nome) {
+		if (_editando.dataset.novo == "1")
+			_editando.querySelector("input[type=hidden][name^=nomes]").value = nome
+		else {
+			input = _editando.querySelector("input[type=hidden][name^=mudancasNomes]")
+			if (input)
+				input.value = nome
+			else
+				_editando.appendChild(criarTag("input", "", {type: "hidden", name: "mudancasNomes["+_editando.dataset.id+"]", value: nome}))
+		}
+		_editando.dataset.nome = nome
 	}
 	
 	mostrarJanela(false)

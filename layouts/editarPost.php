@@ -111,7 +111,7 @@ foreach ($tags as $tag)
 				$info = 'seleto' . json_encode($idsSelecionados);
 			} else
 				$info = $visibilidade;
-			echo '<div class="item item-anexo" oncontextmenu="menu(event)" data-visibilidade="' . $info . '" data-novo="0" data-id="' . $anexo['id'] . '" data-tamanho="' . $anexo['tamanho'] . '">';
+			echo '<div class="item item-anexo" oncontextmenu="menu(event)" data-visibilidade="' . $info . '" data-novo="0" data-id="' . $anexo['id'] . '" data-tamanho="' . $anexo['tamanho'] . '" data-nome="' . assegurarHTML($anexo['nome']) . '">';
 			imprimir($anexo['nome'], 'span.item-nome');
 			imprimir(kiB2str($anexo['tamanho']), 'span.item-descricao');
 			imprimir(visibilidade2str('anexo', $anexo['id'], $anexo['visibilidade'], $dados['criador']), 'span.item-visibilidade');

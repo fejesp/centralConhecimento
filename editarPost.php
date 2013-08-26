@@ -100,12 +100,24 @@ try {
 			new Query('UPDATE anexos SET visibilidade=? WHERE id=? LIMIT 1', $visibilidade, $id);
 		}
 	
+	// Atualiza o nome dos anexos alterados
+	if (isset($_POST['mudancasNomes']))
+		foreach ($_POST['mudancasNomes'] as $id=>$cada) {
+			$id = (int)$id;
+			if (!in_array($id, $meusAnexos) || in_array($id, $anexosRemovidos))
+				throw new ErrorException('Tentativa inválida de alterar um anexo');
+			if (!preg_match('@^[^/]+$@', $cada))
+				throw new ErrorException('Novo nome de arquivo inválido: ' . $cada);
+			new Query('UPDATE anexos SET nome=? WHERE id=? LIMIT 1', $cada, $id);
+		}
+	
 	// Trata os novos anexos
 	if (isset($_FILES['arquivos'])) {
 		$cotaUsada = Query::getValor('SELECT SUM(a.tamanho) FROM anexos AS a JOIN posts AS p ON a.post=p.id WHERE p.criador=?', $_usuario['id']);
 		$cotaLivre = $_usuario['usoMax']-$cotaUsada;
 		$espacoLivre = $_config['espacoTotal']-Query::getValor('SELECT SUM(tamanho) FROM anexos');
-		$nomes = $_FILES['arquivos']['name'];
+		$nomes = $_POST['nomes'];
+		$nomesArquivos = $_FILES['arquivos']['name'];
 		$tmp_names = $_FILES['arquivos']['tmp_name'];
 		$erros = $_FILES['arquivos']['error'];
 		$tamanhos = $_FILES['arquivos']['size'];
@@ -113,6 +125,9 @@ try {
 		foreach ($nomes as $idAnexo=>$nomeAnexo) {
 			if ($erros[$idAnexo])
 				throw new ErrorException('Falha no upload do arquivo ' . $nomeAnexo);
+			
+			if (!preg_match('@^[^/]+$@', $nomeAnexo))
+				throw new ErrorException('Nome de arquivo inválido: ' . $nomeAnexo);
 			
 			// Verifica se não passa da cota
 			$tamanho = round($tamanhos[$idAnexo]/1024);
@@ -136,7 +151,7 @@ try {
 					new Query('INSERT INTO visibilidades VALUES ("anexo", ?, ?)', $id, $selecionados[$i]);
 			
 			// Marca para mover depois
-			$novosAnexos[] = array($id, $nomeAnexo, $tmp_names[$idAnexo]);
+			$novosAnexos[] = array($id, $nomesArquivos[$idAnexo], $tmp_names[$idAnexo]);
 		}
 	}
 	

@@ -6,4 +6,4 @@ não pode \ / : * ? " < > |
 !"#$%&'()*+,-. :
 ;<=>?@[\]^_`{|}~
 
-permitir mudar o nome do anexo (?)
+evitar nomes com "/"
