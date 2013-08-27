@@ -222,10 +222,12 @@ function onContextMenuDownloaders(evento) {
 	Menu.abrir(evento, [["buscar", "Ver o que foi baixado", function () {
 		var div = abrirJanelaCarregando()
 		div.innerHTML = "<p>Downloads de "+assegurarHTML(email)+" ("+assegurarHTML(empresa)+")</p><table>"+
-			"<tr><th>Post</th><th>Anexo</th><th>Data</td></tr></table>"
+			"<tr><th>Post</th><th>Anexo</th><th>Data</td></tr></table>"+
+			"<p><em>Carregando...</em></p>"
 		Ajax({url: "/ajax.php", dados: {op: "getAnexos", email: email, empresa: empresa}, funcao: function (dados) {
 			var tabela, i, tr
 			tabela = div.childNodes[1]
+			div.childNodes[2].style.display = "none"
 			for (i=0; i<dados.length; i++) {
 				tr = document.createElement("tr")
 				tr.appendChild(criarTag("td.nomePost", dados[i].post))
