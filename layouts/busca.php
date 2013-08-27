@@ -82,7 +82,7 @@ if ($busca) {
 	
 	// Vai montando toda a árvore de pastas visíveis e separando as pastas da resposta
 	$query = getQueryBuscaPasta($termos, $naoTermos);
-	$scoreMax = (1 << (count($termos)+count($naoTermos)))-1;
+	$scoreMax = (1 << count($termos))-1;
 	while (count($nivel)) {
 		$temp = Query::query(false, NULL, $query, $nivel);
 		$nivel = array();
@@ -92,7 +92,7 @@ if ($busca) {
 			$score = $cada['resultado'] | $scoresPastas[$cada['pai']];
 			if ($score == $scoreMax)
 				salvar($r, $cada['pai'], 'pastas', $cada);
-			else {
+			else if ($score < $scoreMax) {
 				$nivel[] = $cada['id'];
 				$idPastas[] = $cada['id'];
 				$scoresPastas[$cada['id']] = $score;
@@ -112,7 +112,7 @@ if ($busca) {
 			$score = $cada['resultado'] | $scoresPastas[$cada['pasta']];
 			if ($score == $scoreMax)
 				salvar($r, $cada['pasta'], 'posts', $cada);
-			else {
+			else if ($score < $scoreMax) {
 				$nomesPosts[$cada['id']] = $nomesPastas[$cada['pasta']] . '/' . $cada['nome'];
 				$idPosts[] = $cada['id'];
 				$criadoresPosts[] = $cada['criador'];
@@ -211,7 +211,7 @@ function getQueryBuscaPasta($termos, $naoTermos) {
 	}
 	for ($i=0; $i<count($naoTermos); $i++) {
 		$termo = $naoTermos[$i];
-		$partes[] = "$valor*(nome NOT LIKE '%$termo%' AND descricao NOT LIKE '%$termo%')";
+		$partes[] = "$valor*(nome LIKE '%$termo%' OR descricao LIKE '%$termo%')";
 		$valor *= 2;
 	}
 	$query = implode('+', $partes);
@@ -221,7 +221,7 @@ function getQueryBuscaPasta($termos, $naoTermos) {
 
 // Retorna a query de busca para posts
 function getQueryBuscaPost($termos, $naoTermos) {
-	static $tags = NULL;
+	static $tags = NULL, $naoTags = NULL;
 	
 	// Pega os posts que, olhando somente pelas suas tags, seriam resultados para cada critério
 	if (!$tags) {
@@ -232,6 +232,14 @@ function getQueryBuscaPost($termos, $naoTermos) {
 				$tags[] = ' OR id IN (' . implode(',', $ids) . ')';
 			else
 				$tags[] = '';
+		}
+		$naoTags = array();
+		foreach ($naoTermos as $termo) {
+			$ids = Query::query(false, 0, "SELECT DISTINCT p.id FROM posts AS p JOIN tagsEmPosts AS tEP ON tEP.post=p.id JOIN tags AS t ON t.id=tEP.tag WHERE t.nome LIKE '%$termo%'");
+			if (count($ids))
+				$naoTags[] = ' OR id IN (' . implode(',', $ids) . ')';
+			else
+				$naoTags[] = '';
 		}
 	}
 	
@@ -244,7 +252,7 @@ function getQueryBuscaPost($termos, $naoTermos) {
 	}
 	for ($i=0; $i<count($naoTermos); $i++) {
 		$termo = $naoTermos[$i];
-		$partes[] = "$valor*(nome NOT LIKE '%$termo%' AND conteudo NOT LIKE '%$termo%')";
+		$partes[] = "$valor*(nome LIKE '%$termo%' OR conteudo LIKE '%$termo%'" . $naoTags[$i] . ")";
 		$valor *= 2;
 	}
 	$query = implode('+', $partes);
@@ -263,7 +271,7 @@ function getQueryBuscaAnexo($termos, $naoTermos) {
 	}
 	for ($i=0; $i<count($naoTermos); $i++) {
 		$termo = $naoTermos[$i];
-		$partes[] = "$valor*(nome NOT LIKE '%$termo%')";
+		$partes[] = "$valor*(nome LIKE '%$termo%')";
 		$valor *= 2;
 	}
 	$query = implode('+', $partes);
@@ -282,7 +290,7 @@ function getQueryBuscaForm($termos, $naoTermos) {
 	}
 	for ($i=0; $i<count($naoTermos); $i++) {
 		$termo = $naoTermos[$i];
-		$partes[] = "$valor*(nome NOT LIKE '%$termo%' AND descricao NOT LIKE '%$termo%')";
+		$partes[] = "$valor*(nome LIKE '%$termo%' OR descricao LIKE '%$termo%')";
 		$valor *= 2;
 	}
 	$query = implode('+', $partes);
