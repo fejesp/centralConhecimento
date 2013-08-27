@@ -157,7 +157,10 @@ if ($busca) {
 		foreach ($cada['forms'] as $form) {
 			echo '<a class="item item-form' . ($form['ativo'] ? '' : ' inativo') . '" href="' . getHref('form', $nomesPastas[$form['pasta']], $form['nome']) . '">';
 			imprimir($form['nome'], 'span.item-nome');
-			imprimir('Criado ' . data2str($form['data']), 'span.item-descricao');
+			if ($form['modificacao'] != $form['data'])
+				imprimir('Modificado ' . data2str($form['modificacao']), 'span.item-descricao');
+			else
+				imprimir('Criado ' . data2str($form['data']), 'span.item-descricao');
 			echo '</a>';
 		}
 		foreach ($cada['pastas'] as $pasta) {
@@ -171,7 +174,10 @@ if ($busca) {
 		foreach ($cada['posts'] as $post) {
 			echo '<a class="item item-post" href="' . getHref('post', $nomesPastas[$post['pasta']], $post['nome']) . '">';
 			imprimir($post['nome'], 'span.item-nome');
-			imprimir('Postado ' . data2str($post['data']), 'span.item-descricao');
+			if ($post['modificacao'] != $post['data'])
+				imprimir('Modificado ' . data2str($post['modificacao']), 'span.item-descricao');
+			else
+				imprimir('Postado ' . data2str($post['data']), 'span.item-descricao');
 			imprimir(visibilidade2str('post', $post['id'], $post['visibilidade'], $post['criador']), 'span.item-visibilidade');
 			echo '</a>';
 		}
@@ -257,7 +263,7 @@ function getQueryBuscaPost($termos, $naoTermos) {
 	}
 	$query = implode('+', $partes);
 	
-	return "SELECT id, pasta, nome, data, visibilidade, criador, $query AS resultado FROM posts WHERE pasta IN ? AND " . getQueryVisibilidade('post') . ' ORDER BY nome';
+	return "SELECT id, pasta, nome, data, modificacao, visibilidade, criador, $query AS resultado FROM posts WHERE pasta IN ? AND " . getQueryVisibilidade('post') . ' ORDER BY nome';
 }
 
 // Retorna a query de busca para anexos
@@ -295,7 +301,7 @@ function getQueryBuscaForm($termos, $naoTermos) {
 	}
 	$query = implode('+', $partes);
 	
-	return "SELECT pasta, nome, data, ativo, $query AS resultado FROM forms WHERE pasta IN ? AND " . getQueryVisibilidade('form') . ' ORDER BY nome';
+	return "SELECT pasta, nome, data, modificacao, ativo, $query AS resultado FROM forms WHERE pasta IN ? AND " . getQueryVisibilidade('form') . ' ORDER BY nome';
 }
 
 // Adiciona um novo resultado na lista de resultados

@@ -47,7 +47,7 @@ if ($_usuario) {
 $subitens = array();
 
 // Carrega os forms
-$forms = Query::query(false, NULL, 'SELECT "form" AS tipo, id, nome, data, ativo, criador FROM forms WHERE pasta=? ORDER BY nome', $dados['id']);
+$forms = Query::query(false, NULL, 'SELECT "form" AS tipo, id, nome, data, modificacao, ativo, criador FROM forms WHERE pasta=? ORDER BY nome', $dados['id']);
 for ($i=0; $i<count($forms); $i++)
 	if (verificarVisibilidade('form', $forms[$i]['id'], $forms[$i]['ativo'], $forms[$i]['criador']))
 		$subitens[] = $forms[$i];
@@ -59,7 +59,7 @@ for ($i=0; $i<count($subpastas); $i++)
 		$subitens[] = $subpastas[$i];
 
 // Carrega os posts
-$posts = Query::query(false, NULL, 'SELECT "post" AS tipo, id, nome, data, visibilidade, criador FROM posts WHERE pasta=? ORDER BY nome', $dados['id']);
+$posts = Query::query(false, NULL, 'SELECT "post" AS tipo, id, nome, data, modificacao, visibilidade, criador FROM posts WHERE pasta=? ORDER BY nome', $dados['id']);
 for ($i=0; $i<count($posts); $i++)
 	if (verificarVisibilidade('post', $posts[$i]['id'], $posts[$i]['visibilidade'], $posts[$i]['criador']))
 		$subitens[] = $posts[$i];
@@ -79,13 +79,19 @@ for ($i=0; $i<count($subitens); $i++) {
 	} else if ($subitem['tipo'] == 'post') {
 		echo "<a draggable='false' class='item item-post' href='" . getHref('post', $caminho, $subitem['nome']) . "' oncontextmenu='menu(event)' data-criador='$itemCriador' data-tipo='post'>";
 		imprimir($subitem['nome'], 'span.item-nome');
-		imprimir('Postado ' . data2str($subitem['data']), 'span.item-descricao');
+		if ($subitem['modificacao'] != $subitem['data'])
+			imprimir('Modificado ' . data2str($subitem['modificacao']), 'span.item-descricao');
+		else
+			imprimir('Postado ' . data2str($subitem['data']), 'span.item-descricao');
 		imprimir(visibilidade2str('post', $subitem['id'], $subitem['visibilidade'], $itemCriador), 'span.item-visibilidade');
 		echo '</a>';
 	} else if ($subitem['tipo'] == 'form') {
 		echo "<a draggable='false' class='item item-form" . ($subitem['ativo'] ? '' : ' inativo') . "' href='" . getHref('form', $caminho, $subitem['nome']) . "' oncontextmenu='menu(event)' data-criador='$itemCriador' data-tipo='form'>";
 		imprimir($subitem['nome'], 'span.item-nome');
-		imprimir('Criado ' . data2str($subitem['data']), 'span.item-descricao');
+		if ($subitem['modificacao'] != $subitem['data'])
+			imprimir('Modificado ' . data2str($subitem['modificacao']), 'span.item-descricao');
+		else
+			imprimir('Criado ' . data2str($subitem['data']), 'span.item-descricao');
 		echo '</a>';
 	}
 }

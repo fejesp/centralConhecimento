@@ -73,7 +73,7 @@ $novosAnexos = array();
 $resumoAnexos = array();
 try {
 	// Cria o post
-	new Query('INSERT INTO posts VALUES (NULL, ?, ?, ?, NOW(), "seleto", ?)', $dados['pasta'], $nome2, $conteudo, $dados['criador']);
+	new Query('INSERT INTO posts VALUES (NULL, ?, ?, ?, NOW(), NOW(), "seleto", ?)', $dados['pasta'], $nome2, $conteudo, $dados['criador']);
 	$idPost = Query::$conexao->insert_id;
 	
 	// Adiciona o usuário que submeteu o post na lista de visibilidades

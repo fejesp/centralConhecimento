@@ -53,9 +53,9 @@ $conteudo = json_encode($campos);
 // Salva no banco de dados
 try {
 	if ($criar)
-		new Query('INSERT INTO forms VALUES (NULL, ?, ?, ?, ?, NOW(), ?, ?)', $dados['id'], $nome, $descricao, $conteudo, $ativo, $_usuario['id']);
+		new Query('INSERT INTO forms VALUES (NULL, ?, ?, ?, ?, NOW(), NOW(), ?, ?)', $dados['id'], $nome, $descricao, $conteudo, $ativo, $_usuario['id']);
 	else
-		new Query('UPDATE forms SET nome=?, descricao=?, conteudo=?, data=NOW(), ativo=? WHERE id=? LIMIT 1', $nome, $descricao, $conteudo, $ativo, $dados['id']);
+		new Query('UPDATE forms SET nome=?, descricao=?, conteudo=?, modificacao=NOW(), ativo=? WHERE id=? LIMIT 1', $nome, $descricao, $conteudo, $ativo, $dados['id']);
 		
 	// Vai para o form
 	redirecionar('pasta', $criar ? $caminho : getCaminhoAcima($caminho));

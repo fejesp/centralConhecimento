@@ -24,7 +24,8 @@ imprimir(visibilidade2str('post', $dados['id'], $dados['visibilidade'], $dados['
 
 // Mostra quem e quando postou
 $criador = Query::getValor('SELECT nome FROM usuarios WHERE id=? LIMIT 1', $dados['criador']);
-imprimir('Postado por ' . $criador . ' ' . data2str($dados['data']), 'p.detalhe');
+$modificado = $dados['modificacao'] != $dados['data'] ? ' (editado ' . data2str($dados['modificacao']) . ')' : '';
+imprimir('Postado por ' . $criador . ' ' . data2str($dados['data']) . $modificado, 'p.detalhe');
 
 // Coloca a sequência do caminho
 imprimirCaminho(getCaminhoAcima($caminho));

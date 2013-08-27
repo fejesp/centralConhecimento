@@ -21,7 +21,8 @@ if (!$sucesso) {
 // Mostra quem e quando postou
 imprimir($dados['nome'], 'h2');
 $criador = Query::getValor('SELECT nome FROM usuarios WHERE id=? LIMIT 1', $dados['criador']);
-imprimir('Criado por ' . $criador . ' ' . data2str($dados['data']), 'p.detalhe');
+$modificado = $dados['modificacao'] != $dados['data'] ? ' (editado ' . data2str($dados['modificacao']) . ')' : '';
+imprimir('Criado por ' . $criador . ' ' . data2str($dados['data']) . $modificado, 'p.detalhe');
 
 // Coloca a sequência do caminho
 imprimirCaminho(getCaminhoAcima($caminho));

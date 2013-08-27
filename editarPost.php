@@ -47,12 +47,12 @@ Query::$conexao->autocommit(false);
 try {
 	// Altera/cria o básico do post
 	if ($criar) {
-		new Query('INSERT INTO posts VALUES (NULL, ?, ?, ?, NOW(), ?, ?)', $dados['id'], $nome, $conteudo, $visibilidade, $_usuario['id']);
+		new Query('INSERT INTO posts VALUES (NULL, ?, ?, ?, NOW(), NOW(), ?, ?)', $dados['id'], $nome, $conteudo, $visibilidade, $_usuario['id']);
 		$dados['id'] = Query::$conexao->insert_id;
 		$dados['criador'] = $_usuario['id'];
 		$meusAnexos = array();
 	} else {
-		new Query('UPDATE posts SET nome=?, conteudo=?, data=NOW(), visibilidade=? WHERE id=? LIMIT 1', $nome, $conteudo, $visibilidade, $dados['id']);
+		new Query('UPDATE posts SET nome=?, conteudo=?, modificacao=NOW(), visibilidade=? WHERE id=? LIMIT 1', $nome, $conteudo, $visibilidade, $dados['id']);
 		new Query('DELETE FROM visibilidades WHERE tipoItem="post" AND item=?', $dados['id']);
 		$meusAnexos = Query::query(false, 0, 'SELECT id FROM anexos WHERE post=?', $dados['id']);
 	}
