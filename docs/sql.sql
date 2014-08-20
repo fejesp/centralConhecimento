@@ -253,11 +253,6 @@ CREATE TABLE IF NOT EXISTS `comentarios` (
 ENGINE = InnoDB
 COMMENT = 'Comentários nos posts';
 
-
-SET SQL_MODE=@OLD_SQL_MODE;
-SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
-SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
-
 -- -----------------------------------------------------
 -- Data for table `usuarios`
 -- -----------------------------------------------------
@@ -276,3 +271,7 @@ INSERT INTO `pastas` (`id`, `nome`, `descricao`, `pai`, `visibilidade`, `criador
 
 COMMIT;
 
+-- Go back to original settings
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
